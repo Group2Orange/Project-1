@@ -7,10 +7,69 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="home.css">
 </head>
-<body>
+<body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
+
+  <!-- Sample contact details from the design; replace before publishing. -->
+  <footer class="home-footer">
+    <div class="home-footer-inner">
+      <div class="home-footer-grid">
+        <section class="home-footer-contact" aria-labelledby="home-footer-title">
+          <a class="footer-brand" id="home-footer-title" href="home.html"><span class="footer-logo material-symbols-outlined" aria-hidden="true">corporate_fare</span><span>TeamSpace HR<small>Enterprise Human Capital Platform</small></span></a>
+          <div class="home-contact-grid">
+            <a href="tel:+18005558326"><span class="material-symbols-outlined" aria-hidden="true">call</span>+1 (800) 555-TEAM (8326)</a>
+            <a href="mailto:support@teamspacehr.com"><span class="material-symbols-outlined" aria-hidden="true">mail</span>support@teamspacehr.com</a>
+          </div>
+          <address class="home-address">450 Mission Street, San Francisco, CA</address>
+          <p class="home-sample-note">Sample contact and location details</p>
+        </section>
+
+        <section class="home-footer-intro" aria-labelledby="footer-intro-title">
+          <p class="home-footer-label">THE PLATFORM</p>
+          <h2 id="footer-intro-title">People and work, connected.</h2>
+          <p>Keep employee details, requests, and team tasks organized in one shared workspace.</p>
+        </section>
+
+        <nav class="home-footer-links" aria-labelledby="home-footer-links-title">
+          <h2 id="home-footer-links-title">Explore</h2>
+          <p>Find the tools and information your team needs.</p>
+          <ul>
+            <li><a href="../../hr/employees/employees.html">Employees</a></li>
+            <li><a href="../../hr/tasks/tasks.html">Tasks</a></li>
+            <li><a href="../../hr/requests/requests.html">Requests</a></li>
+            <li><a href="../contact/contact.html">Contact</a></li>
+          </ul>
+        </nav>
+
+        <section class="home-map-card" aria-labelledby="map-title">
+          <h2 id="map-title"><span class="material-symbols-outlined" aria-hidden="true">location_on</span>Find us in San Francisco</h2>
+          <a class="home-map-preview" href="https://www.google.com/maps/search/?api=1&amp;query=450%20Mission%20Street%2C%20San%20Francisco" target="_blank" rel="noopener noreferrer" aria-label="Open sample headquarters location in Google Maps">
+            <svg viewBox="0 0 320 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <rect width="320" height="130" fill="#e9f1f6"/>
+              <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#fff" stroke-width="18"/>
+              <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#c9d8e4" stroke-width="2"/>
+              <path d="M57-10 86 141M218-10 246 141" stroke="#fff" stroke-width="14"/>
+              <path d="M57-10 86 141M218-10 246 141" stroke="#c9d8e4" stroke-width="2"/>
+              <path d="M280-10 339 20 320 130 278 139Z" fill="#cae8e8" opacity=".85"/>
+              <circle cx="166" cy="67" r="18" fill="#fff" opacity=".85"/>
+              <path d="M166 45a15 15 0 0 0-15 15c0 11 15 26 15 26s15-15 15-26a15 15 0 0 0-15-15Z" fill="#008592"/>
+              <circle cx="166" cy="60" r="5" fill="#fff"/>
+            </svg>
+            <span class="home-map-caption">View location <span aria-hidden="true">↗</span></span>
+          </a>
+        </section>
+      </div>
+      <div class="footer-bottom">
+        <small>© 2026 TeamSpace HR Systems Inc. All rights reserved.</small>
+        <nav class="footer-legal" aria-label="Footer policies"><a href="../policies/policies.html">Privacy Policy</a><a href="../policies/policies.html">Terms of Service</a><a href="../policies/policies.html">Security</a></nav>
+        <!-- Replace this href with the company page when it is available. -->
+        <a class="footer-powered-by" href="../about/about.html">PoweredBy(Company Name)</a>
+      </div>
+    </div>
+  </footer>
 
   <script src="../../shared/navbar.js"></script>
   <script src="home.js"></script>
