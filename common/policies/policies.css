@@ -1,0 +1,316 @@
+/* =========================
+   General
+========================= */
+
+body {
+    margin: 0;
+    color: #263238;
+}
+
+p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #65717c;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+#pageHeader {
+    max-width: 1050px;
+    margin: auto;
+    padding: 45px 20px 35px;
+}
+
+#back {
+    color: #078b91;
+    font-size: 12px;
+}
+
+#back:hover {
+    text-decoration: underline;
+}
+
+#pageHeader h1 {
+    font-size: 32px;
+    margin: 20px 0 7px;
+    color: #202b33;
+}
+
+#pageHeader p {
+    margin: 0;
+    font-size: 13px;
+}
+
+
+/* =========================
+   Main
+========================= */
+
+#main {
+    border-top: 2px solid #1c9cea;
+
+    background: #f8fafc;
+
+    display: grid;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap: 80px;
+
+    padding: 55px max(40px, calc((100% - 1050px) / 2));
+}
+
+
+/* =========================
+   Left Content
+========================= */
+
+#content {
+    max-width: 680px;
+}
+
+#intro {
+    margin-top: 0;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #e4e8eb;
+}
+
+
+/* =========================
+   Policies
+========================= */
+
+.policy {
+    margin-top: 40px;
+}
+
+.policy h3 {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: #202b33;
+}
+
+.policy p {
+    margin: 10px 0;
+}
+
+.policy strong {
+    color: #37434c;
+}
+
+
+/* =========================
+   Right Side
+========================= */
+
+#card1 {
+    padding-top: 10px;
+}
+
+
+/* Privacy Card */
+
+.card {
+    background-color: white;
+
+    padding: 25px;
+
+    margin-bottom: 30px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #202b33;
+}
+
+.card p {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 20px 0;
+}
+
+.card i {
+    font-size: 20px;
+    color: #078b91;
+}
+
+
+/* =========================
+   Help Box
+========================= */
+
+#helpBox {
+    background: white;
+
+    border: 1px solid #e3e8eb;
+
+    border-radius: 6px;
+
+    padding: 20px;
+}
+
+#helpBox h4 {
+    margin: 0 0 10px;
+
+    font-size: 13px;
+
+    color: black;
+
+    padding-bottom: 20px;
+}
+
+#helpBox h4 i {
+    font-size: 20px;
+    color: #078b91;
+    margin-right: 5px;
+}
+
+#helpBox p {
+    font-size: 11px;
+}
+
+#helpBox a {
+    font-size: 11px;
+
+    color: #078b91;
+
+    font-weight: bold;
+}
+
+#helpBox a i {
+    margin-right: 5px;
+}
+
+
+/* =========================
+   Download
+========================= */
+
+#downloadArea {
+    border-top: 1px solid #e4e8eb;
+
+    margin-top: 45px;
+
+    padding-top: 25px;
+}
+
+#downloadArea p {
+    font-size: 11px;
+}
+
+#pdf {
+    display: inline-block;
+
+    background: white;
+
+    border: 1px solid #d5dce0;
+
+    color: #33434b;
+
+    padding: 10px 15px;
+
+    border-radius: 5px;
+}
+
+#pdf:hover {
+    background: #078b91;
+
+    color: white;
+}
+
+#pdf i {
+    margin-right: 5px;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+#footer {
+    min-height: 100px;
+
+    padding: 35px max(40px, calc((100% - 1050px) / 2));
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-size: 10px;
+
+    background: white;
+}
+
+#footer span {
+    color: #777;
+
+    margin-left: 10px;
+}
+
+#footer a {
+    color: #777;
+
+    margin-left: 25px;
+}
+
+#footer a:hover {
+    color: #078b91;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 850px) {
+
+    #main {
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        padding: 40px 25px;
+    }
+
+    #content {
+        max-width: 100%;
+    }
+
+    #card1 {
+        max-width: 500px;
+    }
+
+    #footer {
+        flex-direction: column;
+
+        gap: 20px;
+
+        text-align: center;
+    }
+
+    #footer span {
+        display: block;
+
+        margin: 8px 0 0;
+    }
+
+    #footer a {
+        margin: 0 10px;
+    }
+}
