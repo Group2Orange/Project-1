@@ -1,319 +1,147 @@
-let container =
-    document.getElementById("policiesContainer");
+let container = document.getElementById("policiesContainer");
+let links = document.getElementById("policyLinks");
 
-let policyLinks =
-    document.getElementById("policyLinks");
-
-let editBtn =
-    document.getElementById("editBtn");
-
-let saveBtn =
-    document.getElementById("saveBtn");
-
-let cancelBtn =
-    document.getElementById("cancelBtn");
-
+let editBtn = document.getElementById("editBtn");
+let saveBtn = document.getElementById("saveBtn");
+let cancelBtn = document.getElementById("cancelBtn");
 
 let policies = [];
 
 
-
-/* =========================
-   Load Policies
-========================= */
-
+// جلب السياسات
 async function loadPolicies() {
 
-    try {
+    let saved = localStorage.getItem("teamspacePolicies");
 
-        /*
-            First check if HR already edited
-            policies in localStorage.
-        */
-
-        let savedPolicies =
-            localStorage.getItem("teamspacePolicies");
-
-
-        if (savedPolicies) {
-
-            policies =
-                JSON.parse(savedPolicies);
-
-        }
-
-        else {
-
-            /*
-                Read policies directly
-                from file.json
-            */
-
-            let response =
-                await fetch("../../Data/file.json");
-
-
-            let data =
-                await response.json();
-
-
-            policies =
-                data.policies;
-
-        }
-
-
-        displayPolicies();
-
+    if (saved) {
+        policies = JSON.parse(saved);
     }
 
-    catch (error) {
+    else {
+        let response = await fetch("../../Data/file.json");
+        let data = await response.json();
 
-        console.log("Error loading policies:", error);
-
-        container.innerHTML =
-            "<p>Unable to load policies.</p>";
-
+        policies = data.policies;
     }
 
+    showPolicies();
 }
 
 
-
-/* =========================
-   Display Policies
-========================= */
-
-function displayPolicies() {
+// عرض السياسات
+function showPolicies() {
 
     container.innerHTML = "";
-
-    policyLinks.innerHTML = "";
-
+    links.innerHTML = "";
 
     for (let i = 0; i < policies.length; i++) {
 
-
-        /* =====================
-           Left Policy Card
-        ===================== */
+        let p = policies[i];
 
         container.innerHTML += `
-
             <div class="policy"
-                 id="policy-${policies[i].id}"
-                 data-id="${policies[i].id}">
+                 id="policy-${p.id}"
+                 data-id="${p.id}">
 
-
-                <p class="policy-category editable">
-
-                    ${policies[i].category}
-
+                <p class="category editable">
+                    ${p.category}
                 </p>
 
-
-                <h3 class="policy-title editable">
-
-                    ${policies[i].id}.
-                    ${policies[i].title}
-
+                <h3 class="title editable">
+                    ${p.id}. ${p.title}
                 </h3>
 
-
-                <p class="policy-description editable">
-
-                    ${policies[i].description}
-
+                <p class="description editable">
+                    ${p.description}
                 </p>
 
-
             </div>
-
         `;
 
 
-
-        /* =====================
-           Right Link
-        ===================== */
-
-        policyLinks.innerHTML += `
-
-            <a href="#policy-${policies[i].id}"
-               class="policy-link">
-
-                <span>
-
-                    ${policies[i].id}
-
-                </span>
-
-
-                ${policies[i].title}
-
+        links.innerHTML += `
+            <a href="#policy-${p.id}" class="policy-link">
+                <span>${p.id}</span>
+                ${p.title}
             </a>
-
         `;
-
     }
-
 }
 
 
-
-/* =========================
-   Edit
-========================= */
-
+// Edit
 editBtn.onclick = function () {
 
-    let items =
-        document.querySelectorAll(".editable");
-
+    let items = document.querySelectorAll(".editable");
 
     for (let i = 0; i < items.length; i++) {
 
-        items[i].contentEditable = "true";
-
+        items[i].contentEditable = true;
         items[i].classList.add("editing");
-
     }
 
-
     editBtn.classList.add("hidden");
-
     saveBtn.classList.remove("hidden");
-
     cancelBtn.classList.remove("hidden");
-
 };
 
 
-
-/* =========================
-   Save
-========================= */
-
+// Save
 saveBtn.onclick = function () {
 
+    let cards = document.querySelectorAll(".policy");
 
-    let policyElements =
-        document.querySelectorAll(".policy");
-
-
-    let updatedPolicies = [];
+    policies = [];
 
 
+    for (let i = 0; i < cards.length; i++) {
 
-    for (let i = 0; i < policyElements.length; i++) {
+        let card = cards[i];
 
+        let title = card.querySelector(".title").innerText;
 
-        let policy =
-            policyElements[i];
-
-
-        let title =
-            policy
-            .querySelector(".policy-title")
-            .innerText;
+        title = title.replace(/^\d+\.\s*/, "");
 
 
-        /*
-            Remove policy number
-            Example:
+        policies.push({
 
-            1. Working Hours
+            id: Number(card.dataset.id),
 
-            becomes:
+            title: title,
 
-            Working Hours
-        */
+            category: card.querySelector(".category").innerText,
 
-        title =
-            title.replace(
-                /^[0-9]+\.\s*/,
-                ""
-            );
-
-
-        updatedPolicies.push({
-
-            id:
-                Number(policy.dataset.id),
-
-            title:
-                title,
-
-            category:
-                policy
-                .querySelector(".policy-category")
-                .innerText,
-
-            description:
-                policy
-                .querySelector(".policy-description")
-                .innerText
-
+            description: card.querySelector(".description").innerText
         });
-
     }
 
-
-
-    /*
-        Save HR changes
-        so Employee page can read them.
-    */
 
     localStorage.setItem(
         "teamspacePolicies",
-        JSON.stringify(updatedPolicies)
+        JSON.stringify(policies)
     );
 
 
-    policies =
-        updatedPolicies;
-
-
-    displayPolicies();
-
+    showPolicies();
 
     editBtn.classList.remove("hidden");
-
     saveBtn.classList.add("hidden");
-
     cancelBtn.classList.add("hidden");
 
-
-    alert(
-        "Policies updated successfully"
-    );
-
+    alert("Policies updated successfully");
 };
 
 
-
-/* =========================
-   Cancel
-========================= */
-
+// Cancel
 cancelBtn.onclick = function () {
 
-    displayPolicies();
-
+    showPolicies();
 
     editBtn.classList.remove("hidden");
-
     saveBtn.classList.add("hidden");
-
     cancelBtn.classList.add("hidden");
-
 };
 
 
-
-/* =========================
-   Start
-========================= */
-
+// تشغيل
 loadPolicies();
