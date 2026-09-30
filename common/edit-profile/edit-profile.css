@@ -34,14 +34,6 @@ body {
     padding: 24px 16px 40px;
 }
 
-/* ================= BREADCRUMB ================= */
-.breadcrumb {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    font-size: 12px;
-    color: var(--secondary);
-}
 
 /* ================= PAGE HEADER ================= */
 .page-header {
@@ -380,4 +372,51 @@ label span {
     margin: 0;
 }
 
-/* ================= FOOTER ================= */
+/* ================= RESPONSIVE DESIGN ================= */
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 16px 12px 24px;
+    }
+
+    
+    .col-md-6 {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .employment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .profile-header,
+    .profile-form {
+        padding: 16px;
+    }
+
+   
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .profile-info-actions {
+        align-items: center;
+    }
+
+    .form-buttons {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+    }
+}
