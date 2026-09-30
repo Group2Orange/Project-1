@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Company Policies</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+
+    <!-- Material Icons for Navbar -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Shared Navbar -->
+    <link rel="stylesheet" href="../../shared/shared.css">
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="policies.css">
+
+</head>
+
+<body>
+
+
+    <!-- Shared HR Navbar -->
+    <nav class="navbar" data-navbar="hr"></nav>
+
+
+    <!-- Header -->
+    <header id="pageHeader">
+
+        <a href="../../common/home/home.html" id="back">
+            ← Back to Home
+        </a>
+
+
+        <div id="headerTop">
+
+            <div>
+
+                <h1>Company Policies</h1>
+
+                <p>
+                    General workplace regulations,
+                    security, and company standards.
+                </p>
+
+            </div>
+
+
+            <!-- HR Controls -->
+            <div id="editControls">
+
+                <button id="editBtn">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Edit Policies
+
+                </button>
+
+
+                <button id="saveBtn" class="hidden">
+
+                    <i class="bi bi-check-lg"></i>
+
+                    Save
+
+                </button>
+
+
+                <button id="cancelBtn" class="hidden">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main -->
+    <main id="main">
+
+
+        <!-- Left Side -->
+        <section id="content">
+
+            <p id="intro">
+
+                Welcome to the TeamSpace HR policy directory.
+                Here you can view and manage all current company policies.
+
+            </p>
+
+
+            <!-- Policies from file.json -->
+            <div id="policiesContainer"></div>
+
+
+            <!-- Download -->
+            <div id="downloadArea">
+
+                <p>
+                    Need a physical copy?
+                    Download the complete handbook.
+                </p>
+
+                <a href="../../guides/Teammate-Handbook.pdf"
+                   download
+                   id="pdf">
+
+                    <i class="bi bi-download"></i>
+
+                    Download Policy File
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Right Side -->
+        <aside id="rightSide">
+
+
+            <!-- Policy Links -->
+            <div id="policyLinksCard">
+
+                <h3>
+
+                    <i class="bi bi-file-earmark-text"></i>
+
+                    Company Policies
+
+                </h3>
+
+
+                <!-- Links created by JavaScript -->
+                <div id="policyLinks"></div>
+
+            </div>
+
+
+            <!-- Help -->
+            <div id="helpBox">
+
+                <h4>
+
+                    <i class="bi bi-person-badge"></i>
+
+                    Questions about these policies?
+
+                </h4>
+
+                <p>
+
+                    Contact HR if you have questions
+                    about company policies.
+
+                </p>
+
+
+                <a href="mailto:people-team@teamspace.hr">
+
+                    <i class="bi bi-envelope"></i>
+
+                    people-team@teamspace.hr
+
+                </a>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer id="footer">
+
+        <div>
+
+            <b>TeamSpace HR</b>
+
+            <span>
+                © 2025 TeamSpace HR Systems Inc.
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <a href="#">Privacy Policy</a>
+
+            <a href="#">Terms of Service</a>
+
+            <a href="#">Help & Support</a>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Shared Navbar -->
+    <script src="../../shared/navbar.js"></script>
+
+    <!-- Policies JS -->
+    <script src="policies.js"></script>
+
+
+</body>
+
+</html>
