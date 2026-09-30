@@ -133,7 +133,7 @@ button {
 
 
 
-.navbar-right {
+.top-navbar .navbar-right {
     margin-left: auto;
 
     display: flex;
@@ -172,13 +172,13 @@ button {
 }
 
 
-.navbar-user {
+.top-navbar .navbar-user {
     display: flex;
     align-items: center;
     gap: 9px;
 }
 
-.navbar-avatar {
+.top-navbar .navbar-avatar {
     width: 32px;
     height: 32px;
 
@@ -619,7 +619,7 @@ button {
     font-weight: 600;
 }
 
-.employment-badge span {
+.employment-badge > span:first-child {
     width: 5px;
     height: 5px;
 
