@@ -249,7 +249,8 @@ button {
 
 
 .page {
-    min-height: calc(100vh - 135px);
+    flex: 1;
+    min-height: 0;
     padding: 30px 0 70px;
 }
 
@@ -473,44 +474,6 @@ button {
     color: #c6ced7;
 }
 
-
-.clearance-card {
-    padding: 10px 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    border: 1px solid #dce4ea;
-    border-radius: 8px;
-
-    background: #f8fafc;
-}
-
-.clearance-icon {
-    color: var(--primary);
-    font-size: 16px;
-}
-
-.clearance-card > div:last-child {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    text-align: center;
-}
-
-.clearance-card span {
-    font-size: 8px;
-    letter-spacing: 0.3px;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-.clearance-card strong {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--dark);
-}
 
 
 .card-divider {
