@@ -1,0 +1,50 @@
+<!--
+  THE HR NAVBAR: shown on every screen in hr/ and common/ (except login).
+  Edit it like normal HTML. Its look is in shared/shared.css (the "Navbar" part).
+  Links start with ../../ because every screen is two folders deep, the same as linking from your own screen.
+  The link of the screen you are on gets underlined by itself.
+  The employee navbar is in navbar-employee.html: if you change the logo or the right side here, change it there too.
+-->
+<nav class="navbar" aria-label="Main navigation">
+
+  <!-- Left: logo. The icon name comes from https://fonts.google.com/icons -->
+  <a class="navbar-brand" href="../../common/home/home.html">
+    <span class="navbar-logo"><span class="material-symbols-outlined" aria-hidden="true">corporate_fare</span></span>
+    TeamSpace HR
+  </a>
+
+  <button class="navbar-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="navbar-links-hr navbar-actions-hr">
+    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+  </button>
+
+  <!-- Middle: the links, in order -->
+  <div class="navbar-links" id="navbar-links-hr">
+    <a href="../../common/home/home.html">Home</a>
+    <a href="../../hr/employees/employees.html">Employees</a>
+    <a href="../../hr/tasks/tasks.html">Tasks</a>
+    <a href="../../hr/requests/requests.html">Requests</a>
+    <a href="../../hr/feedback/feedback.html">Feedback</a>
+    <a href="../../common/policies/policies.html">Policies</a>
+    <a href="../../common/about/about.html">About</a>
+    <a href="../../common/contact/contact.html">Contact</a>
+  </div>
+
+  <!-- Right: user, logout -->
+  <div class="navbar-right" id="navbar-actions-hr">
+    <a class="navbar-user" href="../../common/profile/profile.html" title="My profile">
+      <!-- Initials for now. For a photo, put it in shared/images/ and write:
+           <span class="navbar-avatar"><img src="../../shared/images/sarah.jpg" alt=""></span> -->
+      <span class="navbar-avatar">SJ</span>
+      <span class="navbar-user-text">
+        <span class="navbar-user-name">Sarah Jenkins</span>
+        <span class="navbar-user-role">HR Lead</span>
+      </span>
+    </a>
+
+    <a class="navbar-logout" href="../../common/login/login.html" title="Logout" aria-label="Logout">
+      <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+      <span class="navbar-logout-text">Logout</span>
+    </a>
+  </div>
+
+</nav>

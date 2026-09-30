@@ -14,6 +14,8 @@ For now it is **wireframes and mockups in plain HTML + CSS**. JavaScript comes l
 2. Right-click `index.html` and choose **Open with Live Server**.
 3. Click any screen in the list.
 
+Always open screens with Live Server. If you double-click a screen file instead, the shared navbar doesn't load.
+
 Fonts and icons load from the internet (Google Fonts), so you need to be online.
 
 ## The folder map (read this first)
@@ -23,6 +25,12 @@ Project-1/
 │
 ├── index.html              Home page: a list of links to every screen
 ├── README.md               This file
+│
+├── shared/                 SHARED BY EVERY SCREEN (see shared/README.md)
+│   ├── shared.css          team colors, fonts, navbar look
+│   ├── navbar-hr.html      the HR navbar (plain HTML)
+│   ├── navbar-employee.html  the employee navbar (plain HTML)
+│   └── navbar.js           puts the right navbar into each screen
 │
 ├── common/                 SCREENS USED BY EVERYBODY (built once)
 │   ├── login/              login.html + login.css + login.js   <- one folder = one screen
@@ -55,7 +63,7 @@ Project-1/
     └── GitHub-Team-Guide.pdf   for the team leader: GitHub setup and workflow
 ```
 
-Every screen is a **standalone, empty skeleton**: the `.html` only has the basic page code, the font and icon links, and links to its own `.css` and `.js`. The `.css` and `.js` files are empty. Each teammate fills in their own screens.
+Every screen starts as an **empty skeleton**: the `.html` has the basic page code, the font and icon links, the shared files (colors, fonts, navbar) and links to its own `.css` and `.js`. The `.css` and `.js` files are empty. Each teammate fills in their own screens.
 
 ## The 19 screens
 
@@ -83,33 +91,14 @@ Every screen is a **standalone, empty skeleton**: the `.html` only has the basic
 
 ## What is shared
 
-**Nothing is shared between screens.** Each screen is standalone, so nobody has to learn how to link shared files.
+The `shared/` folder holds what every screen uses. **Full guide: [`shared/README.md`](shared/README.md).**
 
-- **Colors, fonts and sizes:** everybody takes them from the Figma design. The team's main values are listed in `guides/design-links.md`.
-- **The navbar:** each teammate builds it from the Figma design in their own screens (right after `<body>`).
-  - Screens in `hr/` show the **HR navbar** (more links).
-  - Screens in `employee/` show the **employee navbar**.
-  - Screens in `common/` show the HR navbar for now. The `login` screen has no navbar.
-  - The list of links for each navbar is in `guides/design-links.md`.
+- **Colors and fonts:** `shared/shared.css` has the team colors as variables (from the Calm Clarity HR design system). Use them in your CSS, e.g. `color: var(--color-primary);`. It also sets the fonts, so your CSS doesn't need to.
+- **The navbar:** it's already on every screen, so don't build your own.
+  - Screens in `hr/` and `common/` show the **HR navbar**. Screens in `employee/` show the **employee navbar**. The `login` screen has no navbar.
+  - To change it, the team leader edits `shared/navbar-hr.html` / `shared/navbar-employee.html` (what it shows) and `shared/shared.css` (how it looks).
 - **Linking to another screen:** go up two folders, then into the group and screen folder:
   `<a href="../../hr/employees/employees.html">Employees</a>`
-
-Later in the course we will learn how to write the navbar **once** and reuse it on every screen. Until then everyone builds their own copy.
-
-## Start your CSS with this
-
-Every screen's CSS starts empty. Paste this at the top so the fonts are applied, then continue with the design:
-
-```css
-body {
-  margin: 0;
-  font-family: "Public Sans", sans-serif;
-}
-
-h1, h2, h3 {
-  font-family: "Space Grotesk", sans-serif;
-}
-```
 
 ## The one rule to remember
 
@@ -125,8 +114,14 @@ Inside `employee/new-request/new-request.html`:
 ```html
 <link rel="stylesheet" href="https://fonts.googleapis.com/...">   <!-- fonts (Google, needs internet) -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/...">   <!-- icons (Google, needs internet) -->
+<link rel="stylesheet" href="../../shared/shared.css">            <!-- shared colors, fonts, navbar look -->
 <link rel="stylesheet" href="new-request.css">                    <!-- this screen's look -->
+...
+<nav class="navbar" data-navbar="employee"></nav>                 <!-- the navbar goes here -->
 
+<!-- this screen's content goes here -->
+
+<script src="../../shared/navbar.js"></script>                    <!-- loads the navbar -->
 <script src="new-request.js"></script>                            <!-- this screen's code -->
 ```
 

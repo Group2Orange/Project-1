@@ -1,0 +1,244 @@
+/*
+  Shared look for every screen.
+
+  Link it in a screen's <head>, BEFORE the screen's own CSS:
+    <link rel="stylesheet" href="../../shared/shared.css">
+
+  Anything written here applies to every screen that links this file.
+  A screen's own CSS comes after it, so a screen can still override anything here.
+*/
+
+
+/* ---------- Team colors (from the "Calm Clarity HR" design system) ----------
+   Use them in any screen's CSS like this:  color: var(--color-primary);  */
+:root {
+  --color-primary: #0e7c86;        /* Primary (teal): logo, highlights */
+  --color-primary-dark: #00626a;   /* Darker teal: main buttons, active link, hover */
+  --color-primary-light: #d4eced;  /* Light teal: soft backgrounds, rings */
+  --color-secondary: #4c6079;      /* Secondary (slate): navbar links, icons, second-level text */
+  --color-tertiary: #059669;       /* Tertiary (green): success, approved, online */
+  --color-danger: #ba1a1a;         /* Red: delete, errors, rejected */
+
+  --color-text: #14181c;           /* Neutral: main text */
+  --color-text-muted: #4c6079;     /* Muted text (same as secondary) */
+
+  --color-page: #f6f9fe;           /* Page background */
+  --color-card: #ffffff;           /* Card / box background, navbar */
+  --color-surface: #e8eef9;        /* Soft gray-blue boxes, secondary buttons, search box */
+  --color-border: #dde3ed;         /* Borders and divider lines */
+
+  --font-heading: "Space Grotesk", sans-serif;   /* Headline */
+  --font-text: "Public Sans", sans-serif;        /* Body and labels */
+}
+
+
+/* ---------- Base (fonts and page) ---------- */
+body {
+  margin: 0;
+  font-family: var(--font-text);
+  color: var(--color-text);
+  background: var(--color-page);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+}
+
+
+/* ---------- Navbar ---------- */
+.navbar, .navbar * { box-sizing: border-box; }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-height: 64px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar-logo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: white;
+}
+.navbar-logo .material-symbols-outlined { font-size: 23px; }
+
+.navbar-links {
+  display: flex;
+  align-self: stretch;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  gap: 24px;
+}
+.navbar-links a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 48px;
+  color: var(--color-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.navbar-links a:hover, .navbar-links a.active { color: var(--color-primary-dark); }
+.navbar-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-primary);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 16px;
+  margin-left: auto;
+}
+.navbar-logout:hover { background: var(--color-surface); }
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 16px;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.navbar-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+.navbar-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.navbar-avatar::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: var(--color-tertiary);
+}
+.navbar-user-text { display: flex; flex-direction: column; gap: 2px; line-height: 1.3; white-space: nowrap; }
+.navbar-user-name { font-size: 12px; font-weight: 500; }
+.navbar-user-role { font-size: 11px; color: var(--color-secondary); }
+.navbar-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-secondary);
+  font-size: 12px;
+  text-decoration: none;
+}
+.navbar-logout .material-symbols-outlined { font-size: 17px; }
+.navbar a:focus-visible, .navbar button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Keep smaller laptops on one row with tighter spacing. */
+@media (min-width: 1101px) and (max-width: 1280px) {
+  .navbar { gap: 18px; padding-inline: 22px; }
+  .navbar-brand { font-size: 18px; gap: 10px; }
+  .navbar-links { gap: 18px; }
+  .navbar-right { gap: 12px; }
+  .navbar-user { padding-left: 12px; }
+}
+/* Collapsed navigation opens in the page flow, so it never covers the content. */
+.navbar-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+}
+.navbar-toggle:hover { background: var(--color-surface); }
+
+@media (max-width: 1100px) {
+  .navbar { flex-wrap: wrap; padding: 10px 16px; gap: 0 12px; }
+  .navbar-brand { font-size: 18px; gap: 8px; }
+  .navbar-logo { width: 32px; height: 32px; }
+  .navbar-toggle { display: inline-flex; }
+  .navbar-links, .navbar-right { display: none; }
+  .navbar.is-open .navbar-links {
+    display: flex;
+    order: 3;
+    flex-direction: column;
+    flex-basis: 100%;
+    gap: 4px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .navbar-links a { min-height: 44px; padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+  .navbar-links a:hover, .navbar-links a.active { background: var(--color-surface); }
+  .navbar-links a.active::after { top: 10px; bottom: 10px; left: 0; right: auto; width: 3px; height: auto; }
+  .navbar.is-open .navbar-right {
+    display: flex;
+    order: 4;
+    width: 100%;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  .navbar-user { min-height: 44px; padding-left: 10px; }
+  .navbar-logout { min-height: 44px; margin-left: auto; padding: 8px; }
+}
+@media (max-width: 360px) {
+  .navbar { padding-inline: 10px; }
+  .navbar.is-open .navbar-right { gap: 6px; }
+  .navbar-user { gap: 6px; padding-left: 6px; }
+}
