@@ -179,3 +179,18 @@ Browsers only allow a page to load another file when the page comes from a serve
 Like `index.html` and `guides/`, the files in `shared/` affect every screen.
 Change them only through a pull request that the team leader reviews.
 If you need something new in here, ask the team leader.
+
+
+## Shared footer
+
+`footer.html` contains the compact footer for all non-home screens (including login).
+`footer.css` contains its responsive styles and the opt-in `has-footer` page layout.
+`footer.js` loads it through Live Server, like the navbar loader.
+Each screen links `footer.css` after `shared.css`, adds `class="has-footer"` to its body,
+and includes `<footer class="site-footer" data-footer></footer>` followed by
+`<script src="../../shared/footer.js"></script>` after the page content.
+
+Home uses its own footer markup in `common/home/home.html` and styles in `home.css`.
+It shares the base footer styles but does not load `footer.js`. Its contact details and
+map location are samples from the design; replace them with real details before publishing.
+The embedded map requires internet access. System status is not connected to monitoring.
