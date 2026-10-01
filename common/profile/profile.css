@@ -133,7 +133,7 @@ button {
 
 
 
-.navbar-right {
+.top-navbar .navbar-right {
     margin-left: auto;
 
     display: flex;
@@ -172,13 +172,13 @@ button {
 }
 
 
-.navbar-user {
+.top-navbar .navbar-user {
     display: flex;
     align-items: center;
     gap: 9px;
 }
 
-.navbar-avatar {
+.top-navbar .navbar-avatar {
     width: 32px;
     height: 32px;
 
@@ -475,44 +475,6 @@ button {
 }
 
 
-.clearance-card {
-    padding: 10px 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    border: 1px solid #dce4ea;
-    border-radius: 8px;
-
-    background: #f8fafc;
-}
-
-.clearance-icon {
-    color: var(--primary);
-    font-size: 16px;
-}
-
-.clearance-card > div:last-child {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    text-align: center;
-}
-
-.clearance-card span {
-    font-size: 8px;
-    letter-spacing: 0.3px;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-.clearance-card strong {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--dark);
-}
-
 
 .card-divider {
     height: 1px;
@@ -620,7 +582,7 @@ button {
     font-weight: 600;
 }
 
-.employment-badge span {
+.employment-badge > span:first-child {
     width: 5px;
     height: 5px;
 

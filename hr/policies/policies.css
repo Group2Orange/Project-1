@@ -1,0 +1,521 @@
+/* =========================
+   General
+========================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Public Sans", Arial, sans-serif;
+    color: #263238;
+    background-color: white;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+#pageHeader {
+    max-width: 1050px;
+    margin: auto;
+    padding: 45px 20px 35px;
+}
+
+#back {
+    color: #078b91;
+    font-size: 13px;
+}
+
+#back:hover {
+    text-decoration: underline;
+}
+
+#headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+#pageHeader h1 {
+    margin: 20px 0 8px;
+    font-size: 32px;
+    color: #202b33;
+}
+
+#pageHeader p {
+    margin: 0;
+    color: #777;
+}
+
+
+/* =========================
+   Main
+========================= */
+
+#main {
+    display: grid;
+
+    flex: 1;
+    align-content: start;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap: 70px;
+
+    padding: 50px max(
+        40px,
+        calc((100% - 1050px) / 2)
+    );
+
+    background-color: #f8fafc;
+
+    border-top: 2px solid #1c9cea;
+}
+
+
+/* =========================
+   Left Side
+========================= */
+
+#content {
+    width: 100%;
+}
+
+#intro {
+    margin-top: 0;
+
+    padding-bottom: 25px;
+
+    color: #65717c;
+
+    line-height: 1.7;
+
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* =========================
+   Policy Cards
+========================= */
+
+.policy {
+    background-color: white;
+
+    margin-top: 30px;
+
+    padding: 25px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    scroll-margin-top: 100px;
+
+    transition: 0.3s;
+}
+
+.policy:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+.policy-category {
+    margin: 0 0 10px;
+
+    color: #078b91;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.policy-title {
+    margin: 0 0 15px;
+
+    color: #263238;
+
+    font-size: 18px;
+}
+
+
+.policy-description {
+    margin-bottom: 0;
+
+    color: #65717c;
+
+    line-height: 1.7;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   Right Side
+========================= */
+
+#rightSide {
+    width: 100%;
+}
+
+
+/* =========================
+   Policies Links Card
+========================= */
+
+#policyLinksCard {
+    background-color: white;
+
+    padding: 25px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    margin-bottom: 30px;
+
+
+    top: 90px;
+}
+
+
+#policyLinksCard h3 {
+    margin-top: 0;
+
+    margin-bottom: 20px;
+
+    color: #263238;
+
+    font-size: 17px;
+}
+
+
+#policyLinksCard h3 i {
+    color: #078b91;
+
+    margin-right: 7px;
+}
+
+
+#policyLinks {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.policy-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    color: #555;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    transition: 0.3s;
+}
+
+
+.policy-link span {
+    min-width: 25px;
+
+    height: 25px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background-color: #e8f7f7;
+
+    color: #078b91;
+
+    border-radius: 50%;
+
+    font-weight: bold;
+}
+
+
+.policy-link:hover {
+    background-color: #e8f7f7;
+
+    color: #078b91;
+
+    padding-left: 15px;
+}
+
+
+/* =========================
+   Help Box
+========================= */
+
+#helpBox {
+    background-color: white;
+
+    padding: 20px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+}
+
+
+#helpBox h4 {
+    margin-top: 0;
+
+    color: #263238;
+}
+
+
+#helpBox h4 i {
+    color: #078b91;
+
+    margin-right: 5px;
+}
+
+
+#helpBox p {
+    color: #65717c;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+#helpBox a {
+    color: #078b91;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+#helpBox a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   Download
+========================= */
+
+#downloadArea {
+    margin-top: 40px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #ddd;
+}
+
+
+#downloadArea p {
+    color: #65717c;
+
+    font-size: 12px;
+}
+
+
+#pdf {
+    display: inline-block;
+
+    padding: 10px 15px;
+
+    background-color: white;
+
+    color: #263238;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    transition: 0.3s;
+}
+
+
+#pdf:hover {
+    background-color: #078b91;
+
+    color: white;
+}
+
+
+/* =========================
+   HR Buttons
+========================= */
+
+#editControls {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+#editBtn,
+#saveBtn,
+#cancelBtn {
+    padding: 10px 18px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 14px;
+}
+
+
+#editBtn,
+#saveBtn {
+    background-color: #078b91;
+
+    color: white;
+
+    border: none;
+}
+
+
+#editBtn:hover,
+#saveBtn:hover {
+    background-color: #056d72;
+}
+
+
+#cancelBtn {
+    background-color: white;
+
+    color: #333;
+
+    border: 1px solid #ccc;
+}
+
+
+#cancelBtn:hover {
+    background-color: #eee;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================
+   Edit Mode
+========================= */
+
+.editing {
+    padding: 8px;
+
+    background-color: #fff;
+
+    border: 1px dashed #078b91;
+
+    border-radius: 5px;
+
+    outline: none;
+}
+
+
+.editing:focus {
+    border: 2px solid #078b91;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+/* #footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 35px max(
+        40px,
+        calc((100% - 1050px) / 2)
+    );
+
+    background-color: white;
+
+    font-size: 11px;
+}
+
+
+#footer span {
+    margin-left: 10px;
+
+    color: #777;
+}
+
+
+#footer a {
+    margin-left: 20px;
+
+    color: #777;
+}
+
+
+#footer a:hover {
+    color: #078b91;
+} */
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 850px) {
+
+    #main {
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        padding: 40px 25px;
+    }
+
+
+    #headerTop {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    #policyLinksCard {
+        position: static;
+    }
+
+
+    /* #footer {
+        flex-direction: column;
+
+        gap: 20px;
+
+        text-align: center;
+    } */
+
+}
