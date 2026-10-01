@@ -2156,3 +2156,29 @@ button:focus-visible,
     scroll-behavior: auto;
   }
 }
+
+
+/* Mobile */
+@media (max-width: 640px) {
+  .hero .hero-content {
+    width: 100%;
+
+    padding-top: 55px;
+    padding-right: 22px;
+    padding-bottom: 45px;
+    padding-left: 22px;
+  }
+
+  .hero .hero-copy {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    border-radius: 0;
+
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}

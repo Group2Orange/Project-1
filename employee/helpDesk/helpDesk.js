@@ -47,15 +47,6 @@ let submitBtn =
 let message =
     document.getElementById("message");
 
-let searchInput =
-    document.getElementById("searchInput");
-
-let searchBtn =
-    document.getElementById("searchBtn");
-
-let searchMessage =
-    document.getElementById("searchMessage");
-
 let answerLinks =
     document.querySelectorAll(".answer-link");
 
@@ -783,88 +774,6 @@ clearTicketsBtn.onclick = function () {
         showTickets();
 
         updateStats();
-
-    }
-
-};
-
-
-
-/* =========================
-   Search
-========================= */
-
-searchBtn.onclick = function () {
-
-
-    let searchText =
-        searchInput.value
-        .toLowerCase()
-        .trim();
-
-
-    let found = 0;
-
-
-
-    for (let i = 0; i < answerLinks.length; i++) {
-
-
-        let text =
-            answerLinks[i]
-            .innerText
-            .toLowerCase();
-
-
-        if (
-            searchText == "" ||
-            text.includes(searchText)
-        ) {
-
-            answerLinks[i].style.display =
-                "flex";
-
-
-            found++;
-
-        }
-
-        else {
-
-            answerLinks[i].style.display =
-                "none";
-
-        }
-
-    }
-
-
-
-    if (searchText == "") {
-
-        searchMessage.innerHTML = "";
-
-    }
-
-    else {
-
-        searchMessage.innerHTML =
-            found +
-            " result(s) found";
-
-    }
-
-};
-
-
-
-/* Search with Enter */
-
-searchInput.onkeydown = function (event) {
-
-    if (event.key == "Enter") {
-
-        searchBtn.click();
 
     }
 
