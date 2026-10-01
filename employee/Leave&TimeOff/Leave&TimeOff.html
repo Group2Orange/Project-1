@@ -20,6 +20,7 @@
       <!-- ========== SIDEBAR ========== -->
       <aside class="leave-sidebar">
 
+        <!-- Employee Card -->
         <div class="employee-card">
           <div class="employee-avatar" id="sidebarAvatar">MC</div>
           <div class="employee-meta">
@@ -42,6 +43,7 @@
           </div>
         </div>
 
+        <!-- Navigation Menu -->
         <nav class="sidebar-menu">
           <h4 class="sidebar-section-title">EMPLOYEE WORKSPACE</h4>
 
@@ -51,6 +53,11 @@
           </a>
 
           <a href="#" class="sidebar-link">
+            <span class="material-symbols-outlined">badge</span>
+            My Details
+          </a>
+
+          <a href="/employee/my-tasks/my-tasks.html" class="sidebar-link">
             <span class="material-symbols-outlined">task_alt</span>
             My Tasks
             <span class="badge">8</span>
@@ -67,6 +74,7 @@
           </a>
         </nav>
 
+        <!-- Guidelines Card -->
         <div class="guidelines-card">
           <div class="guidelines-header">
             <span class="material-symbols-outlined">verified_user</span>
@@ -95,6 +103,7 @@
       <!-- ========== MAIN ========== -->
       <section class="leave-main">
 
+        <!-- Header -->
         <header class="leave-header">
           <div>
             <h1>Leave &amp; Time Off</h1>
@@ -110,6 +119,7 @@
         <!-- Balance Cards -->
         <div class="balance-cards">
 
+          <!-- Annual PTO -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Annual PTO</span>
@@ -125,6 +135,7 @@
             <div class="balance-footer" id="annualPtoFooter">6 days accrued / taken</div>
           </div>
 
+          <!-- Sick Leave -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Sick &amp; Medical</span>
@@ -140,6 +151,7 @@
             <div class="balance-footer" id="sickFooter">2 days used this fiscal year</div>
           </div>
 
+          <!-- Floating Holidays -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Floating Holidays</span>
@@ -155,6 +167,7 @@
             <div class="balance-footer" id="floatingFooter">Expires Mar 31, 2026</div>
           </div>
 
+          <!-- Unpaid Leaves -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Unpaid Leaves</span>
@@ -182,12 +195,12 @@
 
           <div class="search-box">
             <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" placeholder="Search requests by date, type, reason...">
+            <input type="text" id="searchInput" placeholder="Search by leave type (Annual, Sick, Floating, Unpaid)...">
           </div>
         </div>
 
         <!-- Upcoming & Active -->
-        <section class="section">
+        <section class="section" id="upcomingSection">
           <div class="section-title">
             <span class="material-symbols-outlined">event_upcoming</span>
             <h2>Upcoming &amp; Active Time Off</h2>
@@ -270,7 +283,7 @@
         </section>
 
         <!-- History -->
-        <section class="section">
+        <section class="section" id="historySection">
           <div class="section-title">
             <span class="material-symbols-outlined">history</span>
             <h2>Recent Leave History &amp; Records</h2>
@@ -347,13 +360,9 @@
             </table>
           </div>
 
+          <!-- Pagination (بدون أزرار) -->
           <div class="pagination">
             <span id="paginationInfo">Showing 4 of 6 total leave events</span>
-            <div class="pagination-buttons">
-              <button id="btnPrevPage" disabled>Previous</button>
-              <span id="pageNumber">1</span>
-              <button id="btnNextPage">Next</button>
-            </div>
           </div>
         </section>
 
@@ -362,7 +371,7 @@
   </main>
 
 
-  <!-- ========== MODAL ========== -->
+  <!-- ========== MODAL: Request Time Off ========== -->
   <div class="modal-overlay" id="requestModal">
     <div class="modal">
 
@@ -449,8 +458,6 @@
 
     </div>
   </div>
-
-
 
 
 
