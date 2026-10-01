@@ -117,6 +117,7 @@ function loadTasks() {
 
 function saveTasks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  window.dispatchEvent(new Event('teamspace:tasks-changed'));
 }
 
 function getTask(id) {
@@ -333,7 +334,8 @@ function updateStats() {
 
   document.getElementById("totalActiveCount").textContent = active.length;
   document.getElementById("completedCount").textContent = completed.length;
-  document.getElementById("sidebarTaskCount").textContent = active.length;
+  const sidebarTaskCount = document.getElementById("sidebarTaskCount");
+  if (sidebarTaskCount) sidebarTaskCount.textContent = active.length;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -356,11 +358,13 @@ function updateStats() {
     ? Math.round((completed.length / tasks.length) * 100)
     : 0;
 
-  document.getElementById("weeklyProgressText").textContent =
-    `${progress}%`;
+  const progressText = document.getElementById("weeklyProgressText");
+  if (progressText) progressText.textContent = `${progress}%`;
 
-  document.getElementById("weeklyProgressBar").style.width =
-    `${progress}%`;
+  const progressBar = document.getElementById("weeklyProgressBar");
+  if (progressBar) progressBar.style.width = `${progress}%`;
+  const progressMeter = document.querySelector('.employee-sidebar [role="progressbar"]');
+  if (progressMeter) progressMeter.setAttribute('aria-valuenow', String(progress));
 }
 
 function applyFilters() {
