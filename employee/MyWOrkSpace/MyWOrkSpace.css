@@ -127,7 +127,10 @@
 .workspace-section-count { flex: 0 0 auto; color: #718199; font-size: 10px; }
 
 .workspace-task-list { display: grid; gap: 0; }
-.workspace-task { display: flex; align-items: flex-start; gap: 10px; padding: 13px 0; border-top: 1px solid #edf0f4; }
+.workspace-task { display: flex; align-items: flex-start; gap: 10px; padding: 13px 4px; border-top: 1px solid #edf0f4; border-radius: 5px; color: inherit; text-decoration: none; }
+.workspace-task:hover { background: #f5fafb; }
+.workspace-task:hover .workspace-task-info strong { color: var(--color-primary-dark); }
+.workspace-task:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
 .workspace-task-marker { display: grid; place-items: center; flex: 0 0 19px; width: 19px; height: 19px; margin-top: 1px; border: 1px solid #b7c9d9; border-radius: 5px; color: var(--color-primary); }
 .workspace-task-marker .material-symbols-outlined { font-size: 14px; }
 .workspace-task-info { flex: 1; min-width: 0; }
