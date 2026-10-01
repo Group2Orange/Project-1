@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="Leave&TimeOff.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="employee"></nav>
@@ -20,12 +21,11 @@
       <!-- ========== SIDEBAR ========== -->
       <aside class="leave-sidebar">
 
-        <!-- Employee Card -->
         <div class="employee-card">
-          <div class="employee-avatar" id="sidebarAvatar">MC</div>
+          <div class="employee-avatar" id="sidebarAvatar">--</div>
           <div class="employee-meta">
-            <h3 id="sidebarName">Marcus Chen</h3>
-            <p id="sidebarDepartment">Engineering Dept</p>
+            <h3 id="sidebarName">Loading...</h3>
+            <p id="sidebarDepartment">Loading...</p>
           </div>
 
           <div class="weekly-progress">
@@ -43,7 +43,6 @@
           </div>
         </div>
 
-        <!-- Navigation Menu -->
         <nav class="sidebar-menu">
           <h4 class="sidebar-section-title">EMPLOYEE WORKSPACE</h4>
 
@@ -57,7 +56,7 @@
             My Details
           </a>
 
-          <a href="/employee/my-tasks/my-tasks.html" class="sidebar-link">
+          <a href="#" class="sidebar-link">
             <span class="material-symbols-outlined">task_alt</span>
             My Tasks
             <span class="badge">8</span>
@@ -74,7 +73,6 @@
           </a>
         </nav>
 
-        <!-- Guidelines Card -->
         <div class="guidelines-card">
           <div class="guidelines-header">
             <span class="material-symbols-outlined">verified_user</span>
@@ -103,7 +101,6 @@
       <!-- ========== MAIN ========== -->
       <section class="leave-main">
 
-        <!-- Header -->
         <header class="leave-header">
           <div>
             <h1>Leave &amp; Time Off</h1>
@@ -119,55 +116,51 @@
         <!-- Balance Cards -->
         <div class="balance-cards">
 
-          <!-- Annual PTO -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Annual PTO</span>
               <span class="material-symbols-outlined balance-icon">event_available</span>
             </div>
             <div class="balance-value">
-              <strong id="annualPtoUsed">14</strong>
-              <span>/ <span id="annualPtoTotal">20</span> days</span>
+              <strong id="annualPtoUsed">0</strong>
+              <span>/ <span id="annualPtoTotal">0</span> days</span>
             </div>
             <div class="progress-bar thin">
-              <div class="progress-fill" id="annualPtoFill" style="width: 70%;"></div>
+              <div class="progress-fill" id="annualPtoFill" style="width: 0%;"></div>
             </div>
-            <div class="balance-footer" id="annualPtoFooter">6 days accrued / taken</div>
+            <div class="balance-footer" id="annualPtoFooter">—</div>
           </div>
 
-          <!-- Sick Leave -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Sick &amp; Medical</span>
               <span class="material-symbols-outlined balance-icon">medical_services</span>
             </div>
             <div class="balance-value">
-              <strong id="sickUsed">6</strong>
-              <span>/ <span id="sickTotal">8</span> days</span>
+              <strong id="sickUsed">0</strong>
+              <span>/ <span id="sickTotal">0</span> days</span>
             </div>
             <div class="progress-bar thin">
-              <div class="progress-fill" id="sickFill" style="width: 75%;"></div>
+              <div class="progress-fill" id="sickFill" style="width: 0%;"></div>
             </div>
-            <div class="balance-footer" id="sickFooter">2 days used this fiscal year</div>
+            <div class="balance-footer" id="sickFooter">—</div>
           </div>
 
-          <!-- Floating Holidays -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Floating Holidays</span>
               <span class="material-symbols-outlined balance-icon">celebration</span>
             </div>
             <div class="balance-value">
-              <strong id="floatingUsed">2</strong>
-              <span>/ <span id="floatingTotal">3</span> days</span>
+              <strong id="floatingUsed">0</strong>
+              <span>/ <span id="floatingTotal">0</span> days</span>
             </div>
             <div class="progress-bar thin">
-              <div class="progress-fill" id="floatingFill" style="width: 66%;"></div>
+              <div class="progress-fill" id="floatingFill" style="width: 0%;"></div>
             </div>
-            <div class="balance-footer" id="floatingFooter">Expires Mar 31, 2026</div>
+            <div class="balance-footer" id="floatingFooter">—</div>
           </div>
 
-          <!-- Unpaid Leaves -->
           <div class="balance-card">
             <div class="balance-card-header">
               <span class="balance-label">Unpaid Leaves</span>
@@ -175,12 +168,12 @@
             </div>
             <div class="balance-value">
               <strong id="unpaidUsed">0</strong>
-              <span>/ <span id="unpaidTotal">30</span> days</span>
+              <span>/ <span id="unpaidTotal">0</span> days</span>
             </div>
             <div class="progress-bar thin">
               <div class="progress-fill" id="unpaidFill" style="width: 0%;"></div>
             </div>
-            <div class="balance-footer" id="unpaidFooter">Discretionary / unpaid days</div>
+            <div class="balance-footer" id="unpaidFooter">—</div>
           </div>
 
         </div>
@@ -188,14 +181,14 @@
         <!-- Tabs + Search -->
         <div class="tabs-bar">
           <div class="tabs">
-            <button class="tab active" id="tabAll">All Requests (<span id="tabCountAll">5</span>)</button>
-            <button class="tab" id="tabUpcoming">Upcoming &amp; Approved (<span id="tabCountUpcoming">3</span>)</button>
-            <button class="tab" id="tabHistory">Past History (<span id="tabCountHistory">2</span>)</button>
+            <button class="tab active" id="tabAll">All Requests (<span id="tabCountAll">0</span>)</button>
+            <button class="tab" id="tabUpcoming">Upcoming &amp; Approved (<span id="tabCountUpcoming">0</span>)</button>
+            <button class="tab" id="tabHistory">Past History (<span id="tabCountHistory">0</span>)</button>
           </div>
 
           <div class="search-box">
             <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" placeholder="Search by leave type (Annual, Sick, Floating, Unpaid)...">
+            <input type="text" id="searchInput" placeholder="Search by leave type...">
           </div>
         </div>
 
@@ -204,82 +197,10 @@
           <div class="section-title">
             <span class="material-symbols-outlined">event_upcoming</span>
             <h2>Upcoming &amp; Active Time Off</h2>
-            <span class="section-meta" id="upcomingMeta">2 Scheduled Periods</span>
+            <span class="section-meta" id="upcomingMeta">0 Scheduled Periods</span>
           </div>
 
-          <div class="upcoming-cards" id="upcomingCards">
-
-            <!-- Card 1: Pending -->
-            <div class="upcoming-card pending">
-              <div class="upcoming-card-header">
-                <div class="upcoming-card-title">
-                  <span class="status-dot pending"></span>
-                  Pending Manager Review
-                </div>
-                <div class="upcoming-days">
-                  <strong>7</strong>
-                  Working days
-                </div>
-              </div>
-
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                Dec 22, 2025 — Jan 02, 2026
-              </div>
-
-              <div class="upcoming-meta">
-                <div class="upcoming-meta-item">
-                  <span>Type</span>
-                  <strong>Annual PTO</strong>
-                </div>
-                <div class="upcoming-meta-item">
-                  <span>Reviewer</span>
-                  <strong>Sarah Jenkins (Engineering VP)</strong>
-                </div>
-                <div class="upcoming-meta-item">
-                  <span>Submitted</span>
-                  <strong>Nov 10, 2025 (4 days ago)</strong>
-                </div>
-              </div>
-
-              <button class="btn-withdraw">Withdraw Request</button>
-            </div>
-
-            <!-- Card 2: Approved -->
-            <div class="upcoming-card approved">
-              <div class="upcoming-card-header">
-                <div class="upcoming-card-title">
-                  <span class="status-dot approved"></span>
-                  Approved
-                </div>
-                <div class="upcoming-days">
-                  <strong>2</strong>
-                  Working days
-                </div>
-              </div>
-
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                Nov 28, 2025 — Nov 29, 2025
-              </div>
-
-              <div class="upcoming-meta">
-                <div class="upcoming-meta-item">
-                  <span>Type</span>
-                  <strong>Floating Holiday / Personal</strong>
-                </div>
-                <div class="upcoming-meta-item">
-                  <span>Approved By</span>
-                  <strong>Sarah Jenkins (Nov 04, 2025)</strong>
-                </div>
-                <div class="upcoming-meta-item">
-                  <span>Handover Partner</span>
-                  <strong>Alex Rivera (Sprint covered)</strong>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <div class="upcoming-cards" id="upcomingCards"></div>
         </section>
 
         <!-- History -->
@@ -302,67 +223,12 @@
                   <th>STATUS</th>
                 </tr>
               </thead>
-              <tbody id="historyTableBody">
-
-                <tr>
-                  <td>
-                    <div class="leave-type-cell">
-                      <span class="material-symbols-outlined">event_available</span>
-                      Annual PTO
-                    </div>
-                  </td>
-                  <td>Aug 11 — Aug 15, 2025</td>
-                  <td>5 days</td>
-                  <td>Summer Vacation (Family roadtrip)</td>
-                  <td><span class="status-badge approved"><span class="material-symbols-outlined">check_circle</span>Approved</span></td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="leave-type-cell">
-                      <span class="material-symbols-outlined">medical_services</span>
-                      Sick Leave
-                    </div>
-                  </td>
-                  <td>Oct 02, 2025</td>
-                  <td>1 day</td>
-                  <td>Dental Appointment &amp; Follow-up</td>
-                  <td><span class="status-badge approved"><span class="material-symbols-outlined">check_circle</span>Approved</span></td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="leave-type-cell">
-                      <span class="material-symbols-outlined">celebration</span>
-                      Floating Holiday
-                    </div>
-                  </td>
-                  <td>Jun 19 — Jun 20, 2025</td>
-                  <td>2 days</td>
-                  <td>Personal Milestone / Anniversary</td>
-                  <td><span class="status-badge approved"><span class="material-symbols-outlined">check_circle</span>Approved</span></td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="leave-type-cell">
-                      <span class="material-symbols-outlined">event_available</span>
-                      Annual PTO
-                    </div>
-                  </td>
-                  <td>May 05, 2025</td>
-                  <td>1 day</td>
-                  <td>Spring Long Weekend (Withdrawn)</td>
-                  <td><span class="status-badge rejected"><span class="material-symbols-outlined">cancel</span>Rejected</span></td>
-                </tr>
-
-              </tbody>
+              <tbody id="historyTableBody"></tbody>
             </table>
           </div>
 
-          <!-- Pagination (بدون أزرار) -->
           <div class="pagination">
-            <span id="paginationInfo">Showing 4 of 6 total leave events</span>
+            <span id="paginationInfo">Showing 0 of 0 total leave events</span>
           </div>
         </section>
 
@@ -390,44 +256,103 @@
 
       <div class="modal-body">
 
-        <!-- Leave Type -->
+        <!-- Request Kind: Full Day / Early Departure -->
         <div class="form-group">
-          <label for="leaveType">Leave Type</label>
-          <div class="select-wrapper">
-            <select id="leaveType" class="form-select">
-              <option value="Annual PTO" data-days="14">Annual PTO — 14 days left</option>
-              <option value="Sick Leave" data-days="6">Sick Leave — 6 days left</option>
-              <option value="Floating Holiday" data-days="2">Floating Holiday — 2 days left</option>
-              <option value="Unpaid" data-days="Discretionary">Unpaid — Discretionary</option>
-            </select>
-            <span class="material-symbols-outlined select-arrow">expand_more</span>
+          <label>Request Kind</label>
+          <div class="radio-row">
+            <label class="radio-option">
+              <input type="radio" name="requestKind" value="fullDay" checked>
+              <span>Full Day Leave</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="requestKind" value="earlyDeparture">
+              <span>Early Departure (Hours)</span>
+            </label>
           </div>
         </div>
 
-        <!-- Date Range -->
-        <div class="form-group">
-          <label>Date Range</label>
-          <div class="date-row">
-            <div class="date-field">
-              <span class="date-label">Start Date</span>
-              <div class="input-with-icon">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <input type="date" id="startDate">
+        <!-- ===== FULL DAY BLOCK ===== -->
+        <div id="fullDayBlock">
+
+          <!-- Leave Type -->
+          <div class="form-group">
+            <label for="leaveType">Leave Type</label>
+            <div class="select-wrapper">
+              <select id="leaveType" class="form-select">
+                <option value="Annual PTO">Annual PTO</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Floating Holiday">Floating Holiday</option>
+                <option value="Unpaid">Unpaid</option>
+              </select>
+              <span class="material-symbols-outlined select-arrow">expand_more</span>
+            </div>
+            <span class="field-error-msg" id="leaveTypeError" style="display: none;"></span>
+          </div>
+
+          <!-- Date Range -->
+          <div class="form-group">
+            <label>Date Range</label>
+            <div class="date-row">
+              <div class="date-field">
+                <span class="date-label">Start Date</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <input type="date" id="startDate">
+                </div>
+                <span class="field-error-msg" id="startDateError" style="display: none;"></span>
+              </div>
+              <div class="date-field">
+                <span class="date-label">End Date</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <input type="date" id="endDate">
+                </div>
+                <span class="field-error-msg" id="endDateError" style="display: none;"></span>
               </div>
             </div>
-            <div class="date-field">
-              <span class="date-label">End Date</span>
-              <div class="input-with-icon">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <input type="date" id="endDate">
+
+            <label class="checkbox-row">
+              <input type="checkbox" id="halfDay">
+              <span>First day is a half-day (4 hours)</span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- ===== EARLY DEPARTURE BLOCK ===== -->
+        <div id="earlyDepartureBlock" class="hidden">
+
+          <div class="form-group">
+            <label>Today's Date (Auto)</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined">calendar_today</span>
+              <input type="date" id="departureDate" readonly>
+            </div>
+            <span class="field-error-msg" id="departureDateError" style="display: none;"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Departure Hours</label>
+            <div class="date-row">
+              <div class="date-field">
+                <span class="date-label">From (Leave at)</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">schedule</span>
+                  <input type="time" id="fromTime">
+                </div>
+                <span class="field-error-msg" id="fromTimeError" style="display: none;"></span>
+              </div>
+              <div class="date-field">
+                <span class="date-label">Until (Return at)</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">schedule</span>
+                  <input type="time" id="toTime">
+                </div>
+                <span class="field-error-msg" id="toTimeError" style="display: none;"></span>
               </div>
             </div>
           </div>
 
-          <label class="checkbox-row">
-            <input type="checkbox" id="halfDay">
-            <span>First day is a half-day (4 hours)</span>
-          </label>
         </div>
 
         <!-- Reason -->
@@ -438,6 +363,7 @@
           </div>
           <textarea id="reason" class="form-textarea" rows="4"
             placeholder="Provide context for your request..."></textarea>
+          <span class="field-error-msg" id="reasonError" style="display: none;"></span>
         </div>
 
         <!-- Policy Notice -->
@@ -466,10 +392,10 @@
 
 
 
-
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js"></script>
   <script src="Leave&TimeOff.js"></script>
+  <script src="../../shared/employee-sidebar.js"></script>
 </body>
 </html>
