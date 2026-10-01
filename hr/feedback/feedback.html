@@ -13,6 +13,905 @@
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
 
+
+
+
+<div class="app">
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- Page Header -->
+
+        <section class="page-header">
+
+            <div>
+
+              
+
+                <h1>HR Feedback & Inquiries Inbox</h1>
+
+                <p>
+                    Review, filter, and triage employee submissions,
+                    suggestions, and confidential workplace feedback.
+                </p>
+
+            </div>
+
+
+           
+
+        </section>
+
+
+        <!-- =========================
+             STATISTICS
+        ========================== -->
+
+        <section class="stats-grid">
+
+            <!-- Total -->
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <span>TOTAL SUBMISSIONS</span>
+
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-inbox"></i>
+                    </div>
+
+                </div>
+
+                <div class="stat-number">
+                    142
+                </div>
+
+                <div class="stat-footer">
+
+                    <span class="stat-badge green">
+                        ↗ 8 today
+                    </span>
+
+                    <span>
+                        Across 6 global culture hubs
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pending -->
+
+            <div class="stat-card pending-card">
+
+                <div class="stat-top">
+
+                    <span>PENDING REVIEW</span>
+
+                    <div class="stat-icon red-icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+
+                </div>
+
+                <div class="stat-number">
+                    18
+                </div>
+
+                <div class="stat-footer">
+
+                    <span class="stat-badge red">
+                        Urgent SLA: 3
+                    </span>
+
+                    <span>
+                        Avg. triage response time: 3.4 hrs
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Anonymous -->
+
+            <div class="stat-card anonymous-card">
+
+                <div class="stat-top">
+
+                    <span>ANONYMOUS SUBMISSIONS</span>
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+
+                </div>
+
+                <div class="stat-number">
+                    34
+                </div>
+
+                <div class="stat-footer">
+
+                    <span class="stat-badge green">
+                        24% of Total
+                    </span>
+
+                    <span>
+                        Zero-knowledge identity tokens
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Resolved -->
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <span>RESOLVED THIS MONTH</span>
+
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-circle-check"></i>
+                    </div>
+
+                </div>
+
+                <div class="stat-number">
+                    96
+                </div>
+
+                <div class="stat-footer">
+
+                    <span class="stat-badge green">
+                        ↗ 92% rate
+                    </span>
+
+                    <span>
+                        +14% faster than September avg
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FILTER SECTION
+        ========================== -->
+
+        <section class="filter-panel">
+
+            <div class="filter-top">
+
+                <div class="feedback-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Search by subject, employee name, keywords, or ticket ID..."
+                    >
+
+                </div>
+
+
+                <button class="date-filter">
+                    Time: All Time History
+                    <i class="fa-regular fa-calendar"></i>
+                </button>
+
+            </div>
+
+
+            <div class="filter-bottom">
+
+                <!-- Categories -->
+
+                <div class="categories">
+
+                    <span class="filter-title">CATEGORY:</span>
+
+                    <button class="filter-pill active">
+                        All Types
+                    </button>
+
+                    <button class="filter-pill">
+                        General Feedback
+                    </button>
+
+                    <button class="filter-pill">
+                        Feature Request
+                    </button>
+
+                    <button class="filter-pill">
+                        Report Policy Issue
+                    </button>
+
+                    <button class="filter-pill">
+                        HR Support
+                    </button>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="status-filters">
+
+                    <button class="small-filter active">
+                        All
+                    </button>
+
+                    <button class="small-filter">
+                        Identified
+                    </button>
+
+                    <button class="small-filter">
+                        Anonymous
+                    </button>
+
+                    <button class="small-filter">
+                        All Statuses
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FEEDBACK HEADER
+        ========================== -->
+
+        <div class="results-header">
+
+            <span>
+                Displaying <strong>5</strong> of
+                <strong>142</strong> total submissions
+            </span>
+
+            <span class="live-feed">
+                <span class="green-dot"></span>
+                Live inbox feed
+            </span>
+
+            <span class="view-mode">
+                Default view: Most recent triage tickets
+            </span>
+
+        </div>
+
+
+        <!-- =========================
+             FEEDBACK CARDS
+        ========================== -->
+
+        <section class="feedback-list">
+
+
+            <!-- ================= CARD 1 ================= -->
+
+            <article class="feedback-card anonymous">
+
+                <div class="card-main">
+
+                    <div class="employee-row">
+
+                        <div class="employee-avatar shield-avatar">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div class="employee-info">
+
+                            <div class="employee-name-row">
+
+                                <h3>Anonymous Employee</h3>
+
+                                <span class="identity-tag">
+                                    Identity Hidden by Submitter
+                                </span>
+
+                            </div>
+
+                            <span class="employee-email">
+                                <i class="fa-solid fa-lock"></i>
+                                Confidential (Hidden)
+                            </span>
+
+                        </div>
+
+
+                        <div class="card-meta">
+
+                            <span class="category-tag policy">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Report Policy Issue
+                            </span>
+
+                            <span class="status-tag unread">
+                                <span></span>
+                                New / Unread
+                            </span>
+
+                            <span class="date">
+                                Oct 24, 2026 · 09:42 AM
+                                <small>(2 hours ago)</small>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="feedback-content">
+
+                        <h2>
+                            Concerns regarding hybrid work desk booking & quiet zones
+                        </h2>
+
+                        <p>
+                            Some teams are speaking loudly in designated quiet zones
+                            on the 4th floor, and desk reservations are frequently ignored.
+                            Can HR clarify the enforcement guidelines for the new hybrid schedule?
+                        </p>
+
+
+                        <div class="attachment">
+
+                            <div class="file-icon pdf">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+
+                            <div class="file-info">
+
+                                <strong>desk_allocation_issue.pdf</strong>
+
+                                <span>
+                                    1.4 MB · PDF Document
+                                </span>
+
+                            </div>
+
+                            <button>
+                                Preview
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <span class="protected">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Protected under whistleblower compliance code EEO-4
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="internal">
+                                Respond Internally
+                            </button>
+
+                            <button class="progress">
+                                Mark In Progress
+                            </button>
+
+                            <button class="more">
+                                ⋮
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- ================= CARD 2 ================= -->
+
+            <article class="feedback-card">
+
+                <div class="card-main">
+
+                    <div class="employee-row">
+
+                        <div class="employee-avatar photo-avatar">
+                            SJ
+                        </div>
+
+                        <div class="employee-info">
+
+                            <div class="employee-name-row">
+
+                                <h3>Sarah Jenkins</h3>
+
+                                <span class="department-tag">
+                                    Engineering Lead
+                                </span>
+
+                            </div>
+
+                            <span class="employee-email">
+                                <i class="fa-regular fa-envelope"></i>
+                                s.jenkins@calmclarityhr.com
+                            </span>
+
+                        </div>
+
+
+                        <div class="card-meta">
+
+                            <span class="category-tag support">
+                                <i class="fa-regular fa-circle-question"></i>
+                                HR Support
+                            </span>
+
+                            <span class="status-tag review">
+                                <span></span>
+                                In Review
+                            </span>
+
+                            <span class="date">
+                                Oct 23, 2026 · 03:15 PM
+                                <small>(Yesterday)</small>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="feedback-content">
+
+                        <h2>
+                            Parental leave policy clarification and health benefits rollover
+                        </h2>
+
+                        <p>
+                            Hello People Ops, I wanted to confirm the rollover deadline
+                            for supplementary health benefits prior to my maternity leave
+                            starting this December. Thank you!
+                        </p>
+
+                        <span class="no-attachment">
+                            No attachments included
+                        </span>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <span class="assigned">
+                            <i class="fa-regular fa-clock"></i>
+                            Assigned 18 hrs ago · Expected response in 4 hrs
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="internal">
+                                Reply Directly
+                            </button>
+
+                            <button class="progress">
+                                View Details
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- ================= CARD 3 ================= -->
+
+            <article class="feedback-card">
+
+                <div class="card-main">
+
+                    <div class="employee-row">
+
+                        <div class="employee-avatar photo-avatar blue">
+                            OA
+                        </div>
+
+                        <div class="employee-info">
+
+                            <div class="employee-name-row">
+
+                                <h3>Omar Al-Khatib</h3>
+
+                                <span class="department-tag">
+                                    Product Designer
+                                </span>
+
+                            </div>
+
+                            <span class="employee-email">
+                                <i class="fa-regular fa-envelope"></i>
+                                o.khatib@calmclarityhr.com
+                            </span>
+
+                        </div>
+
+
+                        <div class="card-meta">
+
+                            <span class="category-tag feature">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                Feature Request
+                            </span>
+
+                            <span class="status-tag review">
+                                <span></span>
+                                In Review
+                            </span>
+
+                            <span class="date">
+                                Oct 22, 2026 · 11:20 AM
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="feedback-content">
+
+                        <h2>
+                            Suggestion for wellness stipends and gym membership integration
+                        </h2>
+
+                        <p>
+                            Would it be possible to include local gym chains in Amman/Jordan
+                            under the corporate wellness reimbursement program?
+                            Many team members have expressed interest.
+                        </p>
+
+
+                        <div class="attachment image-file">
+
+                            <div class="file-icon image">
+                                <i class="fa-regular fa-image"></i>
+                            </div>
+
+                            <div class="file-info">
+
+                                <strong>gym_survey_results.png</strong>
+
+                                <span>
+                                    820 KB · PNG Image
+                                </span>
+
+                            </div>
+
+                            <button>
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <span class="votes">
+                            <i class="fa-regular fa-thumbs-up"></i>
+                            14 colleagues upvoted this recommendation internally
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="internal">
+                                Reply
+                            </button>
+
+                            <button class="progress">
+                                View Details
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- ================= CARD 4 ================= -->
+
+            <article class="feedback-card positive">
+
+                <div class="card-main">
+
+                    <div class="employee-row">
+
+                        <div class="employee-avatar protected-avatar">
+                            <i class="fa-regular fa-shield"></i>
+                        </div>
+
+                        <div class="employee-info">
+
+                            <div class="employee-name-row">
+
+                                <h3>Anonymous Employee</h3>
+
+                                <span class="identity-tag protected">
+                                    Identity Protected
+                                </span>
+
+                            </div>
+
+                            <span class="employee-email">
+                                <i class="fa-solid fa-lock"></i>
+                                Hidden
+                            </span>
+
+                        </div>
+
+
+                        <div class="card-meta">
+
+                            <span class="category-tag general">
+                                <i class="fa-regular fa-heart"></i>
+                                General Feedback
+                            </span>
+
+                            <span class="status-tag resolved">
+                                <span></span>
+                                Resolved
+                            </span>
+
+                            <span class="date">
+                                Oct 21, 2026 · 04:55 PM
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="feedback-content">
+
+                        <h2>
+                            Appreciation for the new mental health day initiative
+                        </h2>
+
+                        <p>
+                            Just wanted to send a quick note of thanks to the People Ops
+                            team for rolling out the quarterly mental health days.
+                            It made a real positive difference for our department's morale.
+                        </p>
+
+                        <span class="no-attachment">
+                            No attachments included
+                        </span>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <span class="archived">
+                            <i class="fa-regular fa-circle-check"></i>
+                            Archived in positive morale cohort
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="progress">
+                                View History
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- ================= CARD 5 ================= -->
+
+            <article class="feedback-card">
+
+                <div class="card-main">
+
+                    <div class="employee-row">
+
+                        <div class="employee-avatar initials">
+                            DC
+                        </div>
+
+                        <div class="employee-info">
+
+                            <div class="employee-name-row">
+
+                                <h3>David Chen</h3>
+
+                                <span class="department-tag">
+                                    Client Solutions
+                                </span>
+
+                            </div>
+
+                            <span class="employee-email">
+                                <i class="fa-regular fa-envelope"></i>
+                                d.chen@calmclarityhr.com
+                            </span>
+
+                        </div>
+
+
+                        <div class="card-meta">
+
+                            <span class="category-tag policy">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Report Policy Issue
+                            </span>
+
+                            <span class="status-tag resolved">
+                                <span></span>
+                                Resolved
+                            </span>
+
+                            <span class="date">
+                                Oct 19, 2026 · 01:10 PM
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="feedback-content">
+
+                        <h2>
+                            Discrepancy in Q3 travel expense reimbursement approval timeline
+                        </h2>
+
+                        <p>
+                            Submitted travel expenses for client visits two weeks ago
+                            but haven't received confirmation. Finance mentioned awaiting
+                            HR authorization.
+                        </p>
+
+
+                        <div class="attachment">
+
+                            <div class="file-icon pdf">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+
+                            <div class="file-info">
+
+                                <strong>receipts_travel_Q3.pdf</strong>
+
+                                <span>
+                                    3.2 MB · Expense Proof
+                                </span>
+
+                            </div>
+
+                            <button>
+                                Preview
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <span class="validated">
+                            <i class="fa-regular fa-circle-check"></i>
+                            Finance authorization validated Oct 20
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="internal">
+                                Reopen
+                            </button>
+
+                            <button class="progress">
+                                View Thread
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =========================
+             PAGINATION
+        ========================== -->
+
+        <div class="pagination-section">
+
+            <span>
+                Showing <strong>1–5</strong> of
+                <strong>142</strong> submissions
+            </span>
+
+            <span class="export-note">
+                • Export formats available: CSV, Encrypted PDF, Audit JSON
+            </span>
+
+
+            <div class="pagination">
+
+                <button disabled>
+                    ‹ Previous
+                </button>
+
+                <button class="page active">
+                    1
+                </button>
+
+                <button class="page">
+                    2
+                </button>
+
+                <button class="page">
+                    3
+                </button>
+
+                <span>...</span>
+
+                <button class="page">
+                    15
+                </button>
+
+                <button>
+                    Next ›
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+</div>
+
+  
+
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js"></script>

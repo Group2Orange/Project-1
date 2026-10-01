@@ -1,251 +1,218 @@
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
+    // ===============================
+    // Load Logged User
+    // ===============================
 
-// ===============================
-// Load Logged User
-// ===============================
+    const userData = localStorage.getItem("loggedUser");
 
+    const nameInput = document.getElementById("fullName");
+    const emailInput = document.getElementById("email");
 
-const userData = localStorage.getItem("loggedUser");
+    let user = null;
 
+    if (userData) {
 
-const nameInput = document.getElementById("fullName");
-const emailInput = document.getElementById("email");
+        user = JSON.parse(userData);
 
+        nameInput.value = user.name;
+        emailInput.value = user.email;
 
-if(userData){
+        nameInput.readOnly = true;
+        emailInput.readOnly = true;
 
-    const user = JSON.parse(userData);
+    } else {
 
-    nameInput.value = user.name;
-    emailInput.value = user.email;
+        nameInput.value = "Guest User";
+        emailInput.value = "";
 
-}
-else{
+    }
 
-    nameInput.value="Guest User";
-    emailInput.value="";
 
-}
+    // ===============================
+    // Feedback Categories
+    // ===============================
 
+    const categoryButtons =
+        document.querySelectorAll(".tags button");
 
+    let selectedCategory = "General Feedback";
 
-// ===============================
-// Feedback Categories
-// ===============================
+    categoryButtons.forEach(btn => {
 
+        btn.addEventListener("click", () => {
 
-const categoryButtons =
-document.querySelectorAll(".tags button");
+            categoryButtons.forEach(b => {
+                b.classList.remove("selected");
+            });
 
+            btn.classList.add("selected");
 
-let selectedCategory="General Feedback";
+            selectedCategory = btn.innerText;
 
+        });
 
-categoryButtons.forEach(btn=>{
+    });
 
 
-btn.addEventListener("click",()=>{
+    // ===============================
+    // File Upload
+    // ===============================
 
+    let uploadedFile = "";
 
-categoryButtons.forEach(b=>{
-b.classList.remove("selected");
-});
+    const uploadBox = document.querySelector(".upload");
 
+    const fileInput = document.createElement("input");
 
-btn.classList.add("selected");
+    fileInput.type = "file";
+    fileInput.accept = ".png,.jpg,.jpeg,.pdf,.docx";
+    fileInput.hidden = true;
 
+    uploadBox.appendChild(fileInput);
 
-selectedCategory = btn.innerText;
 
+    uploadBox.addEventListener("click", () => {
 
-});
+        fileInput.click();
 
+    });
 
-});
 
+    fileInput.addEventListener("change", () => {
 
+        const file = fileInput.files[0];
 
-// ===============================
-// File Upload
-// ===============================
+        if (file) {
 
+            if (file.size > 10 * 1024 * 1024) {
 
-let uploadedFile="";
+                alert("File size must be less than 10MB");
 
+                fileInput.value = "";
 
-const uploadBox=document.querySelector(".upload");
+                return;
+            }
 
+            uploadedFile = file.name;
 
-const fileInput=document.createElement("input");
+            uploadBox.querySelector("p").innerText =
+                file.name;
 
-fileInput.type="file";
-fileInput.accept=".png,.jpg,.jpeg,.pdf,.docx";
-fileInput.hidden=true;
+        }
 
+    });
 
-uploadBox.appendChild(fileInput);
 
+    // ===============================
+    // Submit Feedback
+    // ===============================
 
+    const sendBtn = document.querySelector(".submit");
 
-uploadBox.addEventListener("click",()=>{
+    sendBtn.addEventListener("click", () => {
 
-fileInput.click();
+        const subject =
+            document.querySelector(
+                "input[placeholder*='hybrid']"
+            ).value.trim();
 
-});
+        const message =
+            document.querySelector("textarea")
+            .value.trim();
 
+        const anonymous =
+            document.getElementById("anonymous").checked;
 
 
-fileInput.addEventListener("change",()=>{
+        // ===============================
+        // Validation
+        // ===============================
 
+        if (subject === "" || message === "") {
 
-const file=fileInput.files[0];
+            alert("Please fill subject and message.");
 
+            return;
+        }
 
-if(file){
 
+        // ===============================
+        // Create Feedback
+        // ===============================
 
-if(file.size > 10*1024*1024){
+        let feedback = {
 
-alert("File size must be less than 10MB");
-return;
+            id: Date.now(),
 
-}
+            name: anonymous
+                ? "Anonymous"
+                : (user ? user.name : "Guest User"),
 
+            email: anonymous
+                ? "Hidden"
+                : (user ? user.email : ""),
 
-uploadedFile=file.name;
+            category: selectedCategory,
 
+            subject: subject,
 
-uploadBox.querySelector("p").innerText=file.name;
+            message: message,
 
+            attachment: uploadedFile || null,
 
-}
+            date: new Date().toLocaleString(),
 
+            status: "New"
 
-});
+        };
 
 
+        // ===============================
+        // Save Feedback
+        // ===============================
 
+        let feedbacks =
+            JSON.parse(
+                localStorage.getItem("feedbacks")
+            ) || [];
 
-// ===============================
-// Submit Feedback
-// ===============================
 
+        feedbacks.push(feedback);
 
-const sendBtn=document.querySelector(".submit");
 
+        localStorage.setItem(
+            "feedbacks",
+            JSON.stringify(feedbacks)
+        );
 
-sendBtn.addEventListener("click",()=>{
 
+        // ===============================
+        // Success Message
+        // ===============================
 
-const subject =
-document.querySelector("input[placeholder*='hybrid']").value;
+        alert("Feedback sent successfully!");
 
 
+        // ===============================
+        // Clear Form
+        // ===============================
 
-const message =
-document.querySelector("textarea").value;
+        document.querySelector(
+            "input[placeholder*='hybrid']"
+        ).value = "";
 
+        document.querySelector("textarea").value = "";
 
+        document.getElementById("anonymous").checked = false;
 
-const anonymous =
-document.getElementById("anonymous").checked;
+        uploadedFile = "";
 
+        fileInput.value = "";
 
+        uploadBox.querySelector("p").innerText =
+            "Click to upload files";
 
-if(subject.trim()=="" || message.trim()==""){
-
-
-alert("Please fill subject and message");
-return;
-
-}
-
-
-
-
-let user = JSON.parse(
-localStorage.getItem("loggedUser")
-);
-
-
-
-let feedback={
-
-
-id:Date.now(),
-
-
-
-name:
-anonymous ? "Anonymous" : user.name,
-
-
-email:
-anonymous ? "Hidden" : user.email,
-
-
-
-category:selectedCategory,
-
-
-
-subject:subject,
-
-
-
-message:message,
-
-
-
-attachment:uploadedFile || null,
-
-
-
-date:new Date().toLocaleString(),
-
-
-
-status:"New"
-
-
-};
-
-
-
-
-// ===============================
-// Save Feedback
-// ===============================
-
-
-let feedbacks =
-JSON.parse(localStorage.getItem("feedbacks")) || [];
-
-
-
-feedbacks.push(feedback);
-
-
-
-localStorage.setItem(
-"feedbacks",
-JSON.stringify(feedbacks)
-);
-
-
-
-alert("Feedback sent successfully!");
-
-
-
-// clear form
-
-document.querySelector("textarea").value="";
-document.querySelector("input[placeholder*='hybrid']").value="";
-
-
-});
-
+    });
 
 });
