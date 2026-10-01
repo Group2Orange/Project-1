@@ -221,8 +221,9 @@ border-radius:14px;
 padding:18px;
 
 margin-bottom:16px;
+width: 100%;
 
-width: 562px;
+max-width: ;width: 562px;
 
 
 }
@@ -633,3 +634,212 @@ color:var(--muted);
     display: block;
 }
 
+/* ===========================
+   Responsive Design
+=========================== */
+
+
+/* Tablets */
+@media (max-width: 992px){
+
+
+.layout{
+    flex-direction: column;
+}
+
+
+.card,
+.map-card{
+    width:100%;
+}
+
+
+.left-column,
+.form-card{
+    width:100%;
+}
+
+
+.map-placeholder{
+    height:250px;
+}
+
+
+}
+
+
+
+/* Mobile */
+@media (max-width: 600px){
+
+
+.container{
+
+    width:94%;
+
+}
+
+
+
+.header-section{
+
+    padding:20px 0;
+
+}
+
+
+
+.title-row{
+
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+
+}
+
+
+
+h1{
+
+    font-size:22px;
+
+}
+
+
+
+.header-section p{
+
+    font-size:13px;
+
+}
+
+
+
+.notice{
+
+    height:auto;
+    min-height:45px;
+    padding:12px;
+    align-items:flex-start;
+
+}
+
+
+
+.notice .close{
+
+    margin-left:auto;
+
+}
+
+
+
+.layout{
+
+    gap:12px;
+
+}
+
+
+
+.card,
+.map-card{
+
+    padding:15px;
+    border-radius:12px;
+
+}
+
+
+
+.form-grid{
+
+    grid-template-columns:1fr;
+
+    gap:0;
+
+}
+
+
+
+.tags{
+
+    gap:6px;
+
+}
+
+
+
+.tags button{
+
+    font-size:11px;
+    padding:7px 10px;
+
+}
+
+
+
+textarea{
+
+    height:140px;
+
+}
+
+
+
+.upload{
+
+    height:100px;
+
+}
+
+
+
+.submit-row{
+
+    justify-content:center;
+
+}
+
+
+
+.submit{
+
+    width:100%;
+
+}
+
+
+
+.contact-item{
+
+    gap:10px;
+
+}
+
+
+
+.contact-item p{
+
+    font-size:11px;
+
+}
+
+
+
+.anonymous-option label{
+
+    font-size:11px;
+
+}
+
+
+
+.anonymous-option strong{
+
+    font-size:12px;
+
+}
+
+
+}

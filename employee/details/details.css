@@ -1,0 +1,535 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Inter","Segoe UI",sans-serif;
+}
+
+
+body{
+
+    background:#f7fafd;
+    color:#172033;
+
+}
+
+
+
+/* ================= LAYOUT ================= */
+
+
+.layout{
+
+    display:flex;
+
+}
+
+
+
+.sidebar{
+
+    width:320px;
+
+    background:white;
+
+    margin:25px;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    height:fit-content;
+
+}
+
+
+
+.profile-box{
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+    padding-bottom:25px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.profile-box h3{
+
+    font-size:18px;
+
+}
+
+
+
+.profile-box p{
+
+    color:#64748b;
+    font-size:14px;
+
+}
+
+
+
+.profile-box span{
+
+    color:#64748b;
+    font-size:13px;
+
+}
+
+
+
+/* Avatar */
+
+
+.avatar{
+
+    width:65px;
+    height:65px;
+
+    background:#087c91;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-weight:bold;
+
+    font-size:22px;
+
+}
+
+
+.avatar.small{
+
+    width:45px;
+    height:45px;
+
+    font-size:16px;
+
+}
+
+
+
+.avatar.big{
+
+    width:150px;
+    height:150px;
+
+    font-size:45px;
+
+}
+
+
+
+
+.menu{
+
+    margin-top:20px;
+
+}
+
+
+
+.menu div{
+
+    padding:15px;
+
+    margin-bottom:8px;
+
+    border-radius:12px;
+
+    color:#475569;
+
+}
+
+
+
+.menu .selected{
+
+    background:#e5f5f7;
+
+    color:#087c91;
+
+    font-weight:600;
+
+}
+
+
+
+
+/* ================= CONTENT ================= */
+
+
+.content{
+
+    flex:1;
+
+    padding:25px 35px 50px 0;
+
+}
+
+
+
+.top-section{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+.breadcrumb{
+
+    color:#64748b;
+
+    font-size:14px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+h1{
+
+    font-size:34px;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.top-section p{
+
+    color:#64748b;
+
+}
+
+
+
+
+.top-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+.status-card{
+
+    background:#effcf5;
+
+    padding:15px 25px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+
+
+.status-card span{
+
+    width:12px;
+    height:12px;
+
+    background:#16a34a;
+
+    border-radius:50%;
+
+    margin-top:7px;
+
+}
+
+
+.status-card p{
+
+    font-size:13px;
+
+}
+
+
+
+
+button{
+
+    background:#087c91;
+
+    color:white;
+
+    border:none;
+
+    padding:18px 35px;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+
+
+
+
+
+/* ================= EMPLOYEE CARD ================= */
+
+
+.employee-card{
+
+    background:white;
+
+    margin-top:30px;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.04);
+
+}
+
+
+
+.employee-info{
+
+    display:flex;
+
+    gap:30px;
+
+    align-items:center;
+
+}
+
+
+
+.employee-info h2{
+
+    font-size:32px;
+
+}
+
+
+
+.employee-info h3{
+
+    color:#475569;
+
+    margin:10px 0;
+
+}
+
+
+
+.description{
+
+    color:#64748b;
+
+    max-width:500px;
+
+}
+
+
+
+.contact{
+
+    border-left:1px solid #ddd;
+
+    padding-left:40px;
+
+    line-height:2.2;
+
+}
+
+
+
+
+
+/* ================= DETAILS CARD ================= */
+
+
+.details-card{
+
+    background:white;
+
+    margin-top:25px;
+
+    padding:30px;
+
+    border-radius:20px;
+
+}
+
+
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.info-message{
+
+    background:#eef9fc;
+
+    color:#075985;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+}
+
+
+
+.fields{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+.field label{
+
+    display:block;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.field input{
+
+    width:100%;
+
+    padding:15px;
+
+    border:1px solid #dbe4ee;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    background:#fbfdff;
+
+}
+
+
+
+.field small{
+
+    color:#94a3b8;
+
+    display:block;
+
+    margin-top:8px;
+
+}
+
+
+
+.salary{
+
+    display:flex;
+
+}
+
+
+
+.salary input{
+
+    border-radius:12px 0 0 12px;
+
+}
+
+
+
+.salary span{
+
+    background:#f1f5f9;
+
+    padding:15px;
+
+    border:1px solid #dbe4ee;
+
+    border-left:none;
+
+    border-radius:0 12px 12px 0;
+
+}
+
+
+
+
+@media(max-width:1100px){
+
+.fields{
+
+grid-template-columns:1fr;
+
+}
+
+
+.sidebar{
+
+display:none;
+
+}
+
+
+.employee-card{
+
+flex-direction:column;
+
+gap:30px;
+
+}
+
+}
