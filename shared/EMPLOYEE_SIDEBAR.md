@@ -20,6 +20,6 @@ Load the script near the end of the body:
 <script src="../../shared/employee-sidebar.js"></script>
 ```
 
-Use `workspace`, `details`, `tasks`, `leave`, `policies`, `feedback`, or `helpdesk` for `data-sidebar-active`. The sidebar links are defined in one place, `employee-sidebar.html`. When the My Details, Leave & Time Off, and Helpdesk pages arrive, update their links there. The current links point to available project pages while those teammate files are absent.
+Use `workspace`, `details`, `tasks`, `leave`, `policies`, `feedback`, or `helpdesk` for `data-sidebar-active`. The sidebar links are defined in one place, `employee-sidebar.html`. The Leave & Time Off link now opens the team's page. My Details and Helpdesk still need their final links when those teammate pages arrive.
 
 The sidebar reads the `employeeTasks` localStorage key for the active-task count and progress. Pages that change tasks in the current tab can dispatch `window.dispatchEvent(new Event('teamspace:tasks-changed'))` after saving.

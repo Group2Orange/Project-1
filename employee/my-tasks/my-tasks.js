@@ -642,3 +642,6 @@ categoryTabs.addEventListener("click", event => {
 });
 
 renderTasks();
+
+const requestedTaskId = new URLSearchParams(window.location.search).get('task');
+if (requestedTaskId) openTask(requestedTaskId);

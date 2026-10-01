@@ -1,13 +1,20 @@
 const workspaceTaskList = document.getElementById('workspaceTaskList');
 const exampleTasks = [
-  { title: 'Complete Security Awareness Training V2', priority: 'High', team: 'Compliance', status: 'todo', dueDate: '' },
-  { title: 'Review Sprint 24 Pull Requests', priority: 'Normal', team: 'Engineering', status: 'progress', dueDate: '' },
-  { title: 'Submit Benefits Election Form', priority: 'Normal', team: 'HR Onboarding', status: 'review', dueDate: '' }
+  { id: 'TASK-004', title: 'Complete Security Awareness Training V2', priority: 'High', team: 'Compliance', status: 'progress', dueDate: '' },
+  { id: 'TASK-005', title: 'Review Sprint 24 Pull Requests', priority: 'Normal', team: 'Engineering', status: 'progress', dueDate: '' },
+  { id: 'TASK-001', title: 'Submit Benefits Election Form', priority: 'Normal', team: 'HR Onboarding', status: 'todo', dueDate: '' }
 ];
 
 const now = new Date();
 const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening';
-document.getElementById('workspaceGreeting').innerHTML = `${greeting}, Marcus <span aria-hidden="true">👋</span>`;
+let firstName = 'Marcus';
+try {
+  const user = JSON.parse(localStorage.getItem('loggedUser'));
+  if (user?.name) firstName = user.name.trim().split(/\s+/)[0];
+} catch (error) {
+  console.warn('Could not read the logged-in user for My Workspace:', error);
+}
+document.getElementById('workspaceGreeting').textContent = `${greeting}, ${firstName} 👋`;
 document.getElementById('workspaceDate').textContent = now.toLocaleDateString(undefined, {
   weekday: 'long', month: 'long', day: 'numeric'
 });
@@ -22,8 +29,9 @@ function readWorkspaceTasks() {
 }
 
 function taskRow(task) {
-  const row = document.createElement('article');
+  const row = document.createElement('a');
   row.className = 'workspace-task';
+  row.href = `../my-tasks/my-tasks.html${task.id ? `?task=${encodeURIComponent(task.id)}` : ''}`;
 
   const marker = document.createElement('span');
   marker.className = 'workspace-task-marker';

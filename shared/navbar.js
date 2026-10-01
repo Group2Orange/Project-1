@@ -34,6 +34,19 @@
         placeholder.outerHTML = html;
 
         const navbar = document.querySelector(".navbar");
+        try {
+          const user = JSON.parse(localStorage.getItem('loggedUser'));
+          if (user?.name) {
+            const parts = user.name.trim().split(/\s+/);
+            navbar.querySelector('.navbar-user-name').textContent = user.name;
+            navbar.querySelector('.navbar-user-role').textContent = user.role === 'HR' ? 'HR' : 'Employee';
+            navbar.querySelector('.navbar-avatar').textContent =
+              `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
+          }
+        } catch (error) {
+          console.warn('Could not read the logged-in user for the navbar:', error);
+        }
+
         const toggle = navbar.querySelector(".navbar-toggle");
         const compactLayout = window.matchMedia("(max-width: 1100px)");
 
