@@ -33,11 +33,13 @@
     <!-- Helpdesk CSS -->
     <link rel="stylesheet"
           href="helpDesk.css">
+    <link rel="stylesheet" href="../../shared/footer.css">
+    <link rel="stylesheet" href="../../shared/employee-sidebar.css">
 
 </head>
 
 
-<body>
+<body class="has-footer">
 
 
     <!-- =========================
@@ -128,58 +130,6 @@
     ========================== -->
 
     <section id="topCards">
-
-
-        <!-- Profile -->
-
-        <div id="profileCard">
-
-
-            <div id="profileTop">
-
-                <div id="profileCircle">
-                    MC
-                </div>
-
-
-                <div>
-
-                    <b>
-                        Marcus Chen
-                    </b>
-
-                    <p>
-                        Engineering Dept.
-                    </p>
-
-                    <span>
-                        EMP-1248
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <p id="workLabel">
-                Weekly Work Load
-            </p>
-
-
-            <div id="progress">
-
-                <div id="progressFill"></div>
-
-            </div>
-
-
-            <small>
-                31.2 / 40h (78%)
-            </small>
-
-
-        </div>
-
 
 
         <!-- Active Tickets -->
@@ -317,78 +267,7 @@
         <aside id="leftSide">
 
 
-            <div id="menuCard">
-
-
-                <p class="menu-title">
-
-                    <i class="bi bi-grid"></i>
-
-                    My Workspace
-
-                </p>
-
-
-                <a href="#pageHeader">
-
-                    <i class="bi bi-house"></i>
-
-                    My Workspace
-
-                </a>
-
-
-                <a href="#requestCard">
-
-                    <i class="bi bi-check2-square"></i>
-
-                    My Tasks
-
-                </a>
-
-
-                <a href="#requestCard">
-
-                    <i class="bi bi-calendar"></i>
-
-                    Leave & Time Off
-
-                </a>
-
-
-                <a href="#answersCard">
-
-                    <i class="bi bi-file-earmark-text"></i>
-
-                    Policies & Docs
-
-                </a>
-
-
-                <a href="#requestCard">
-
-                    <i class="bi bi-chat-square-text"></i>
-
-                    Feedback & Surveys
-
-                </a>
-
-
-                <a href="#requestCard"
-                   class="active">
-
-                    <i class="bi bi-headset"></i>
-
-                    Helpdesk Support
-
-                    <span class="active-dot"></span>
-
-                </a>
-
-
-            </div>
-
-
+            <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="helpdesk" aria-label="Employee workspace"></aside>
 
             <!-- Confidentiality -->
 
@@ -1022,103 +901,13 @@
          Footer
     ========================== -->
 
-    <footer id="footer">
-
-
-        <div id="footerTop">
-
-
-            <div id="footerBrand">
-
-
-                <div id="footerLogo">
-
-                    <i class="bi bi-building"></i>
-
-                </div>
-
-
-                <b>
-                    TeamSpace HR
-                </b>
-
-
-                <span>
-                    Modern People Operations Platform
-                </span>
-
-
-            </div>
-
-
-
-            <div id="footerIcons">
-
-                <i class="bi bi-info-circle"></i>
-
-                <i class="bi bi-globe"></i>
-
-                <i class="bi bi-envelope"></i>
-
-            </div>
-
-
-        </div>
-
-
-
-        <div id="footerBottom">
-
-
-            <span>
-
-                © 2026 TeamSpace HR Inc.
-                All rights reserved.
-
-            </span>
-
-
-
-            <div>
-
-                <span>
-                    ● System status: Connected
-                </span>
-
-
-                <a href="#">
-                    Privacy Policy
-                </a>
-
-
-                <a href="#">
-                    Terms of Service
-                </a>
-
-
-                <a href="#">
-                    Security
-                </a>
-
-
-                <a href="#">
-                    PoweredByCompany Name
-                </a>
-
-
-            </div>
-
-
-        </div>
-
-
-    </footer>
-
-
+    <footer class="site-footer" data-footer></footer>
 
     <!-- Shared Navbar JS -->
 
     <script src="../../shared/navbar.js"></script>
+    <script src="../../shared/employee-sidebar.js"></script>
+    <script src="../../shared/footer.js"></script>
 
 
     <!-- Helpdesk JS -->

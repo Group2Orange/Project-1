@@ -75,8 +75,7 @@ textarea {
 ========================= */
 
 #pageHeader {
-
-    max-width: 1180px;
+    width: min(100%, 1500px);
 
     margin: auto;
 
@@ -99,7 +98,7 @@ textarea {
 
     color: var(--secondary);
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -117,7 +116,7 @@ textarea {
 
     color: var(--secondary);
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 
@@ -149,7 +148,7 @@ textarea {
 
     color: var(--neutral);
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -185,8 +184,7 @@ button.small-pill {
 ========================= */
 
 #topCards {
-
-    max-width: 1180px;
+    width: min(100%, 1500px);
 
     margin: auto;
 
@@ -195,13 +193,12 @@ button.small-pill {
 
     display: grid;
 
-    grid-template-columns: 1.3fr repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 
     gap: 13px;
 }
 
 
-#profileCard,
 .stat-card {
 
     background-color: var(--white);
@@ -214,92 +211,6 @@ button.small-pill {
 }
 
 
-#profileTop {
-
-    display: flex;
-
-    gap: 10px;
-
-    align-items: center;
-}
-
-
-#profileCircle {
-
-    width: 38px;
-
-    height: 38px;
-
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-
-    background-color: #e8eef7;
-
-    color: #718096;
-
-    border-radius: 50%;
-
-    font-weight: bold;
-}
-
-
-#profileTop p {
-
-    margin: 2px 0;
-
-    font-size: 10px;
-}
-
-
-#profileTop span {
-
-    color: var(--primary);
-
-    font-size: 9px;
-}
-
-
-#workLabel {
-
-    margin: 15px 0 6px;
-
-    font-size: 9px;
-}
-
-
-#progress {
-
-    height: 5px;
-
-    background-color: #e5e7eb;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-}
-
-
-#progressFill {
-
-    width: 78%;
-
-    height: 100%;
-
-    background-color: var(--tertiary);
-}
-
-
-#profileCard small {
-
-    font-size: 9px;
-}
-
-
 .stat-title {
 
     display: flex;
@@ -308,7 +219,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -338,7 +249,7 @@ button.small-pill {
 
 .stat-card small {
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -354,8 +265,7 @@ button.small-pill {
 ========================= */
 
 #main {
-
-    max-width: 1180px;
+    width: min(100%, 1500px);
 
     margin: auto;
 
@@ -364,7 +274,7 @@ button.small-pill {
 
     display: grid;
 
-    grid-template-columns: 190px 1fr 310px;
+    grid-template-columns: 220px minmax(0, 1fr) minmax(240px, 310px);
 
     gap: 18px;
 }
@@ -385,7 +295,6 @@ button.small-pill {
 }
 
 
-#menuCard,
 #confidentialCard {
 
     background-color: var(--white);
@@ -398,68 +307,13 @@ button.small-pill {
 }
 
 
-.menu-title {
-
-    padding: 8px;
-
-    color: var(--secondary);
-
-    font-size: 10px;
-}
-
-
-#menuCard a {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-
-    padding: 10px;
-
-
-    color: var(--secondary);
-
-    border-radius: 5px;
-
-    font-size: 10px;
-
-    position: relative;
-}
-
-
-#menuCard a:hover,
-#menuCard .active {
-
-    background-color: #e8f4f5;
-
-    color: var(--primary);
-}
-
-
-.active-dot {
-
-    width: 6px;
-
-    height: 6px;
-
-    margin-left: auto;
-
-    background-color: var(--primary);
-
-    border-radius: 50%;
-}
-
-
 #confidentialCard h4 {
 
     margin-top: 0;
 
     color: var(--primary);
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 
@@ -467,7 +321,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 9px;
+    font-size: 12px;
 
     line-height: 1.5;
 }
@@ -475,7 +329,7 @@ button.small-pill {
 
 #confidentialCard small {
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -520,7 +374,7 @@ button.small-pill {
 
     outline: none;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -536,7 +390,7 @@ button.small-pill {
 
     cursor: pointer;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -548,7 +402,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -597,7 +451,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -611,7 +465,7 @@ button.small-pill {
 
     border-radius: 4px;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -621,7 +475,7 @@ button.small-pill {
 
     margin: 15px 0 6px;
 
-    font-size: 9px;
+    font-size: 12px;
 
     font-weight: 600;
 }
@@ -681,7 +535,7 @@ button.small-pill {
 
 .type-option b {
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -693,7 +547,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 8px;
+    font-size: 12px;
 
     line-height: 1.4;
 }
@@ -726,7 +580,7 @@ button.small-pill {
 
     gap: 10px;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -760,7 +614,7 @@ button.small-pill {
 
     cursor: pointer;
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -802,7 +656,7 @@ button.small-pill {
     border-radius: 5px;
 
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -873,7 +727,7 @@ button.small-pill {
 
     margin: 5px 0;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -881,7 +735,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -911,7 +765,7 @@ button.small-pill {
 
     cursor: pointer;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -945,7 +799,7 @@ button.small-pill {
 
     min-height: 15px;
 
-    font-size: 10px;
+    font-size: 12px;
 
     font-weight: 600;
 }
@@ -1010,7 +864,7 @@ button.small-pill {
 
     margin-bottom: 5px;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -1018,7 +872,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1026,7 +880,7 @@ button.small-pill {
 
     color: var(--tertiary);
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1051,7 +905,7 @@ button.small-pill {
 
     margin: 4px 0;
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1087,7 +941,7 @@ button.small-pill {
 
     cursor: pointer;
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1114,7 +968,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1140,7 +994,7 @@ button.small-pill {
 
     cursor: pointer;
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 
@@ -1163,7 +1017,7 @@ button.small-pill {
 
     color: var(--secondary);
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 
@@ -1176,119 +1030,6 @@ button.small-pill {
 .right-card a span {
 
     margin-left: auto;
-}
-
-
-
-/* =========================
-   Footer
-========================= */
-
-#footer {
-
-    padding: 20px 4%;
-
-    background-color: var(--white);
-
-    border-top: 1px solid var(--border);
-}
-
-
-#footerTop {
-
-    padding-bottom: 18px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-}
-
-
-#footerBrand {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-#footerLogo {
-
-    padding: 7px;
-
-    background-color: var(--primary);
-
-    color: var(--white);
-
-    border-radius: 5px;
-}
-
-
-#footerBrand b {
-
-    color: var(--primary);
-}
-
-
-#footerBrand span {
-
-    color: var(--secondary);
-
-    font-size: 9px;
-}
-
-
-#footerIcons {
-
-    display: flex;
-
-    gap: 18px;
-
-    color: var(--secondary);
-}
-
-
-#footerBottom {
-
-    padding-top: 13px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-
-    border-top: 1px solid var(--border);
-
-
-    color: var(--secondary);
-
-    font-size: 8px;
-}
-
-
-#footerBottom div {
-
-    display: flex;
-
-    gap: 13px;
-}
-
-
-#footerBottom a {
-
-    color: var(--secondary);
-}
-
-
-#footerBottom a:hover {
-
-    color: var(--primary);
 }
 
 

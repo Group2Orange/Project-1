@@ -214,20 +214,6 @@ function clearAllErrors() {
 /* =====================================================
    6. RENDER SIDEBAR
    ===================================================== */
-function renderSidebar() {
-    var emp = getCurrentEmployee();
-    if (!emp) return;
-
-    document.getElementById("sidebarName").textContent = emp.name;
-    document.getElementById("sidebarDepartment").textContent = emp.department;
-
-    var initials = emp.name.split(" ");
-    var firstInit = initials[0].charAt(0);
-    var lastInit = initials[initials.length - 1].charAt(0);
-    document.getElementById("sidebarAvatar").textContent = firstInit + lastInit;
-}
-
-
 /* =====================================================
    7. RENDER BALANCE CARDS
    ===================================================== */
@@ -790,7 +776,6 @@ function switchTab(tabName) {
    15. REFRESH ALL
    ===================================================== */
 function refreshAll() {
-    renderSidebar();
     renderBalances();
     renderUpcomingCards();
     renderHistoryTable();
@@ -805,6 +790,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     seedData(function () {
         refreshAll();
+        if (location.hash === "#request-time-off") openModal();
     });
 
     // Modal

@@ -21,8 +21,27 @@
   const placeholder = document.querySelector(".navbar[data-navbar]");
 
   if (placeholder) {
-    // data-navbar="hr" loads navbar-hr.html, from the same folder as this file (shared/)
-    const file = new URL(`navbar-${placeholder.dataset.navbar}.html`, document.currentScript.src);
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem('loggedUser'));
+    } catch (error) {
+      console.warn('Could not read the logged-in user:', error);
+    }
+
+    const path = location.pathname;
+    const protectedPage = path.includes('/hr/') || path.includes('/employee/');
+    const expectedRole = placeholder.dataset.navbar === 'employee' ? 'EMP' : 'HR';
+    if (protectedPage && !user) {
+      location.replace('../../common/login/login.html');
+    } else if (protectedPage && user && user.role !== expectedRole) {
+      location.replace(user.role === 'EMP'
+        ? '../../employee/MyWOrkSpace/MyWOrkSpace.html'
+        : user.role === 'HR' ? '../../common/home/home.html' : '../../common/login/login.html');
+    } else {
+    // Shared public pages use the navbar that matches the signed-in role.
+    const type = path.includes('/common/') && user?.role === 'EMP'
+      ? 'employee' : placeholder.dataset.navbar;
+    const file = new URL(`navbar-${type}.html`, document.currentScript.src);
 
     fetch(file)
       .then((response) => {
@@ -35,7 +54,6 @@
 
         const navbar = document.querySelector(".navbar");
         try {
-          const user = JSON.parse(localStorage.getItem('loggedUser'));
           if (user?.name) {
             const parts = user.name.trim().split(/\s+/);
             navbar.querySelector('.navbar-user-name').textContent = user.name;
@@ -98,5 +116,6 @@
           error
         );
       });
+    }
   }
 }

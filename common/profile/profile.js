@@ -1,7 +1,7 @@
 /* =====================================================
    PROFILE PAGE
-   Base data: ../../Data/User.json
-   Editable data: localStorage
+   Signed-in data: loggedUser in localStorage
+   Optional office details: employee/details/data.json
 ===================================================== */
 
 const elements = {
@@ -72,41 +72,49 @@ function getSavedEdits(employeeId) {
 
 
 /* =====================================================
-   LOAD JSON
+   LOAD SIGNED-IN USER
 ===================================================== */
 
 async function getEmployeeFromJson() {
-    const response = await fetch("../../Data/User.json");
-
-    if (!response.ok) {
-        throw new Error(
-            `Could not load User.json. Status: ${response.status}`
-        );
+    const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+    if (!user) {
+        location.replace('../login/login.html');
+        throw new Error('No signed-in user');
     }
-
-    return await response.json();
+    let extra = {};
+    try {
+        const response = await fetch('../../employee/details/data.json');
+        if (response.ok) {
+            const data = await response.json();
+            extra = data.employees?.find(person => Number(person.id) === Number(user.id)) || {};
+        }
+    } catch (error) {
+        console.warn('Optional profile details are unavailable:', error);
+    }
+    return {
+        ...user,
+        employeeId: extra.employeeId || user.id,
+        fullName: user.name,
+        employmentStatus: user.status,
+        officeLocation: extra.officeLocation || '—'
+    };
 }
 
 
 /* =====================================================
-   MERGE JSON + LOCAL STORAGE
+   APPLY SAVED PROFILE EDITS
 ===================================================== */
 
 function mergeEmployeeData(jsonEmployee) {
     const savedEdits =
         getSavedEdits(jsonEmployee.employeeId);
 
-    /*
-       User.json is always the original source.
-
-       Only editable profile values are allowed
-       to override JSON values from localStorage.
-    */
+    // Only editable profile values override the signed-in record.
     return {
         ...jsonEmployee,
 
         fullName:
-            savedEdits.fullName ??
+            savedEdits.name ??
             jsonEmployee.fullName,
 
         email:
@@ -201,8 +209,7 @@ function displayEmployee(employee) {
 
     if (elements.profileImage) {
         elements.profileImage.src =
-            employee.image ||
-            "assets/profile.jpg";
+            employee.image?.startsWith('data:') ? employee.image : "assets/profile.svg";
 
         elements.profileImage.alt =
             employee.fullName ||
@@ -210,7 +217,7 @@ function displayEmployee(employee) {
 
         elements.profileImage.onerror = function () {
             this.onerror = null;
-            this.src = "assets/profile.jpg";
+            this.src = "assets/profile.svg";
         };
     }
 }
