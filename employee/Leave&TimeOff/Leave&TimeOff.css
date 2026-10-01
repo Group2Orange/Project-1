@@ -950,6 +950,73 @@ body {
     font-size: 13px;
 }
 
+
+
+
+/* ================= VALIDATION ================= */
+.input-error {
+    border-color: var(--danger) !important;
+    background-color: var(--danger-bg) !important;
+}
+
+.form-select.input-error,
+.form-textarea.input-error,
+.input-with-icon input.input-error {
+    border-color: var(--danger);
+    background-color: var(--danger-bg);
+}
+
+.field-error-msg {
+    display: block;
+    color: var(--danger);
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* ================= RADIO ROW ================= */
+.radio-row {
+    display: flex;
+    gap: 12px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.radio-option:hover {
+    background-color: var(--bg-muted);
+}
+
+.radio-option input[type="radio"] {
+    accent-color: var(--primary);
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.radio-option input[type="radio"]:checked + span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .radio-row {
+        flex-direction: column;
+    }
+}
+
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
     .balance-cards {
@@ -1021,3 +1088,6 @@ body {
         justify-content: center;
     }
 }
+
+
+
