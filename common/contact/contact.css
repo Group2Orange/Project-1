@@ -633,35 +633,3 @@ color:var(--muted);
     display: block;
 }
 
-
-@media(max-width:900px){
-
-.layout{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.title-row{
-
-display:block;
-
-}
-
-
-.topic-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-.form-grid{
-
-grid-template-columns:1fr;
-
-}
-
-}

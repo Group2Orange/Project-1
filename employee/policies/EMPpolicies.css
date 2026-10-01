@@ -108,6 +108,9 @@ a {
 
     display: grid;
 
+    flex: 1;
+    align-content: start;
+
     grid-template-columns: 2fr 1fr;
 
     gap: 60px;
@@ -493,7 +496,7 @@ a {
    Footer
 ========================= */
 
-#footer {
+/* #footer {
 
     display: flex;
 
@@ -534,7 +537,7 @@ a {
 #footer a:hover {
 
     color: var(--primary);
-}
+} */
 
 
 /* =========================
@@ -559,7 +562,7 @@ a {
         position: static;
     }
 
-
+/*
     #footer {
 
         flex-direction: column;
@@ -567,6 +570,6 @@ a {
         gap: 20px;
 
         text-align: center;
-    }
+    } */
 
 }
