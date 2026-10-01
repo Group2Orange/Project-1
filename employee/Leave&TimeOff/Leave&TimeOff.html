@@ -18,61 +18,8 @@
    <main class="leave-page">
     <div class="leave-container">
 
-      <!-- ========== SIDEBAR ========== -->
-      <aside class="leave-sidebar">
-
-        <div class="employee-card">
-          <div class="employee-avatar" id="sidebarAvatar">--</div>
-          <div class="employee-meta">
-            <h3 id="sidebarName">Loading...</h3>
-            <p id="sidebarDepartment">Loading...</p>
-          </div>
-
-          <div class="weekly-progress">
-            <div class="weekly-progress-header">
-              <span>Weekly Progress</span>
-              <strong id="weeklyPercent">78%</strong>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="weeklyFill" style="width: 78%;"></div>
-            </div>
-            <div class="weekly-progress-footer">
-              <span id="weeklyLogged">31.2 hrs logged</span>
-              <span id="weeklyTarget">40h target</span>
-            </div>
-          </div>
-        </div>
-
-        <nav class="sidebar-menu">
-          <h4 class="sidebar-section-title">EMPLOYEE WORKSPACE</h4>
-
-          <a href="../MyWOrkSpace/MyWOrkSpace.html" class="sidebar-link">
-            <span class="material-symbols-outlined">grid_view</span>
-            My Workspace
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">badge</span>
-            My Details
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">task_alt</span>
-            My Tasks
-            <span class="badge">8</span>
-          </a>
-
-          <a href="Leave&amp;TimeOff.html" class="sidebar-link active" aria-current="page">
-            <span class="material-symbols-outlined">event_available</span>
-            Leave &amp; Time Off
-          </a>
-
-          <a href="#" class="sidebar-link">
-            <span class="material-symbols-outlined">support_agent</span>
-            Helpdesk Support
-          </a>
-        </nav>
-
+      <div class="leave-side-column">
+        <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="leave" aria-label="Employee workspace"></aside>
         <div class="guidelines-card">
           <div class="guidelines-header">
             <span class="material-symbols-outlined">verified_user</span>
@@ -94,9 +41,7 @@
             </li>
           </ul>
         </div>
-
-      </aside>
-
+      </div>
 
       <!-- ========== MAIN ========== -->
       <section class="leave-main">

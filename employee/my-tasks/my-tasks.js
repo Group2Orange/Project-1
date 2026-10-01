@@ -1,85 +1,7 @@
 const STORAGE_KEY = "employeeTasks";
 const MAX_PDF_SIZE = 1024 * 1024;
 
-const defaultTasks = [
-  {
-    id: "TASK-001",
-    title: "Submit Benefits Election Form",
-    description: "Review Open Enrollment coverage plan tiers and sign confirmation for FY2026.",
-    priority: "Normal",
-    category: "onboarding",
-    team: "HR Onboarding",
-    dueDate: "2026-10-01",
-    status: "todo",
-    order: 1
-  },
-  {
-    id: "TASK-002",
-    title: "Prepare Q4 Frontend Architecture RFC",
-    description: "Draft proposal for micro-frontend module federation and performance testing harness.",
-    priority: "Normal",
-    category: "sprint",
-    team: "Engineering",
-    dueDate: "2026-10-18",
-    status: "todo",
-    order: 2
-  },
-  {
-    id: "TASK-003",
-    title: "Verify Personal Emergency Contact",
-    description: "Annual HR record audit requires confirmed home address and secondary phone line.",
-    priority: "Routine",
-    category: "onboarding",
-    team: "Compliance",
-    dueDate: "2026-09-25",
-    status: "todo",
-    order: 3
-  },
-  {
-    id: "TASK-004",
-    title: "Complete Security Awareness Training V2",
-    description: "Mandatory quarterly compliance module with phishing simulations.",
-    priority: "High",
-    category: "onboarding",
-    team: "Compliance",
-    dueDate: "2026-09-30",
-    status: "progress",
-    order: 1
-  },
-  {
-    id: "TASK-005",
-    title: "Review Sprint 24 Pull Requests",
-    description: "Review pending reconciliation unit tests and leave actionable feedback before release.",
-    priority: "Normal",
-    category: "sprint",
-    team: "Engineering",
-    dueDate: "2026-10-01",
-    status: "progress",
-    order: 2
-  },
-  {
-    id: "TASK-006",
-    title: "Q3 Home Office Stipend Reimbursement",
-    description: "Submitted receipt for ergonomic desk chair and monitor arm.",
-    priority: "Normal",
-    category: "review",
-    team: "Finance",
-    dueDate: "2026-10-02",
-    status: "review",
-    order: 1
-  },
-  {
-    id: "TASK-007",
-    title: "Sign Updated Employee Handbook",
-    description: "E-signature executed via DocuSign portal.",
-    priority: "Normal",
-    category: "onboarding",
-    team: "Compliance",
-    dueDate: "2026-09-26",
-    status: "completed",
-    order: 1
-  }
-];
+
 
 let tasks = loadTasks();
 let selectedTaskId = null;
@@ -100,19 +22,32 @@ function clone(data) {
 }
 
 function loadTasks() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultTasks));
-    return clone(defaultTasks);
-  }
-
   try {
-    const data = JSON.parse(saved);
-    return Array.isArray(data) ? data : clone(defaultTasks);
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(saved) ? saved : [];
   } catch {
-    return clone(defaultTasks);
+    return [];
   }
+}
+
+async function initializeTasks() {
+  if (!localStorage.getItem(STORAGE_KEY)) {
+    try {
+      const response = await fetch('default-tasks.json');
+      if (!response.ok) throw new Error(`Task data: ${response.status}`);
+      const defaults = await response.json();
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+      }
+    } catch (error) {
+      console.error('Could not load the default tasks:', error);
+    }
+  }
+  tasks = loadTasks();
+  renderTasks();
+  const requestedTaskId = new URLSearchParams(window.location.search).get('task');
+  if (requestedTaskId) openTask(requestedTaskId);
+  window.dispatchEvent(new Event('teamspace:tasks-changed'));
 }
 
 function saveTasks() {
@@ -641,7 +576,4 @@ categoryTabs.addEventListener("click", event => {
   applyFilters();
 });
 
-renderTasks();
-
-const requestedTaskId = new URLSearchParams(window.location.search).get('task');
-if (requestedTaskId) openTask(requestedTaskId);
+initializeTasks();

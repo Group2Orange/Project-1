@@ -278,3 +278,38 @@ reduceMotion.addEventListener(
     startCompanyAutoPlay();
   }
 );
+// The Home page is shared; its service cards point to the signed-in role's pages.
+(function connectHomeModules() {
+  let role = null;
+  try { role = JSON.parse(localStorage.getItem('loggedUser'))?.role; } catch { /* Public view. */ }
+  const cards = [...document.querySelectorAll('.module-card')];
+  if (cards.length !== 6) return;
+
+  const hrModules = [
+    ['Employee Directory', 'Find employee profiles, departments, and contact details.', '../../hr/employees/employees.html'],
+    ['Team Tasks & Workflow', 'Manage assigned work, priorities, and deadlines.', '../../hr/tasks/tasks.html'],
+    ['Employee Requests', 'Review requests and follow their status.', '../../hr/requests/requests.html'],
+    ['Company Policies', 'Manage internal policies and useful resources.', '../../hr/policies/policies.html'],
+    ['Employee Feedback', 'Review suggestions and workplace inquiries.', '../../hr/feedback/feedback.html'],
+    ['Task Reviews', 'Review submitted work and track approvals.', '../../hr/task-review/task-review.html']
+  ];
+  const employeeModules = [
+    ['My Workspace', 'See your priorities, schedule, and employee services.', '../../employee/MyWOrkSpace/MyWOrkSpace.html'],
+    ['My Tasks', 'Organize your assigned work and deadlines.', '../../employee/my-tasks/my-tasks.html'],
+    ['Leave & Time Off', 'Request time off and track approval status.', '../../employee/Leave&TimeOff/Leave&TimeOff.html'],
+    ['Company Policies', 'Find policies and useful employee resources.', '../../employee/policies/EMPpolicies.html'],
+    ['Feedback & Surveys', 'Share suggestions and workplace feedback.', '../contact/contact.html'],
+    ['Helpdesk Support', 'Ask HR a question or schedule a 1:1 meeting.', '../../employee/helpDesk/helpDesk.html']
+  ];
+  const modules = role === 'HR' ? hrModules : employeeModules;
+  cards.forEach((card, index) => {
+    card.querySelector('h3').textContent = modules[index][0];
+    card.querySelector('p').textContent = modules[index][1];
+    card.querySelector('a').href = modules[index][2];
+  });
+  if (role === 'EMP') {
+    document.querySelectorAll('[data-home-policy]').forEach(link => {
+      link.href = '../../employee/policies/EMPpolicies.html';
+    });
+  }
+})();

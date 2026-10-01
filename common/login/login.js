@@ -66,7 +66,12 @@ loginForm.addEventListener('submit', async (event) => {
     }
 
     // Other pages use loggedUser. Never save the password to localStorage.
+    let edits = {};
+    try { edits = JSON.parse(localStorage.getItem(`profileEdits_${employee.id}`)) || {}; } catch { /* Ignore invalid local edits. */ }
     const loggedUser = { ...employee };
+    if (typeof edits.name === 'string') loggedUser.name = edits.name;
+    if (typeof edits.phone === 'string') loggedUser.phone = edits.phone;
+    if (typeof edits.image === 'string') loggedUser.image = edits.image;
     delete loggedUser.password;
     localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
     localStorage.setItem('currentUserId', String(employee.id));

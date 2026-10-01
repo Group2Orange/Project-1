@@ -122,7 +122,7 @@ input {
 
     margin-top: 2px;
 
-    font-size: 8px;
+    font-size: 11px;
     line-height: 9px;
 
     color: #7a8585;
@@ -164,7 +164,7 @@ input {
 
     width: 100%;
 
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text);
 }
 
@@ -189,7 +189,7 @@ input {
 
     color: #344d4e;
 
-    font-size: 10px;
+    font-size: 11px;
     line-height: 12px;
 
     font-weight: 500;
@@ -241,7 +241,7 @@ input {
 
     gap: 4px;
 
-    font-size: 10px;
+    font-size: 11px;
     line-height: 11px;
 
     font-weight: 600;
@@ -282,14 +282,14 @@ input {
 .profile strong {
     display: block;
 
-    font-size: 9px;
+    font-size: 11px;
     line-height: 10px;
 }
 
 .profile small {
     display: block;
 
-    font-size: 7px;
+    font-size: 11px;
     line-height: 8px;
 
     color: #7c8888;
@@ -337,7 +337,7 @@ input {
 
     border-radius: 20px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -364,7 +364,7 @@ input {
 
     margin-left: 8px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #687878;
 }
@@ -404,7 +404,7 @@ input {
 
     border-radius: 7px;
 
-    font-size: 10px;
+    font-size: 11px;
 
     cursor: pointer;
 }
@@ -486,7 +486,7 @@ input {
 }
 
 .stat-top > span {
-    font-size: 8px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -538,7 +538,7 @@ input {
 
     margin-top: 4px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #7d8888;
 }
@@ -619,7 +619,7 @@ input {
 
     width: 100%;
 
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .feedback-search input::placeholder {
@@ -637,7 +637,7 @@ input {
 
     color: #4e6060;
 
-    font-size: 9px;
+    font-size: 11px;
 
     display: flex;
     align-items: center;
@@ -664,7 +664,7 @@ input {
 }
 
 .filter-title {
-    font-size: 8px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -684,7 +684,7 @@ input {
 
     border-radius: 13px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     cursor: pointer;
 }
@@ -716,7 +716,7 @@ input {
 
     border-radius: 12px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     cursor: pointer;
 }
@@ -744,7 +744,7 @@ input {
 
     padding: 0 3px 10px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #677777;
 }
@@ -818,7 +818,7 @@ input {
     align-items: center;
     justify-content: center;
 
-    font-size: 9px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -882,7 +882,7 @@ input {
 
 .identity-tag,
 .department-tag {
-    font-size: 7px;
+    font-size: 11px;
 
     background: #edf2f1;
 
@@ -906,7 +906,7 @@ input {
 
     margin-top: 3px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #788585;
 }
@@ -937,7 +937,7 @@ input {
 
     border-radius: 12px;
 
-    font-size: 7px;
+    font-size: 11px;
 
     font-weight: 650;
 
@@ -1013,7 +1013,7 @@ input {
 }
 
 .date {
-    font-size: 8px;
+    font-size: 11px;
 
     color: #718080;
 
@@ -1050,7 +1050,7 @@ input {
 
     margin-top: 4px;
 
-    font-size: 9px;
+    font-size: 11px;
 
     line-height: 14px;
 
@@ -1115,7 +1115,7 @@ input {
 .file-info strong {
     display: block;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #405858;
 }
@@ -1125,7 +1125,7 @@ input {
 
     margin-top: 2px;
 
-    font-size: 7px;
+    font-size: 11px;
 
     color: #8a9494;
 }
@@ -1137,7 +1137,7 @@ input {
 
     color: #55706f;
 
-    font-size: 8px;
+    font-size: 11px;
 
     cursor: pointer;
 }
@@ -1149,7 +1149,7 @@ input {
 
     color: #9aa3a3;
 
-    font-size: 8px;
+    font-size: 11px;
 
     font-style: italic;
 }
@@ -1174,7 +1174,7 @@ input {
 }
 
 .card-footer > span {
-    font-size: 8px;
+    font-size: 11px;
 
     color: #657575;
 }
@@ -1221,7 +1221,7 @@ input {
 
     color: #526565;
 
-    font-size: 8px;
+    font-size: 11px;
 
     cursor: pointer;
 }
@@ -1261,7 +1261,7 @@ input {
     display: flex;
     align-items: center;
 
-    font-size: 8px;
+    font-size: 11px;
 
     color: #748080;
 }
@@ -1297,7 +1297,7 @@ input {
 
     color: #667676;
 
-    font-size: 8px;
+    font-size: 11px;
 
     border-radius: 5px;
 
@@ -1337,7 +1337,7 @@ input {
 
     color: #758080;
 
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .footer strong {
@@ -1353,7 +1353,7 @@ input {
 }
 
 .footer-right i {
-    font-size: 6px;
+    font-size: 11px;
 
     color: #24a77f;
 
