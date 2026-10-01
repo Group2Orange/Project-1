@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="my-tasks.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
 </head>
 
 <body class="has-footer">
@@ -30,63 +31,7 @@
 
     <div class="tasks-layout">
 
-      <aside class="sidebar">
-
-        <div class="employee-card">
-
-          <div class="employee-info">
-            <div class="employee-avatar">MC</div>
-
-            <div>
-              <h2>Marcus Chen</h2>
-              <p>Engineering Dept</p>
-            </div>
-          </div>
-
-          <div class="progress-header">
-            <span>Weekly Progress</span>
-            <strong id="weeklyProgressText">0%</strong>
-          </div>
-
-          <div class="progress-bar">
-            <span id="weeklyProgressBar"></span>
-          </div>
-
-        </div>
-
-        <span class="sidebar-title">EMPLOYEE WORKSPACE</span>
-
-        <nav class="sidebar-nav">
-
-          <a href="../../common/home/home.html">
-            <span class="material-symbols-outlined">dashboard</span>
-            My Workspace
-          </a>
-
-          <a href="my-tasks.html" class="active">
-            <span class="material-symbols-outlined">task_alt</span>
-            My Tasks
-            <span class="nav-count" id="sidebarTaskCount">0</span>
-          </a>
-
-          <a href="../my-requests/my-requests.html">
-            <span class="material-symbols-outlined">calendar_month</span>
-            Leave & Time Off
-          </a>
-
-          <a href="../../common/contact/contact.html">
-            <span class="material-symbols-outlined">forum</span>
-            Feedback & Surveys
-          </a>
-
-          <a href="#">
-            <span class="material-symbols-outlined">support_agent</span>
-            Helpdesk Support
-          </a>
-
-        </nav>
-
-      </aside>
+      <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="tasks" aria-label="Employee workspace"></aside>
 
       <section class="tasks-content">
 
@@ -412,6 +357,7 @@
 
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js"></script>
+  <script src="../../shared/employee-sidebar.js"></script>
   <script src="my-tasks.js"></script>
 
 </body>
