@@ -3,38 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Management | HR System</title>
+  <title>Task Management | TeamSpace HR</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
-  <link rel="stylesheet" href="tasks.css">
   <link rel="stylesheet" href="../../shared/hr-sidebar.css">
+  <link rel="stylesheet" href="../../shared/hr-layout.css">
+  <link rel="stylesheet" href="../employees/employees.css">
+  <style>
+    .directory td select { padding: 4px 8px; font-size: 11px; height: auto; }
+  </style>
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
-  <main class="operations-layout">
+  <main class="hr-page-shell">
     <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="tasks" aria-label="HR workspace"></aside>
-    <section class="operations-content">
-      <header><p class="operations-kicker">PEOPLE OPERATIONS</p><h1>Team Tasks</h1><p>Assign work and track progress across employees.</p></header>
-      <p id="taskMessage" class="operations-message" role="status" aria-live="polite"></p>
-      <form id="newTaskForm" class="operations-form">
-        <h2>Assign a task</h2>
-        <label>Title<input name="title" required maxlength="120" placeholder="Task title"></label>
-        <label>Employee<select name="employeeId" required><option value="">Choose employee</option></select></label>
-        <label>Priority<select name="priority"><option>Normal</option><option>High</option><option>Routine</option></select></label>
-        <label>Due date<input name="dueDate" type="date"></label>
-        <label class="full">Description<textarea name="description" rows="3" placeholder="What needs to be done?"></textarea></label>
-        <button type="submit">Assign task</button>
-      </form>
-      <div class="operations-toolbar"><label>Search tasks<input id="taskSearch" type="search" placeholder="Title or employee"></label><label>Status<select id="taskStatus"><option value="">All statuses</option><option value="todo">To do</option><option value="progress">In progress</option><option value="review">Under review</option><option value="completed">Completed</option></select></label></div>
-      <div id="taskList" class="operations-list"></div>
-    </section>
+    <div class="hr-page-content directory">
+      <header class="directory-heading">
+        <div>
+          <p class="eyebrow">PEOPLE OPERATIONS</p>
+          <h1>Team Tasks</h1>
+          <p>Assign work and track progress across employees.</p>
+        </div>
+        <div class="heading-actions">
+          <button type="button" class="button button-primary" id="addTaskButton"><span class="material-symbols-outlined">add_task</span>Assign Task</button>
+        </div>
+      </header>
+      
+      <p id="taskMessage" class="directory-message" role="status" aria-live="polite"></p>
+      
+      <div class="directory-panel">
+        <div class="directory-filters">
+          <label class="search-field" style="grid-column: 1 / span 3;">
+            <span class="visually-hidden">Search tasks</span>
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <input id="taskSearch" type="search" placeholder="Search tasks or employees...">
+          </label>
+          <label style="grid-column: span 2;">
+            <span class="visually-hidden">Status</span>
+            <select id="taskStatus">
+              <option value="">All statuses</option>
+              <option value="todo">To do</option>
+              <option value="progress">In progress</option>
+              <option value="review">Under review</option>
+              <option value="completed">Completed</option>
+            </select>
+          </label>
+        </div>
+        
+        <div class="directory-table-wrap">
+          <table class="directory">
+            <thead>
+              <tr>
+                <th>TASK & DESCRIPTION</th>
+                <th>ASSIGNED TO</th>
+                <th>PRIORITY & DUE</th>
+                <th>STATUS</th>
+                <th style="text-align: right;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="taskList">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </main>
+  
+  <dialog id="taskDialog" class="directory-dialog" aria-labelledby="taskDialogTitle">
+    <form id="newTaskForm" method="dialog">
+      <div class="dialog-heading">
+        <div><h2 id="taskDialogTitle">Assign a task</h2><p>Provide the details and assign this to an employee.</p></div>
+        <button type="button" class="icon-button" id="closeTaskDialog" aria-label="Close dialog"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <input type="hidden" id="editTaskId">
+      <div class="dialog-grid">
+        <label class="dialog-wide">Title<input name="title" required maxlength="120" placeholder="e.g. Q4 Marketing Report"></label>
+        <label>Employee
+          <select name="employeeId" required>
+            <option value="">Choose employee</option>
+          </select>
+        </label>
+        <label>Priority
+          <select name="priority">
+            <option>Normal</option>
+            <option>High</option>
+            <option>Routine</option>
+          </select>
+        </label>
+        <label>Due date<input name="dueDate" type="date"></label>
+        <label class="dialog-wide">Description<input name="description" placeholder="Brief details on what needs to be done"></label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="button button-light" id="cancelTaskDialog">Cancel</button>
+        <button type="submit" class="button button-primary">Assign Task</button>
+      </div>
+    </form>
+  </dialog>
+
+  
+  <dialog id="viewDialog" class="directory-dialog" aria-labelledby="viewDialogTitle">
+    <div class="dialog-heading">
+      <div><h2 id="viewDialogTitle">Task Details</h2><p>Review the full task information.</p></div>
+      <button type="button" class="icon-button" id="closeViewDialog" aria-label="Close dialog"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <input type="hidden" id="editTaskId">
+      <div class="dialog-grid">
+      <label class="dialog-wide">Title<input id="viewTitle" readonly></label>
+      <label>Employee<input id="viewEmployee" readonly></label>
+      <label>Priority<input id="viewPriority" readonly></label>
+      <label>Due date<input id="viewDueDate" readonly></label>
+      <label>Status<input id="viewStatus" readonly></label>
+      <label class="dialog-wide">Description<textarea id="viewDescription" readonly rows="3" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 7px; background: #f4f7fa; color: #617684; font: 12px var(--font-text);"></textarea></label>
+    </div>
+  </dialog>
+
+  <dialog id="deleteDialog" class="directory-dialog confirm-dialog" aria-labelledby="deleteTitle">
+    <div class="confirm-icon"><span class="material-symbols-outlined">delete</span></div>
+    <h2 id="deleteTitle">Delete task?</h2>
+    <p id="deleteMessage">This action cannot be undone.</p>
+    <div class="dialog-actions">
+      <button type="button" class="button button-light" id="cancelDelete">Cancel</button>
+      <button type="button" class="button button-danger" id="confirmDelete">Delete Task</button>
+    </div>
+  </dialog>
+
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
   <script src="../../shared/hr-sidebar.js"></script>
-  <script src="tasks.js?v=2"></script>
+  <script src="tasks.js?v=4"></script>
 </body>
 </html>

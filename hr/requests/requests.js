@@ -4,6 +4,8 @@ const message = document.getElementById('requestMessage');
 let requests = [];
 let employees = [];
 
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+
 async function loadRequests() {
   try {
     const [requestsResponse, employeesResponse] = await Promise.all([
@@ -30,52 +32,49 @@ function renderRequests() {
     (!status || request.status === status) &&
     `${employeeName(request.employeeId)} ${request.type} ${request.reason || ''}`.toLowerCase().includes(search)
   ).sort((a, b) => String(b.submittedAt || '').localeCompare(String(a.submittedAt || '')));
-  list.replaceChildren();
+  
   if (!visible.length) {
-    const empty = document.createElement('p');
-    empty.className = 'operations-empty';
-    empty.textContent = 'No leave requests match these filters.';
-    list.append(empty);
+    list.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 30px; color: var(--color-secondary);">No leave requests match these filters.</td></tr>`;
     return;
   }
-  for (const request of visible) {
-    const card = document.createElement('article');
-    card.className = 'operation-card';
-    const info = document.createElement('div');
-    const title = document.createElement('h2');
-    title.textContent = `${employeeName(request.employeeId)} · ${request.type}`;
-    const dates = document.createElement('p');
+  
+  list.innerHTML = visible.map(request => {
+    const name = employeeName(request.employeeId);
+    const initials = name.trim().split(/\s+/).map(p => p[0]).slice(0, 2).join('').toUpperCase();
+    
     const isEarlyDeparture = request.type === 'Early Departure';
+    let datesHtml = '';
     if (isEarlyDeparture && request.fromTime && request.toTime) {
-      dates.textContent = `${request.startDate} · ${request.fromTime} – ${request.toTime}`;
+      datesHtml = `<strong>${escapeHtml(request.startDate)}</strong><small>${escapeHtml(request.fromTime)} – ${escapeHtml(request.toTime)}</small>`;
     } else {
-      dates.textContent = `${request.startDate} – ${request.endDate} · ${request.days || 0} day(s)`;
+      datesHtml = `<strong>${escapeHtml(request.startDate)} to ${escapeHtml(request.endDate)}</strong><small>${request.days || 0} day(s)</small>`;
     }
-    const reason = document.createElement('p');
-    reason.textContent = request.reason || 'No reason provided';
-    const submitted = document.createElement('small');
-    submitted.textContent = `Submitted ${request.submittedAt || 'unknown'} · ${request.status}`;
-    info.append(title, dates, reason, submitted);
-    const actions = document.createElement('div');
-    actions.className = 'operation-actions';
+
+    const badgeClass = request.status === 'Approved' ? 'active' : request.status === 'Rejected' ? 'blocked' : 'inactive';
+    
+    let actions = '';
     if (request.status === 'Pending') {
-      for (const [status, label] of [['Approved', 'Approve'], ['Rejected', 'Reject']]) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = label;
-        if (status === 'Rejected') button.className = 'reject';
-        button.addEventListener('click', () => decideRequest(request, status));
-        actions.append(button);
-      }
-    } else {
-      const badge = document.createElement('span');
-      badge.className = 'operation-status';
-      badge.textContent = request.status;
-      actions.append(badge);
+      actions = `
+        <button type="button" data-action="approve" aria-label="Approve" title="Approve"><span class="material-symbols-outlined" style="color:#087847">check_circle</span></button>
+        <button type="button" class="reject" data-action="reject" aria-label="Reject" title="Reject"><span class="material-symbols-outlined">cancel</span></button>
+      `;
     }
-    card.append(info, actions);
-    list.append(card);
-  }
+
+    return `
+      <tr data-id="${escapeHtml(request.id)}">
+        <td>
+          <div class="identity">
+            <span class="identity-avatar">${escapeHtml(initials)}</span>
+            <div><strong>${escapeHtml(name)}</strong><small>${escapeHtml(request.type)}</small></div>
+          </div>
+        </td>
+        <td class="department-cell">${datesHtml}</td>
+        <td class="department-cell"><small style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;" title="${escapeHtml(request.reason || 'No reason provided')}">${escapeHtml(request.reason || 'No reason provided')}</small></td>
+        <td><span class="status status-${badgeClass}">${escapeHtml(request.status)}</span></td>
+        <td><div class="actions">${actions}</div></td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function decideRequest(request, status) {
@@ -111,6 +110,22 @@ async function decideRequest(request, status) {
     message.textContent = error.message;
   }
 }
+
+list.addEventListener('click', event => {
+  const btn = event.target.closest('button[data-action]');
+  if (!btn) return;
+  const row = event.target.closest('tr[data-id]');
+  if (!row) return;
+  const requestId = parseInt(row.dataset.id, 10);
+  const request = requests.find(r => r.id === requestId);
+  if (!request) return;
+  
+  if (btn.dataset.action === 'approve') {
+    decideRequest(request, 'Approved');
+  } else if (btn.dataset.action === 'reject') {
+    decideRequest(request, 'Rejected');
+  }
+});
 
 document.getElementById('requestSearch').addEventListener('input', renderRequests);
 document.getElementById('requestStatus').addEventListener('change', renderRequests);
