@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Helpdesk | TeamSpace HR</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css"><link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css"><link rel="stylesheet" href="../../shared/hr-layout.css"><link rel="stylesheet" href="helpdesk.css?v=2">
+</head>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="hr"></nav>
+  <main class="hr-page-shell">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="helpdesk" aria-label="HR workspace"></aside>
+    <div class="hr-page-content directory">
+      <header class="directory-heading">
+        <div><p class="eyebrow">SUPPORT / HELPDESK MANAGEMENT</p><h1>HR Helpdesk</h1><p>Review and manage employee support tickets and meeting requests.</p></div>
+      </header>
+
+      <!-- Stats row — matches directory-stats pattern from employees -->
+      <section class="directory-stats" aria-label="Helpdesk summary">
+        <article><span>Total Tickets</span><strong id="statTotal">—</strong><small>All submissions</small><i class="material-symbols-outlined">confirmation_number</i></article>
+        <article><span>Pending Review</span><strong id="statPending">—</strong><small>Awaiting action</small><i class="material-symbols-outlined">pending</i></article>
+        <article><span>Meeting Requests</span><strong id="statMeetings">—</strong><small>Scheduled meetings</small><i class="material-symbols-outlined">event</i></article>
+        <article><span>Approved</span><strong id="statApproved">—</strong><small>Resolved tickets</small><i class="material-symbols-outlined">check_circle</i></article>
+      </section>
+
+      <!-- Filters — matches directory-filters pattern from employees -->
+      <section class="directory-panel" aria-label="Helpdesk tickets">
+      <div class="directory-filters">
+        <div class="search-field">
+          <span class="material-symbols-outlined">search</span>
+          <input type="search" id="searchInput" placeholder="Search by subject or employee…" autocomplete="off">
+        </div>
+        <select id="filterStatus">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Reschedule Requested">Reschedule Requested</option>
+        </select>
+        <select id="filterType">
+          <option value="">All Types</option>
+          <option value="meeting">Meeting</option>
+          <option value="ticket">Text Ticket</option>
+        </select>
+      </div>
+
+        <div class="directory-table-wrap">
+          <table class="directory" id="ticketsTable">
+            <thead>
+              <tr>
+                <th>TICKET</th>
+                <th>EMPLOYEE</th>
+                <th>TYPE</th>
+                <th>CATEGORY</th>
+                <th>SUBMITTED</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="ticketsBody"></tbody>
+          </table>
+        </div>
+        <div class="directory-bottom">
+          <span id="resultCount">—</span>
+          <div>
+            <button type="button" id="prevPage" class="page-button">Previous</button>
+            <span id="pageLabel">1 / 1</span>
+            <button type="button" id="nextPage" class="page-button">Next</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- View Dialog -->
+  <dialog id="viewDialog" class="directory-dialog">
+    <form method="dialog">
+      <header class="dialog-head">
+        <div><p class="dialog-eyebrow">TICKET DETAILS</p><h2 id="viewTitle">Ticket</h2></div>
+        <button type="submit" class="dialog-x" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      </header>
+      <div class="dialog-body" id="viewBody"></div>
+      <footer class="dialog-foot">
+        <button type="submit" class="button button-light">Close</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Approve Dialog -->
+  <dialog id="approveDialog" class="directory-dialog">
+    <form method="dialog">
+      <header class="dialog-head">
+        <div><p class="dialog-eyebrow">ACTION</p><h2>Approve Ticket</h2></div>
+        <button type="submit" class="dialog-x" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      </header>
+      <div class="dialog-body">
+        <p id="approveDesc"></p>
+        <div id="meetingLinkField" hidden>
+          <label for="meetingLinkInput">Google Meet Link (required)</label>
+          <input type="url" id="meetingLinkInput" placeholder="https://meet.google.com/...">
+          <span class="field-error" id="meetingLinkError"></span>
+        </div>
+        <div id="hrReplyField">
+          <label for="hrReplyInput">Reply Message (optional)</label>
+          <textarea id="hrReplyInput" rows="3" placeholder="Write a reply to the employee..."></textarea>
+        </div>
+      </div>
+      <footer class="dialog-foot">
+        <button type="submit" class="button button-light">Cancel</button>
+        <button type="button" id="confirmApproveBtn" class="button button-primary">Approve</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Reject Dialog -->
+  <dialog id="rejectDialog" class="directory-dialog">
+    <form method="dialog">
+      <header class="dialog-head">
+        <div><p class="dialog-eyebrow">ACTION</p><h2>Reject Ticket</h2></div>
+        <button type="submit" class="dialog-x" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      </header>
+      <div class="dialog-body">
+        <label for="rejectReason">Reason for Rejection (required)</label>
+        <textarea id="rejectReason" rows="4" placeholder="Explain the reason for rejection..."></textarea>
+        <span class="field-error" id="rejectError"></span>
+      </div>
+      <footer class="dialog-foot">
+        <button type="submit" class="button button-light">Cancel</button>
+        <button type="button" id="confirmRejectBtn" class="button button-danger">Reject</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Reschedule Dialog -->
+  <dialog id="rescheduleDialog" class="directory-dialog">
+    <form method="dialog">
+      <header class="dialog-head">
+        <div><p class="dialog-eyebrow">ACTION</p><h2>Propose Reschedule</h2></div>
+        <button type="submit" class="dialog-x" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      </header>
+      <div class="dialog-body">
+        <p class="dialog-helper">Propose a new time for this meeting. The employee will be notified to accept or counter-propose.</p>
+        <label for="rsDate">New Date (required)</label>
+        <input type="date" id="rsDate">
+        <span class="field-error" id="rsDateError"></span>
+        <div class="time-input-row">
+          <div><label for="rsTimeFrom">From</label><input type="time" id="rsTimeFrom"></div>
+          <div><label for="rsTimeTo">To</label><input type="time" id="rsTimeTo"></div>
+        </div>
+        <span class="field-error" id="rsTimeError"></span>
+      </div>
+      <footer class="dialog-foot">
+        <button type="submit" class="button button-light">Cancel</button>
+        <button type="button" id="confirmRescheduleBtn" class="button button-primary">Propose Reschedule</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=3"></script>
+  <script src="../../shared/hr-sidebar.js?v=2"></script>
+  <script src="helpdesk.js?v=2"></script>
+</body>
+</html>

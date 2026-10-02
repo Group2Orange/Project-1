@@ -1,0 +1,416 @@
+/* hr/helpdesk/helpdesk.css
+   All heavy lifting (directory-stats, directory-panel, directory table, .actions,
+   .status, .button, dialogs) is already done by employees.css patterns that
+   hr-layout.css + shared.css expose. We only need page-specific overrides. */
+
+/* ── Filter toolbar — mirrors directory-filters from employees.css ─────────── */
+.directory-filters {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) auto auto;
+  gap: 10px;
+  margin-bottom: 0;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--color-border);
+}
+.directory-filters select {
+  padding: 9px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: var(--font-text);
+  background: white;
+  color: var(--color-text);
+  cursor: pointer;
+  min-width: 160px;
+}
+.directory-filters select:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.search-field {
+  position: relative;
+}
+.search-field .material-symbols-outlined {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b8595;
+  font-size: 17px;
+  pointer-events: none;
+}
+.search-field input {
+  width: 100%;
+  padding: 9px 11px 9px 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: var(--font-text);
+  background: white;
+  color: var(--color-text);
+}
+.search-field input:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
+
+/* ── Pagination row ─────────────────────────────────────────────────────────── */
+.directory-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  font-size: 11px;
+  color: var(--color-secondary);
+  border-top: 1px solid var(--color-border);
+}
+.directory-bottom > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.directory-bottom span:last-of-type { font-weight: 600; font-size: 12px; color: var(--color-text); }
+.page-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: white;
+  color: #3f5263;
+  cursor: pointer;
+  font: 600 11px var(--font-text);
+}
+.page-button:hover:not(:disabled) { background: #e8f4f5; }
+.page-button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Status variants (extras beyond employees.css) ──────────────────────────── */
+.status-reschedule { background: #dbeafe; color: #1e40af; }
+.status-pending    { background: #fef3c7; color: #92400e; }
+
+/* ── Field errors in dialogs ─────────────────────────────────────────────────── */
+.field-error { display: block; font-size: 11px; color: #dc2626; margin-top: 3px; min-height: 14px; }
+
+/* ── Dialog layout — extends directory-dialog from employees.css ────────────── */
+.dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+.dialog-head h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; font-family: var(--font-heading); }
+.dialog-eyebrow { margin: 0 0 4px; font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--color-primary-dark); text-transform: uppercase; }
+.dialog-x {
+  display: inline-grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  padding: 0; border: 0;
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dialog-x:hover { background: var(--color-border); }
+.dialog-body { padding: 16px 22px; }
+.dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Dialog inputs */
+dialog label { display: block; margin: 10px 0 4px; font-size: 12px; font-weight: 600; }
+dialog input[type="date"],
+dialog input[type="time"],
+dialog input[type="url"],
+dialog textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--color-card);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+dialog textarea { resize: vertical; min-height: 80px; }
+dialog input:focus, dialog textarea:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ── View dialog detail rows ────────────────────────────────────────────────── */
+.detail-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border); font-size: 13px; }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { flex: 0 0 130px; font-weight: 600; color: var(--color-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+.detail-value { flex: 1; color: var(--color-text); word-break: break-word; }
+.detail-reply .detail-value  { background: var(--color-surface); border-left: 3px solid var(--color-primary); border-radius: 0 6px 6px 0; padding: 8px 10px; }
+.detail-reschedule .detail-value { background: #dbeafe; border-left: 3px solid #3b82f6; border-radius: 0 6px 6px 0; padding: 8px 10px; color: #1e40af; }
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .directory-filters { grid-template-columns: 1fr 1fr; }
+  .directory-filters .search-field { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .directory-filters { grid-template-columns: 1fr; }
+  .detail-label { flex: 0 0 90px; }
+}
+
+/* ── Actions & Buttons ──────────────────────────────────────────────────────── */
+.actions { display: flex; gap: 3px; justify-content: flex-end; }
+.actions button { display: inline-grid; place-items: center; width: 31px; height: 31px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #496579; cursor: pointer; }
+.actions button:hover:not(:disabled) { background: #e8f4f5; color: var(--color-primary-dark); }
+.actions button:disabled { opacity: .35; cursor: not-allowed; }
+.actions button[data-action="reject"]:hover { background: #ffeded; color: #b63742; }
+.actions .material-symbols-outlined { font-size: 17px; }
+
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 8px 13px; border-radius: 8px; cursor: pointer; font: 600 11px var(--font-text); }
+.button .material-symbols-outlined { font-size: 17px; }
+.button-primary { border: 1px solid var(--color-primary-dark); background: var(--color-primary-dark); color: white; }
+.button-primary:hover { background: #006d74; }
+.button-light { border: 1px solid var(--color-border); background: white; color: #3f5263; }
+.button-light:hover:not(:disabled) { background: #e8f4f5; }
+.button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ── Stats Pattern (mirrored from employees.css) ───────────────────────────── */
+.directory-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
+.directory-stats article { position: relative; min-height: 110px; padding: 17px; border: 1px solid var(--color-border); border-radius: 11px; background: white; }
+.directory-stats span, .directory-stats small { display: block; color: var(--color-secondary); font-size: 10px; }
+.directory-stats strong { display: block; margin: 10px 0 7px; font: 700 27px var(--font-heading); color: #1a3039; }
+.directory-stats i { position: absolute; right: 15px; top: 16px; display: grid; place-items: center; width: 31px; height: 31px; border-radius: 8px; background: #e9f5f6; color: var(--color-primary-dark); font-style: normal; font-size: 19px; }
+
+@media (max-width: 1180px) {
+  .directory-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+
+/* Complete Helpdesk surface. This page intentionally owns these styles instead
+   of depending on the Employee Directory stylesheet. */
+* { box-sizing: border-box; }
+
+body { background: var(--color-page); }
+
+.hr-page-content.directory { min-width: 0; }
+
+.directory-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 4px 0 20px;
+}
+
+.directory-heading .eyebrow {
+  margin: 0 0 6px;
+  color: var(--color-primary-dark);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+}
+
+.directory-heading h1 {
+  margin: 0 0 6px;
+  color: var(--color-text);
+  font: 700 clamp(26px, 3vw, 34px) var(--font-heading);
+}
+
+.directory-heading p:last-child {
+  margin: 0;
+  color: var(--color-secondary);
+  font-size: 13px;
+}
+
+.directory-stats article,
+.directory-panel {
+  background: var(--color-card);
+  box-shadow: 0 10px 28px rgba(37, 68, 84, .05);
+}
+
+.directory-stats article {
+  min-height: 118px;
+  transition: transform .16s ease, border-color .16s ease;
+}
+
+.directory-stats article:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-border));
+}
+
+.directory-stats strong { color: var(--color-text); }
+.directory-stats i { background: var(--color-primary-light); color: var(--color-primary-dark); }
+
+.directory-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.directory-filters select,
+.search-field input,
+.page-button,
+.button-light {
+  background: var(--color-card);
+  color: var(--color-text);
+}
+
+.directory-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table.directory {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+table.directory th {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 58%, var(--color-card));
+  color: var(--color-secondary);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .075em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+table.directory td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+table.directory tbody tr {
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+table.directory tbody tr:hover {
+  background: color-mix(in srgb, var(--color-primary-light) 40%, var(--color-card));
+}
+
+table.directory tbody tr:last-child td { border-bottom: 0; }
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-active { background: color-mix(in srgb, var(--color-tertiary) 13%, var(--color-card)); color: var(--color-tertiary); }
+.status-blocked { background: var(--color-danger-soft); color: var(--color-danger); }
+.status-inactive { background: var(--color-surface); color: var(--color-secondary); }
+.status-pending { background: var(--color-warning-soft); color: var(--color-warning); }
+.status-reschedule { background: color-mix(in srgb, #3b82f6 14%, var(--color-card)); color: #2563a9; }
+
+.actions { gap: 5px; }
+.actions button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  background: var(--color-card);
+}
+
+.actions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.actions button[data-action="approve"] { color: var(--color-tertiary); }
+.actions button[data-action="reject"] { color: var(--color-danger); }
+.actions button[data-action="reschedule"] { color: var(--color-warning); }
+
+.page-button:hover:not(:disabled),
+.button-light:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.button {
+  min-height: 40px;
+  padding: 9px 15px;
+  transition: transform .16s ease, background .16s ease, border-color .16s ease;
+}
+
+.button:hover:not(:disabled) { transform: translateY(-1px); }
+.button-primary { color: var(--color-on-primary); }
+.button-primary:hover { filter: brightness(.94); }
+.button-danger { border: 1px solid var(--color-danger); background: var(--color-danger); color: white; }
+.button-danger:hover { filter: brightness(.94); }
+.button:disabled { opacity: .55; cursor: not-allowed; }
+
+.directory-dialog {
+  width: min(580px, calc(100vw - 32px));
+  max-height: min(760px, calc(100vh - 36px));
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-card);
+  color: var(--color-text);
+  box-shadow: 0 24px 70px rgba(14, 36, 48, .28);
+}
+
+.directory-dialog::backdrop {
+  background: rgba(12, 27, 35, .54);
+  backdrop-filter: blur(2px);
+}
+
+.dialog-head,
+.dialog-foot { background: var(--color-card); }
+.dialog-body { background: var(--color-card); }
+.dialog-body > p { color: var(--color-secondary); line-height: 1.55; }
+.dialog-helper { margin-top: 0; font-size: 13px; }
+.time-input-row { display: flex; gap: 12px; margin-top: 10px; }
+.time-input-row > div { flex: 1; min-width: 0; }
+
+.dialog-x {
+  border: 1px solid transparent;
+  color: var(--color-secondary);
+}
+
+.dialog-x:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.detail-row {
+  align-items: flex-start;
+  padding: 10px 0;
+}
+
+.detail-value a { color: var(--color-primary-dark); font-weight: 650; }
+
+@media (max-width: 900px) {
+  .directory-stats { margin-bottom: 16px; }
+}
+
+@media (max-width: 600px) {
+  .directory-heading { align-items: flex-start; }
+  .directory-stats { grid-template-columns: 1fr 1fr; gap: 9px; }
+  .directory-stats article { min-height: 104px; padding: 14px; }
+  .directory-stats strong { font-size: 23px; }
+  .directory-filters select { min-width: 0; width: 100%; }
+  .directory-bottom { align-items: flex-start; flex-direction: column; }
+  .directory-dialog { width: min(100% - 20px, 580px); }
+  .dialog-head, .dialog-body, .dialog-foot { padding-left: 16px; padding-right: 16px; }
+  .detail-row { flex-direction: column; gap: 5px; }
+  .detail-label { flex: auto; }
+}
+
+@media (max-width: 390px) {
+  .directory-stats { grid-template-columns: 1fr; }
+}
