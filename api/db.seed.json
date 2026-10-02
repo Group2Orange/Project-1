@@ -635,8 +635,73 @@
       "status": "Approved",
       "reviewer": "Sarah Jenkins",
       "submittedAt": "2025-06-15"
+    },
+    {
+      "id": 11,
+      "employeeId": 2,
+      "type": "Early Departure",
+      "startDate": "2026-10-02",
+      "endDate": "2026-10-02",
+      "days": 0,
+      "halfDay": true,
+      "fromTime": "19:32",
+      "toTime": "20:32",
+      "reason": "",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "approvedBy": "Sarah Jenkins",
+      "approvedAt": "2026-10-02",
+      "submittedAt": "2026-10-02"
+    },
+    {
+      "id": 12,
+      "employeeId": 2,
+      "type": "Early Departure",
+      "startDate": "2026-10-02",
+      "endDate": "2026-10-02",
+      "days": 0,
+      "halfDay": true,
+      "fromTime": "19:50",
+      "toTime": "21:50",
+      "reason": "Personal errand",
+      "status": "Rejected",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2026-10-02"
     }
   ],
-  "helpdeskRequests": [],
+  "helpdeskRequests": [
+    {
+      "id": 1,
+      "employeeId": 2,
+      "createdAt": "2026-10-02T12:52:45.145Z",
+      "ticket": "TKT-5066",
+      "type": "meeting",
+      "category": "Benefits",
+      "subject": "Benefits question",
+      "details": "I have a question about my benefits package.",
+      "file": "",
+      "status": "Confirmed",
+      "date": "2026-10-10",
+      "time": "02:00 PM",
+      "duration": "20m",
+      "channel": "Zoom"
+    },
+    {
+      "id": 2,
+      "employeeId": 2,
+      "createdAt": "2026-10-02T15:32:18.237Z",
+      "ticket": "TKT-1217",
+      "type": "ticket",
+      "category": "Leave & Time Off",
+      "subject": "Leave balance clarification",
+      "details": "Can you clarify my remaining floating holiday balance?",
+      "file": "",
+      "status": "In Review",
+      "date": "",
+      "time": "",
+      "duration": "",
+      "channel": ""
+    }
+  ],
   "helpdeskDrafts": []
 }

@@ -2,6 +2,8 @@ const API = 'http://127.0.0.1:3000';
 const list = document.getElementById('taskList');
 const message = document.getElementById('taskMessage');
 const form = document.getElementById('newTaskForm');
+const initialStatus = new URLSearchParams(location.search).get('status');
+if (['todo', 'progress', 'review', 'completed'].includes(initialStatus)) document.getElementById('taskStatus').value = initialStatus;
 let tasks = [];
 let employees = [];
 

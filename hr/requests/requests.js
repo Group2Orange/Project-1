@@ -45,7 +45,12 @@ function renderRequests() {
     const title = document.createElement('h2');
     title.textContent = `${employeeName(request.employeeId)} · ${request.type}`;
     const dates = document.createElement('p');
-    dates.textContent = `${request.startDate} – ${request.endDate} · ${request.days || 0} day(s)`;
+    const isEarlyDeparture = request.type === 'Early Departure';
+    if (isEarlyDeparture && request.fromTime && request.toTime) {
+      dates.textContent = `${request.startDate} · ${request.fromTime} – ${request.toTime}`;
+    } else {
+      dates.textContent = `${request.startDate} – ${request.endDate} · ${request.days || 0} day(s)`;
+    }
     const reason = document.createElement('p');
     reason.textContent = request.reason || 'No reason provided';
     const submitted = document.createElement('small');
@@ -85,7 +90,7 @@ async function decideRequest(request, status) {
     });
     if (!response.ok) throw new Error('Could not update request.');
     if (status === 'Approved' && request.days > 0) {
-      const field = { 'Annual PTO': 'annualPto', 'Sick Leave': 'sickLeave', 'Floating Holiday': 'floatingHoliday', 'Unpaid Leave': 'unpaid' }[request.type];
+      const field = { 'Annual PTO': 'annualPto', 'Sick Leave': 'sickLeave', 'Floating Holiday': 'floatingHoliday', 'Unpaid': 'unpaid' }[request.type];
       if (field) {
         const balanceResponse = await fetch(`${API}/leaveBalances?employeeId=${encodeURIComponent(request.employeeId)}`);
         if (!balanceResponse.ok) throw new Error('Request approved, but balance could not be loaded.');
