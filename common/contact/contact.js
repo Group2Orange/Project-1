@@ -382,7 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             const feedback = {
-                employeeId: user?.id ? Number(user.id) : null,
+                employeeId: user?.id ? String(user.id) : null,
                 name: anonymous ? "Anonymous" : (user ? user.name : "Guest User"),
                 email: anonymous ? "Hidden" : (user ? user.email : ""),
                 anonymous,

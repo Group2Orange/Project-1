@@ -103,14 +103,20 @@
           navbar.querySelector('.navbar-user-name').textContent = person.name;
           navbar.querySelector('.navbar-user-role').textContent = person.role === 'HR' ? 'HR' : 'Employee';
           const avatar = navbar.querySelector('.navbar-avatar');
-          avatar.textContent = `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
+          const initialsText = `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
           const source = String(person.image || '');
           if (source.startsWith('data:image/') || source.startsWith('assets/')) {
+            avatar.textContent = ''; // Clear initials temporarily while the image loads
             const image = document.createElement('img');
             image.alt = '';
             image.src = source.startsWith('assets/') ? `../../${source}` : source;
-            image.addEventListener('error', () => image.remove());
+            image.addEventListener('error', () => {
+                image.remove();
+                avatar.textContent = initialsText; // Restore initials if the image is broken
+            });
             avatar.append(image);
+          } else {
+            avatar.textContent = initialsText; // No image, show initials
           }
         }
         showIdentity(user);

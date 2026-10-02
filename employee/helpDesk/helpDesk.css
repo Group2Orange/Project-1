@@ -1,1109 +1,897 @@
 /* =========================
-   Colors
+   Base resets
 ========================= */
-
-:root {
-
-    --primary: #0E7C86;
-
-    --secondary: #4B5563;
-
-    --tertiary: #059669;
-
-    --neutral: #14181C;
-
-    --background: #f3f6fb;
-
-    --white: #ffffff;
-
-    --border: #dbe1e8;
-}
-
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+a { text-decoration: none; }
+button, input, select, textarea { font-family: inherit; }
 
 /* =========================
-   General
+   Layout
 ========================= */
-
-* {
-    box-sizing: border-box;
+.helpdesk-page {
+  min-height: calc(100vh - 128px);
+  padding: 22px;
+  background: var(--color-page);
 }
-
-
-html {
-    scroll-behavior: smooth;
+.helpdesk-layout {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 22px;
 }
-
-
-body {
-
-    margin: 0;
-
-    font-family: "Public Sans", sans-serif;
-
-    background-color: var(--background);
-
-    color: var(--neutral);
+.helpdesk-content {
+  min-width: 0; /* Prevents flex/grid blowout */
 }
-
-
-h1,
-h2,
-h3,
-h4 {
-
-    font-family: "Space Grotesk", sans-serif;
-}
-
-
-a {
-    text-decoration: none;
-}
-
-
-button,
-input,
-select,
-textarea {
-
-    font-family: "Public Sans", sans-serif;
-}
-
-
 
 /* =========================
-   Header
+   Page Header
 ========================= */
-
-#pageHeader {
-    width: min(100%, 1500px);
-
-    margin: auto;
-
-    padding: 30px 25px 20px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: end;
-
-    gap: 25px;
+.helpdesk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-
-#breadcrumb {
-
-    margin: 0;
-
-    color: var(--secondary);
-
-    font-size: 12px;
+.helpdesk-header .eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-secondary);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
 }
 
-
-#pageHeader h1 {
-
-    margin: 5px 0;
-
-    font-size: 27px;
+.helpdesk-header h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
 }
 
-
-#subtitle {
-
-    margin: 0;
-
-    color: var(--secondary);
-
-    font-size: 12px;
+.helpdesk-header > div > p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-secondary);
 }
 
-
-#headerRight {
-
-    display: flex;
-
-    gap: 10px;
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-
-.small-pill {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 25px;
-
-    padding: 8px 13px;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-
-    color: var(--neutral);
-
-    font-size: 12px;
+#myRequestsBtn {
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
-
-
-button.small-pill {
-
-    cursor: pointer;
-}
-
-
-.small-pill div {
-
-    display: flex;
-
-    flex-direction: column;
-}
-
-
-.green-dot {
-
-    width: 7px;
-
-    height: 7px;
-
-    background-color: var(--tertiary);
-
-    border-radius: 50%;
-}
-
-
+#myRequestsBtn:hover { background: var(--color-surface); }
 
 /* =========================
-   Top Cards
+   Two-column grid
 ========================= */
-
-#topCards {
-    width: min(100%, 1500px);
-
-    margin: auto;
-
-    padding: 0 25px 20px;
-
-
-    display: grid;
-
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-
-    gap: 13px;
+.helpdesk-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
 }
-
-
-.stat-card {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-
-    padding: 15px;
-}
-
-
-.stat-title {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.stat-title i {
-
-    color: var(--primary);
-}
-
-
-.stat-number {
-
-    margin-top: 12px;
-
-    font-family: "Space Grotesk", sans-serif;
-
-    font-size: 27px;
-}
-
-
-.stat-card h3 {
-
-    margin: 15px 0 4px;
-
-    font-size: 13px;
-}
-
-
-.stat-card small {
-
-    font-size: 12px;
-}
-
-
-.green-text {
-
-    color: var(--tertiary);
-}
-
-
-
-/* =========================
-   Main
-========================= */
-
-#main {
-    width: min(100%, 1500px);
-
-    margin: auto;
-
-    padding: 0 25px 70px;
-
-
-    display: grid;
-
-    grid-template-columns: 220px minmax(0, 1fr) minmax(240px, 310px);
-
-    gap: 18px;
-}
-
-
-
-/* =========================
-   Left Side
-========================= */
-
-#leftSide {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
-}
-
-
-#confidentialCard {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-
-    padding: 12px;
-}
-
-
-#confidentialCard h4 {
-
-    margin-top: 0;
-
-    color: var(--primary);
-
-    font-size: 12px;
-}
-
-
-#confidentialCard p {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-
-#confidentialCard small {
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
-   Search
-========================= */
-
-#searchBox {
-
-    margin-bottom: 5px;
-
-    padding: 8px 10px;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-}
-
-
-#searchBox i {
-
-    color: var(--secondary);
-}
-
-
-#searchBox input {
-
-    flex: 1;
-
-    border: none;
-
-    outline: none;
-
-    font-size: 12px;
-}
-
-
-#searchBox button {
-
-    padding: 7px 10px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 4px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-#searchMessage {
-
-    min-height: 15px;
-
-    margin: 3px 0 7px;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
 
 /* =========================
    Request Card
 ========================= */
-
 #requestCard {
-
-    padding: 20px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
 }
-
 
 #requestHeader {
-
-    padding-bottom: 15px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: start;
-
-
-    border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 16px;
 }
-
 
 #requestHeader h2 {
-
-    margin: 0;
-
-    font-size: 17px;
+  margin: 0 0 4px;
+  font-size: 16px;
 }
-
 
 #requestHeader p {
-
-    color: var(--secondary);
-
-    font-size: 12px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-secondary);
 }
 
-
-#ticketNew {
-
-    padding: 5px 8px;
-
-    background-color: #e8f4f5;
-
-    color: var(--primary);
-
-    border-radius: 4px;
-
-    font-size: 12px;
+.ticket-badge {
+  padding: 4px 10px;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-
+/* =========================
+   Form labels & inputs
+========================= */
 #requestCard label {
-
-    display: block;
-
-    margin: 15px 0 6px;
-
-    font-size: 12px;
-
-    font-weight: 600;
+  display: block;
+  margin: 14px 0 5px;
+  font-size: 12px;
+  font-weight: 600;
 }
-
-
-
-/* =========================
-   Inquiry Type
-========================= */
-
-#typeOptions {
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-}
-
-
-.type-option {
-
-    padding: 12px;
-
-
-    display: flex;
-
-    gap: 10px;
-
-
-    border: 1px solid var(--border);
-
-    border-radius: 6px;
-
-
-    cursor: pointer;
-}
-
-
-.type-option:hover {
-
-    border-color: var(--primary);
-}
-
-
-.type-option.selected {
-
-    border: 2px solid var(--primary);
-}
-
-
-.type-option i {
-
-    color: var(--primary);
-}
-
-
-.type-option b {
-
-    font-size: 12px;
-}
-
-
-.type-option small {
-
-    display: block;
-
-    margin-top: 4px;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-
-    line-height: 1.4;
-}
-
-
-
-/* =========================
-   Meeting Box
-========================= */
-
-#meetingBox {
-
-    margin-top: 15px;
-
-    padding: 14px;
-
-    background-color: #f7f9fc;
-
-    border: 1px solid var(--border);
-
-    border-radius: 7px;
-}
-
-
-#meetingTitle {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    font-size: 12px;
-}
-
-
-#meetingTitle i {
-
-    color: var(--primary);
-}
-
-
-#channels {
-
-    display: grid;
-
-    grid-template-columns: repeat(4, 1fr);
-
-    gap: 7px;
-}
-
-
-#channels button,
-.time-btn,
-.duration-btn {
-
-    padding: 7px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-#timeButtons,
-#durationButtons {
-
-    display: flex;
-
-    gap: 7px;
-}
-
-
-.selected-btn {
-
-    background-color: var(--primary) !important;
-
-    color: var(--white) !important;
-
-    border-color: var(--primary) !important;
-}
-
-
-
-/* =========================
-   Inputs
-========================= */
 
 #requestCard input,
 #requestCard select,
 #requestCard textarea {
-
-    width: 100%;
-
-    padding: 9px;
-
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-
-    font-size: 12px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--color-card);
+  color: var(--color-text);
+  box-sizing: border-box;
 }
-
 
 #requestCard input:focus,
 #requestCard select:focus,
 #requestCard textarea:focus {
-
-    outline: none;
-
-    border-color: var(--primary);
+  outline: none;
+  border-color: var(--color-primary);
 }
-
 
 #requestCard textarea {
-
-    min-height: 90px;
-
-    resize: vertical;
+  min-height: 100px;
+  resize: vertical;
 }
 
+#requestCard input.error,
+#requestCard select.error,
+#requestCard textarea.error {
+  border-color: var(--color-danger);
+}
 
+.field-error {
+  display: block;
+  font-size: 11px;
+  color: var(--color-danger);
+  margin-top: 3px;
+  min-height: 15px;
+}
 
 /* =========================
-   Upload
+   Type Options
 ========================= */
-
-#uploadBox {
-
-    padding: 22px;
-
-    text-align: center;
-
-
-    border: 1px dashed #b7c2cf;
-
-    border-radius: 6px;
-
-
-    cursor: pointer;
+#typeOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
+.type-option {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--color-card);
+  transition: border-color .15s;
+  text-align: left;
+}
+
+.type-option:hover { border-color: var(--color-primary); }
+
+.type-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.type-option span {
+  color: var(--color-primary);
+  font-size: 18px;
+  margin-top: 1px;
+}
+
+.type-option b {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: var(--color-text);
+}
+
+.type-option small {
+  font-size: 12px;
+  color: var(--color-secondary);
+}
+
+/* =========================
+   Meeting Box
+========================= */
+#meetingBox {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+#platforms {
+  display: flex;
+  gap: 8px;
+}
+
+.platform-btn {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--color-card);
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color .15s;
+  color: var(--color-text);
+}
+
+.platform-btn:hover { border-color: var(--color-primary); }
+
+.platform-btn.selected-btn {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+/* =========================
+   Time range row
+========================= */
+.time-range-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.time-range-row > div { flex: 1; }
+
+.time-range-row > span {
+  color: var(--color-secondary);
+  font-size: 18px;
+  padding-top: 22px;
+}
+
+/* =========================
+   Upload Box
+========================= */
+#uploadBox {
+  padding: 20px;
+  text-align: center;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
 
 #uploadBox:hover {
-
-    border-color: var(--primary);
-
-    background-color: #f8fbfb;
+  border-color: var(--color-primary);
+  background: var(--color-surface);
 }
-
 
 #uploadBox.dragging {
-
-    border-color: var(--tertiary);
-
-    background-color: #edf9f5;
+  border-color: var(--color-tertiary);
+  background: var(--color-primary-light);
 }
 
-
-#uploadBox i {
-
-    color: var(--primary);
-
-    font-size: 20px;
+#uploadBox span {
+  color: var(--color-primary);
+  font-size: 22px;
 }
-
 
 #uploadBox p {
-
-    margin: 5px 0;
-
-    font-size: 12px;
+  margin: 6px 0 2px;
+  font-size: 12px;
 }
-
 
 #uploadBox small {
-
-    color: var(--secondary);
-
-    font-size: 12px;
+  color: var(--color-secondary);
+  font-size: 11px;
 }
-
-
 
 /* =========================
    Form Buttons
 ========================= */
-
 #formButtons {
-
-    margin-top: 18px;
-
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 8px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
-
-
-#draftBtn,
-#submitBtn {
-
-    padding: 9px 13px;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
 
 #draftBtn {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
+#draftBtn:hover { background: var(--color-surface); }
 
 #submitBtn {
-
-    background-color: var(--primary);
-
-    color: var(--white);
-
-    border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-
-#submitBtn:hover {
-
-    background-color: var(--tertiary);
-}
-
+#submitBtn:hover { opacity: .9; }
 
 #message {
-
-    margin-top: 12px;
-
-    min-height: 15px;
-
-    font-size: 12px;
-
-    font-weight: 600;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 16px;
 }
-
-
 
 /* =========================
-   Right Side
+   Right Column
 ========================= */
-
-#rightSide {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
+.helpdesk-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-
 
 .right-card {
-
-    padding: 15px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
+  padding: 16px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
 }
 
-
-.right-title {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
+.right-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
 }
 
-
-.right-card h3 {
-
-    margin-top: 0;
-
-    font-size: 12px;
+.right-card-header h3 {
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-
-.right-card h3 i {
-
-    color: var(--primary);
-}
-
-
-.right-card b {
-
-    display: block;
-
-    margin-bottom: 5px;
-
-    font-size: 12px;
-}
-
-
-.right-card small {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.confirmed {
-
-    color: var(--tertiary);
-
-    font-size: 12px;
-}
-
-
+.right-card-header h3 span { color: var(--color-primary); }
 
 /* =========================
-   Meeting Info
+   Meeting Card Details
 ========================= */
-
-.meeting-info {
-
-    margin-top: 10px;
-
-    padding: 8px;
-
-    background-color: #f5f7fb;
-
-    border-radius: 5px;
+.meeting-empty {
+  color: var(--color-secondary);
+  font-size: 13px;
+  text-align: center;
+  padding: 12px 0;
+  margin: 0;
 }
 
+.meeting-detail { font-size: 13px; }
 
-.meeting-info p {
-
-    margin: 4px 0;
-
-    font-size: 12px;
+.meeting-detail .meeting-subject {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
-
-.meeting-info i {
-
-    color: var(--primary);
+.meeting-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: var(--color-surface);
+  border-radius: 8px;
+  margin-top: 8px;
 }
 
-
-.meeting-buttons {
-
-    display: flex;
-
-    gap: 7px;
-
-    margin-top: 10px;
+.meeting-meta p {
+  margin: 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-
-.meeting-buttons button {
-
-    flex: 1;
-
-    padding: 7px;
-
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-
-    cursor: pointer;
-
-    font-size: 12px;
+.meeting-meta span {
+  color: var(--color-primary);
+  width: 14px;
 }
 
-
-.meeting-buttons .join {
-
-    color: var(--primary);
+.meeting-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
 }
 
+.btn-join {
+  flex: 1;
+  padding: 8px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
 
+.btn-join:hover { opacity: .9; }
 
 /* =========================
-   Tickets
+   Status Badges
 ========================= */
-
-.ticket {
-
-    padding: 10px 0;
-
-    border-bottom: 1px solid var(--border);
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-
-.ticket span {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.ticket b {
-
-    margin: 5px 0;
-}
-
-
-.ticket-status {
-
-    color: #b98113 !important;
-}
-
-
-.link-btn {
-
-    background: none;
-
-    color: var(--primary);
-
-    border: none;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
+.status-active   { background: #d1fae5; color: #065f46; }
+.status-inactive { background: #fef3c7; color: #92400e; }
+.status-blocked  { background: #fee2e2; color: #991b1b; }
+.status-reschedule { background: #dbeafe; color: #1e40af; }
 
 /* =========================
-   Answers
+   Ticket List
 ========================= */
-
-.right-card a {
-
-    padding: 9px 0;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-
-    color: var(--secondary);
-
-    font-size: 12px;
+.ticket-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
 }
 
+.ticket-item:last-child { border-bottom: none; }
 
-.right-card a:hover {
-
-    color: var(--primary);
+.ticket-item:hover {
+  background: var(--color-surface);
+  margin: 0 -16px;
+  padding: 10px 16px;
+  border-radius: 6px;
 }
 
-
-.right-card a span {
-
-    margin-left: auto;
+.ticket-id {
+  font-size: 11px;
+  color: var(--color-secondary);
+  font-family: monospace;
 }
 
+.ticket-subject {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 3px 0;
+}
 
+.ticket-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.type-badge {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.type-badge.meeting {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.type-badge.ticket {
+  background: var(--color-surface);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+}
+
+/* =========================
+   Modals (dialog)
+========================= */
+dialog {
+  border: none;
+  border-radius: 14px;
+  padding: 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  max-width: 540px;
+  width: calc(100% - 32px);
+  background: var(--color-card);
+  color: var(--color-text);
+}
+
+dialog::backdrop { background: rgba(0,0,0,.4); }
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-secondary);
+  font-size: 20px;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.dialog-close:hover { background: var(--color-surface); }
+
+.dialog-body {
+  padding: 20px 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.detail-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.detail-label {
+  font-weight: 700;
+  min-width: 100px;
+  color: var(--color-secondary);
+}
+
+.detail-value { flex: 1; }
+
+.hr-reply-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 8px;
+}
+
+.hr-reply-box p { margin: 0; font-size: 13px; }
+
+.reschedule-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: #dbeafe;
+  border-radius: 8px;
+}
+
+.reschedule-box h4 { margin: 0 0 8px; font-size: 13px; color: #1e40af; }
+.reschedule-box p  { margin: 0; font-size: 13px; }
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+/* =========================
+   Dialog Action Buttons
+========================= */
+.btn-primary {
+  padding: 9px 18px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-primary:hover { opacity: .9; }
+
+.btn-secondary {
+  padding: 9px 18px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-secondary:hover { background: var(--color-surface); }
+
+.btn-danger {
+  padding: 9px 18px;
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-danger:hover { opacity: .9; }
+
+.btn-success {
+  padding: 9px 18px;
+  background: var(--color-tertiary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-success:hover { opacity: .9; }
 
 /* =========================
    Responsive
 ========================= */
-
 @media (max-width: 1000px) {
-
-    #topCards {
-
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-
-    #main {
-
-        grid-template-columns: 1fr;
-    }
-
-
-    #pageHeader {
-
-        flex-direction: column;
-
-        align-items: flex-start;
-    }
-
+  .helpdesk-grid {
+    grid-template-columns: 1fr;
+  }
+  .helpdesk-right-col {
+    order: -1;
+  }
 }
 
+@media (max-width: 820px) {
+  .helpdesk-layout {
+    grid-template-columns: 1fr;
+  }
+}
 
-@media (max-width: 600px) {
+@media (max-width: 540px) {
+  .helpdesk-page { padding: 16px; }
+  #typeOptions { grid-template-columns: 1fr; }
+  .helpdesk-header { flex-direction: column; align-items: flex-start; }
+}
 
-    #topCards {
+/* Final component polish: keep cards and actions consistent with the portal. */
+.helpdesk-header {
+  padding: 4px 2px;
+}
 
-        grid-template-columns: 1fr;
-    }
+.helpdesk-header h1 {
+  font: 700 clamp(25px, 3vw, 34px) var(--font-heading);
+  color: var(--color-text);
+}
 
+.helpdesk-header .eyebrow {
+  color: var(--color-primary-dark);
+}
 
-    #typeOptions {
+#requestCard,
+.right-card {
+  box-shadow: 0 10px 28px rgba(37, 68, 84, .06);
+}
 
-        grid-template-columns: 1fr;
-    }
+#requestCard {
+  border-top: 3px solid var(--color-primary);
+}
 
+.right-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+}
 
-    #channels {
+.right-card-header {
+  min-height: 52px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 44%, var(--color-card));
+}
 
-        grid-template-columns: 1fr 1fr;
-    }
+.right-card-header h3 {
+  margin: 0;
+  color: var(--color-text);
+  font: 700 13px var(--font-heading);
+}
 
+#meetingCardContent,
+#recentTicketsList {
+  padding: 12px;
+}
 
-    #headerRight {
+.ticket-item {
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--color-page);
+  transition: border-color .16s ease, transform .16s ease, background .16s ease;
+}
 
-        flex-direction: column;
-    }
+.ticket-item + .ticket-item { margin-top: 8px; }
+.ticket-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
+  background: var(--color-card);
+}
 
+.ticket-subject {
+  margin: 4px 0 9px;
+  color: var(--color-text);
+  font-weight: 650;
+}
 
-    #footerTop,
-    #footerBottom {
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success,
+.btn-join,
+#submitBtn,
+#draftBtn {
+  min-height: 39px;
+  padding: 9px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 8px;
+  font: 650 12px var(--font-text);
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+}
 
-        flex-direction: column;
+.btn-primary,
+#submitBtn,
+.btn-join {
+  border: 1px solid var(--color-primary-dark);
+  background: var(--color-primary-dark);
+  color: var(--color-on-primary);
+}
 
-        gap: 15px;
+.btn-primary:hover,
+#submitBtn:hover,
+.btn-join:hover { filter: brightness(.94); transform: translateY(-1px); }
 
-        text-align: center;
-    }
+.btn-secondary,
+#draftBtn {
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-secondary);
+}
 
+.btn-secondary:hover,
+#draftBtn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
 
-    #footerBottom div {
+.btn-compact { min-height: 32px; padding: 6px 10px; font-size: 11px; }
+.btn-danger { border: 1px solid var(--color-danger); background: var(--color-danger-soft); color: var(--color-danger); }
+.btn-success { border: 1px solid var(--color-tertiary); background: color-mix(in srgb, var(--color-tertiary) 12%, var(--color-card)); color: var(--color-tertiary); }
 
-        flex-wrap: wrap;
+.type-option,
+.platform-btn {
+  min-height: 52px;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
 
-        justify-content: center;
-    }
+.type-option:hover,
+.platform-btn:hover { transform: translateY(-1px); }
 
+.type-option.selected,
+.platform-btn.selected-btn {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+#uploadBox {
+  border-radius: 10px;
+  background: var(--color-page);
+}
+
+#uploadBox:hover,
+#uploadBox.dragging {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+#ticketDetailModal,
+#rescheduleModal {
+  width: min(560px, calc(100vw - 32px));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-card);
+  color: var(--color-text);
+  box-shadow: 0 24px 70px rgba(14, 36, 48, .25);
+}
+
+#ticketDetailModal::backdrop,
+#rescheduleModal::backdrop { background: rgba(12, 27, 35, .54); backdrop-filter: blur(2px); }
+
+.dialog-header,
+.dialog-actions { padding: 16px 20px; }
+.dialog-body { padding: 18px 20px; }
+.dialog-header { border-bottom: 1px solid var(--color-border); }
+.dialog-actions { border-top: 1px solid var(--color-border); background: var(--color-page); }
+.dialog-close { color: var(--color-secondary); background: var(--color-surface); }
+.dialog-close:hover { color: var(--color-primary-dark); background: var(--color-primary-light); }
+
+#rescheduleModal input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card);
+  color: var(--color-text);
+  font: 13px var(--font-text);
+}
+
+.dialog-field-label { display: block; margin: 12px 0 5px; font-size: 12px; font-weight: 600; }
+.required { color: var(--color-danger); }
+
+@media (max-width: 820px) {
+  .helpdesk-page { padding: 16px 14px 34px; }
+}
+
+@media (max-width: 540px) {
+  #requestCard { padding: 18px 15px; }
+  #typeOptions { grid-template-columns: 1fr; }
+  #platforms { flex-direction: column; }
+  #formButtons, .dialog-actions { flex-wrap: wrap; }
+  #formButtons > button, .dialog-actions > button { flex: 1 1 130px; }
 }

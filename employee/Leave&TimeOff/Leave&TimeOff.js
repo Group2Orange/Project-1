@@ -19,7 +19,7 @@ var leaveBalances = [];
 var leaveRequests = [];
 
 var loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
-var currentEmployeeId = loggedUser ? Number(loggedUser.id) : null;
+var currentEmployeeId = loggedUser ? String(loggedUser.id || loggedUser.employeeId) : null;
 
 var currentSearchQuery = "";
 
@@ -41,7 +41,17 @@ async function seedData(callback) {
             API + "/leaveRequests?employeeId=" + encodeURIComponent(currentEmployeeId)
         ];
         var responses = await Promise.all(urls.map(function (url) { return fetch(url); }));
-        if (responses.some(function (response) { return !response.ok; })) throw new Error("Could not load leave data.");
+        for (var i = 0; i < responses.length; i++) {
+            if (!responses[i].ok) {
+                if (responses[i].status === 404 && i === 0) {
+                    alert("Your account no longer exists in the database. You will be logged out.");
+                    localStorage.removeItem("loggedUser");
+                    window.location.href = "../../common/login/login.html";
+                    return;
+                }
+                throw new Error("HTTP " + responses[i].status + " on " + urls[i]);
+            }
+        }
         var data = await Promise.all(responses.map(function (response) { return response.json(); }));
         employeeRecord = data[0];
         leaveBalances = data[1];
@@ -49,7 +59,7 @@ async function seedData(callback) {
         callback();
     } catch (error) {
         console.error(error);
-        alert("Could not load leave data. Start the API with npm run api.");
+        alert("Error: " + error.message);
     }
 }
 
@@ -82,7 +92,7 @@ async function createRequest(request) {
 function getCurrentEmployee() {
     var list = getEmployees();
     for (var i = 0; i < list.length; i++) {
-        if (list[i].id === currentEmployeeId) return list[i];
+        if (String(list[i].id) === String(currentEmployeeId)) return list[i];
     }
     return null;
 }
@@ -90,7 +100,7 @@ function getCurrentEmployee() {
 function getCurrentBalance() {
     var list = getBalances();
     for (var i = 0; i < list.length; i++) {
-        if (list[i].employeeId === currentEmployeeId) return list[i];
+        if (String(list[i].employeeId) === String(currentEmployeeId)) return list[i];
     }
     return null;
 }
@@ -99,7 +109,7 @@ function getCurrentEmployeeRequests() {
     var list = getRequests();
     var result = [];
     for (var i = 0; i < list.length; i++) {
-        if (list[i].employeeId === currentEmployeeId) {
+        if (String(list[i].employeeId) === String(currentEmployeeId)) {
             result.push(list[i]);
         }
     }
@@ -121,19 +131,20 @@ function getTodayString() {
 
 function formatDate(dateStr) {
     var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    var parts = dateStr.split("-");
+    var parts = String(dateStr).split("-");
     return months[parseInt(parts[1], 10) - 1] + " " + parseInt(parts[2], 10) + ", " + parts[0];
 }
 
 function formatShortDate(dateStr) {
     var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    var parts = dateStr.split("-");
+    var parts = String(dateStr).split("-");
     return months[parseInt(parts[1], 10) - 1] + " " + parseInt(parts[2], 10);
 }
 
 function formatRange(startStr, endStr) {
-    if (startStr === endStr) return formatDate(startStr);
-    return formatShortDate(startStr) + " — " + formatShortDate(endStr) + ", " + endStr.split("-")[0];
+    if (!startStr) return "";
+    if (!endStr || startStr === endStr) return formatDate(startStr);
+    return formatShortDate(startStr) + " — " + formatShortDate(endStr) + ", " + String(endStr).split("-")[0];
 }
 
 function daysBetween(startStr, endStr) {
@@ -169,8 +180,8 @@ function getTypeIcon(type) {
 }
 
 function timeDiffHours(fromTime, toTime) {
-    var fromParts = fromTime.split(":");
-    var toParts = toTime.split(":");
+    var fromParts = String(fromTime).split(":");
+    var toParts = String(toTime).split(":");
     var fromMin = parseInt(fromParts[0], 10) * 60 + parseInt(fromParts[1], 10);
     var toMin = parseInt(toParts[0], 10) * 60 + parseInt(toParts[1], 10);
     return (toMin - fromMin) / 60; // ساعات
@@ -223,6 +234,10 @@ function renderBalances() {
     var bal = getCurrentBalance();
     if (!bal) return;
 
+    if (!bal.annualPto) bal.annualPto = {total: 0, used: 0};
+    if (!bal.sickLeave) bal.sickLeave = {total: 0, used: 0};
+    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0, expiresOn: getTodayString()};
+    if (!bal.unpaid) bal.unpaid = {total: 0, used: 0};
     var annualLeft = bal.annualPto.total - bal.annualPto.used;
     document.getElementById("annualPtoUsed").textContent = annualLeft;
     document.getElementById("annualPtoTotal").textContent = bal.annualPto.total;
@@ -347,7 +362,7 @@ function buildUpcomingCard(req) {
         btn.textContent = "Withdraw Request";
         btn.setAttribute("data-id", req.id);
         btn.addEventListener("click", function () {
-            var id = parseInt(this.getAttribute("data-id"), 10);
+            var id = this.getAttribute("data-id");
             withdrawRequest(id);
         });
         card.appendChild(btn);
@@ -533,6 +548,10 @@ function renderDropdown() {
     var bal = getCurrentBalance();
     if (!bal) return;
 
+    if (!bal.annualPto) bal.annualPto = {total: 0, used: 0};
+    if (!bal.sickLeave) bal.sickLeave = {total: 0, used: 0};
+    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0, expiresOn: getTodayString()};
+    if (!bal.unpaid) bal.unpaid = {total: 0, used: 0};
     var annualLeft = bal.annualPto.total - bal.annualPto.used;
     var sickLeft = bal.sickLeave.total - bal.sickLeave.used;
     var fltLeft = bal.floatingHoliday.total - bal.floatingHoliday.used;
@@ -722,7 +741,7 @@ async function submitEarlyDepartureRequest() {
 async function withdrawRequest(id) {
     if (!confirm("Are you sure you want to withdraw this request?")) return;
     var request = leaveRequests.find(function (item) { return String(item.id) === String(id); });
-    if (!request || Number(request.employeeId) !== currentEmployeeId) return;
+    if (!request || String(request.employeeId) !== String(currentEmployeeId)) return;
     try {
         var response = await fetch(API + "/leaveRequests/" + encodeURIComponent(id), { method: "DELETE" });
         if (!response.ok) throw new Error("Could not withdraw request.");
