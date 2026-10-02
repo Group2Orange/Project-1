@@ -1,491 +1,1738 @@
 // =========================================================
-// Main Arrays
+// API
 // =========================================================
 
-let employees = []; // ننشئ Array فارغة سنضع داخلها بيانات الموظفين القادمة من employee.json.
+const API =
+    "http://127.0.0.1:3000";
 
-let leaveRequests = []; // ننشئ Array خاصة بطلبات الإجازات حتى نستخدمها في العرض والتعديل.
-
-let helpdeskRequests = []; // ننشئ Array خاصة بطلبات Helpdesk والاجتماعات القادمة من localStorage.
-
-let currentTab = "all"; // نحفظ هنا الـTab الحالي، والقيمة all تعني عرض جميع الطلبات.
-
-let currentPage = 1; // نبدأ دائمًا من الصفحة الأولى في Pagination.
-
-let requestsPerPage = 4; // نحدد أن كل صفحة تعرض 4 طلبات فقط.
-
-let currentReplyRequestKey = ""; // سنخزن هنا Key الخاص بالطلب الذي ضغط HR على Reply له.
-
-let currentRescheduleRequestKey = ""; // سنخزن هنا Key الخاص بالMeeting الذي نريد تغيير موعده.
 
 
 // =========================================================
-// Load HR Page
+// Variables
 // =========================================================
 
-async function loadHrHelpdeskPage() { // هذه الدالة مسؤولة عن جلب بيانات المشروع أول ما الصفحة تفتح.
+let employees = [];
 
-    try { // نستخدم try حتى لا تتوقف الصفحة لو حدث خطأ أثناء fetch.
+let helpdeskRequests = [];
 
-        let response = await fetch("../../Data/employee.json"); // نقرأ ملف employee.json الموجود داخل مجلد Data وننتظر انتهاء القراءة.
+let currentTab =
+    "all";
 
-        let data = await response.json(); // نحول محتوى JSON إلى Object JavaScript نستطيع التعامل معه.
+let selectedRequestId =
+    "";
 
-        employees = data.employees || []; // نخزن employees الموجودة داخل JSON وإذا لم توجد نستخدم Array فارغة.
 
-        let savedLeaveRequests = localStorage.getItem("hrLeaveRequests"); // نبحث داخل localStorage إذا كان HR عدل طلبات Leave سابقًا.
 
-        if (savedLeaveRequests) { // نتحقق إذا كانت هناك بيانات محفوظة فعلًا.
+// =========================================================
+// Date
+// =========================================================
 
-            leaveRequests = JSON.parse(savedLeaveRequests); // نحول النص المحفوظ في localStorage إلى Array ونستخدم النسخة المعدلة.
+function getDeviceDate() {
 
-        } else { // إذا لم نجد نسخة معدلة في localStorage.
+    let today =
+        new Date();
 
-            leaveRequests = data.leaveRequests || []; // نستخدم Leave Requests الأصلية القادمة من employee.json.
+
+    let year =
+        today.getFullYear();
+
+
+    let month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    let day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+
+// =========================================================
+// Escape HTML
+// =========================================================
+
+function escapeHtml(text) {
+
+    let div =
+        document.createElement("div");
+
+
+    div.textContent =
+        text || "";
+
+
+    return div.innerHTML;
+
+}
+
+
+
+// =========================================================
+// Start HR Page
+// =========================================================
+
+async function startHrHelpdeskPage() {
+
+    document
+        .getElementById(
+            "manage-meeting-date-input"
+        )
+        .min =
+        getDeviceDate();
+
+
+    document
+        .getElementById(
+            "create-meeting-date-input"
+        )
+        .min =
+        getDeviceDate();
+
+
+    await loadHrHelpdeskData();
+
+}
+
+
+
+// =========================================================
+// Load Data
+// =========================================================
+
+async function loadHrHelpdeskData() {
+
+    try {
+
+        let responses =
+            await Promise.all([
+
+                fetch(
+                    API +
+                    "/employees"
+                ),
+
+                fetch(
+                    API +
+                    "/helpdeskRequests"
+                )
+
+            ]);
+
+
+        if (
+            !responses[0].ok ||
+            !responses[1].ok
+        ) {
+
+            throw new Error(
+                "Could not load data."
+            );
+
         }
 
-        helpdeskRequests = JSON.parse(localStorage.getItem("helpdeskRequests")) || []; // نقرأ Helpdesk Requests من localStorage ونحولها إلى Array.
 
-        fillCreateTicketEmployeeSelect(); // نضع أسماء الموظفين داخل Select الموجود في Create Ticket Popup.
+        employees =
+            await responses[0].json();
 
-        showHrHelpdeskPage(); // بعد اكتمال البيانات نعرض الإحصائيات والطلبات على الصفحة.
 
-    } catch (error) { // هذا الجزء يعمل فقط إذا فشلت قراءة JSON أو حدث خطأ آخر.
+        helpdeskRequests =
+            await responses[1].json();
 
-        console.log(error); // نعرض تفاصيل الخطأ في Console للمطور.
 
-        showPageMessage("Could not load page data."); // نعرض رسالة بسيطة داخل الصفحة بدل alert.
+        fillCreateTicketEmployeeSelect();
+
+
+        showHrStatistics();
+
+
+        showHrRequests();
+
     }
-} // نهاية دالة loadHrHelpdeskPage.
+
+    catch (error) {
+
+        console.log(error);
 
 
-// =========================================================
-// Find Employee
-// =========================================================
+        showHrPageMessage(
+            "Could not load Helpdesk data."
+        );
 
-function getEmployeeById(employeeId) { // هذه الدالة تستقبل ID موظف وترجع بيانات الموظف كاملة.
+    }
 
-    return employees.find(function (employee) { // نستخدم find للبحث داخل Array employees.
+}
 
-        return employee.id == employeeId; // نرجع الموظف الذي يساوي ID الخاص به القيمة المطلوبة.
-
-    }); // نهاية find.
-
-} // نهاية getEmployeeById.
 
 
 // =========================================================
-// Employee Initials
+// Employee by ID
 // =========================================================
 
-function getEmployeeInitials(employeeName) { // هذه الدالة تحول Marcus Chen مثلًا إلى MC.
+function getEmployeeById(
+    employeeId
+) {
 
-    let employeeNameParts = employeeName.split(" "); // نقسم الاسم إلى كلمات حسب المسافة.
+    return employees.find(
+        function (employee) {
 
-    let firstLetter = employeeNameParts[0][0]; // نأخذ أول حرف من أول اسم.
+            return (
+                String(employee.id) ==
+                String(employeeId)
+            );
 
-    let lastLetter = employeeNameParts.length > 1 ? employeeNameParts[employeeNameParts.length - 1][0] : ""; // إذا كان الاسم أكثر من كلمة نأخذ أول حرف من آخر كلمة.
+        }
+    );
 
-    return (firstLetter + lastLetter).toUpperCase(); // ندمج الحرفين ونحولهم Capital ثم نرجع النتيجة.
+}
 
-} // نهاية getEmployeeInitials.
 
 
 // =========================================================
-// Get All Requests
+// Fill Employee Select
 // =========================================================
 
-function getAllRequests() { // هذه الدالة تجمع Leave Requests وHelpdesk Requests داخل Array واحدة.
+function fillCreateTicketEmployeeSelect() {
 
-    let allRequests = []; // ننشئ Array جديدة ستكون النتيجة النهائية.
-
-
-    for (let i = 0; i < leaveRequests.length; i++) { // Loop يمر على كل Leave Request.
-
-        let leaveRequest = leaveRequests[i]; // نحفظ Leave Request الحالي في متغير لتسهيل قراءة الكود.
-
-        let employee = getEmployeeById(leaveRequest.employeeId); // نبحث عن الموظف صاحب هذا الطلب.
-
-        allRequests.push({ // نضيف Object جديد موحد الشكل إلى Array allRequests.
-
-            key: "leave-" + leaveRequest.id, // Key داخلي مثل leave-3 حتى نعرف مصدر الطلب وID معًا.
-
-            id: leaveRequest.id, // نحفظ ID الأصلي للطلب.
-
-            source: "leave", // نحدد أن مصدر هذا الطلب هو Leave.
-
-            ticketNumber: "LR-" + leaveRequest.id, // ننشئ Ticket Number خاص بطلب الإجازة.
-
-            employeeName: employee ? employee.name : "Employee", // إذا وجدنا الموظف نضع اسمه وإلا نضع Employee.
-
-            employeeId: employee ? employee.id : "", // إذا الموظف موجود نحفظ ID الخاص به.
-
-            employeePosition: employee ? employee.position : "", // نحفظ وظيفة الموظف إذا كانت موجودة.
-
-            requestType: leaveRequest.type || "Leave & Time Off", // نحدد نوع الطلب وإذا لم يكن موجودًا نضع اسم افتراضي.
-
-            subject: leaveRequest.reason || "Leave Request", // نستخدم سبب الإجازة كعنوان Ticket.
-
-            description: leaveRequest.startDate + " → " + leaveRequest.endDate + " (" + leaveRequest.days + " days)", // ندمج تاريخ البداية والنهاية وعدد الأيام داخل Description.
-
-            status: leaveRequest.status || "Pending", // نأخذ Status وإذا لم يوجد نعتبره Pending.
-
-            date: leaveRequest.submittedAt || "", // نأخذ تاريخ تقديم الطلب.
-
-            createdAt: new Date(leaveRequest.submittedAt).getTime() // نحول تاريخ التقديم إلى رقم حتى نستطيع ترتيب الطلبات.
-
-        }); // نهاية Object الذي أضفناه.
-
-    } // نهاية Loop الخاصة بطلبات Leave.
+    let employeeSelect =
+        document.getElementById(
+            "create-ticket-employee-select"
+        );
 
 
-    for (let i = 0; i < helpdeskRequests.length; i++) { // Loop يمر على كل Helpdesk Request.
+    employeeSelect.innerHTML =
+        '<option value="">Select Employee</option>';
 
-        let helpdeskRequest = helpdeskRequests[i]; // نحفظ الطلب الحالي في متغير واضح.
 
-        allRequests.push({ // نضيف Helpdesk Request إلى نفس Array الموحدة.
+    for (
+        let i = 0;
+        i < employees.length;
+        i++
+    ) {
 
-            key: "help-" + helpdeskRequest.id, // Key داخلي مثل help-173839393.
+        let employee =
+            employees[i];
 
-            id: helpdeskRequest.id, // ID الأصلي.
 
-            source: "helpdesk", // نحدد المصدر.
+        let role =
+            String(
+                employee.role || ""
+            ).toUpperCase();
 
-            ticketNumber: helpdeskRequest.ticket || "TKT-" + helpdeskRequest.id, // نستخدم Ticket Number الموجود أو ننشئ واحدًا احتياطيًا.
 
-            employeeName: helpdeskRequest.employeeName || "Employee", // اسم الموظف.
+        let status =
+            String(
+                employee.status || ""
+            ).toUpperCase();
 
-            employeeId: helpdeskRequest.employeeId || "", // ID الموظف.
 
-            employeePosition: helpdeskRequest.department || "", // نستخدم Department كمعلومة إضافية بجانب الاسم.
+        if (
+            role == "EMP" &&
+            status == "ACTIVE"
+        ) {
 
-            requestType: helpdeskRequest.type == "meeting" ? "1:1 Meeting" : "Helpdesk", // إذا النوع meeting نظهر 1:1 Meeting وإلا Helpdesk.
+            let option =
+                document.createElement(
+                    "option"
+                );
 
-            subject: helpdeskRequest.subject || "Support Request", // عنوان الطلب.
 
-            description: helpdeskRequest.details || "", // تفاصيل الطلب.
+            option.value =
+                employee.id;
 
-            status: helpdeskRequest.status || "In Review", // Status الحالية.
 
-            date: helpdeskRequest.date || "", // تاريخ الطلب.
+            option.textContent =
+                employee.name +
+                " - " +
+                (
+                    employee.department ||
+                    employee.position ||
+                    ""
+                );
 
-            meetingDate: helpdeskRequest.meetingDate || helpdeskRequest.date || "", // تاريخ Meeting إذا كان الطلب Meeting.
 
-            startTime: helpdeskRequest.startTime || "", // وقت البداية.
+            employeeSelect.appendChild(
+                option
+            );
 
-            endTime: helpdeskRequest.endTime || "", // وقت النهاية.
+        }
 
-            channel: helpdeskRequest.channel || "", // Zoom أو Google Meet أو غيره.
+    }
 
-            hrReply: helpdeskRequest.hrReply || "", // الرد الذي أرسله HR إن وجد.
+}
 
-            createdAt: helpdeskRequest.createdAt || helpdeskRequest.id || 0 // قيمة نستخدمها في Sorting.
 
-        }); // نهاية Object.
 
-    } // نهاية Loop الخاصة بـHelpdesk.
+// =========================================================
+// Statistics
+// =========================================================
 
-    return allRequests; // نرجع Array التي تحتوي على جميع الطلبات.
+function showHrStatistics() {
 
-} // نهاية getAllRequests.
+    let activeTickets =
+        helpdeskRequests.filter(
+            function (request) {
+
+                return (
+                    request.type ==
+                    "ticket" &&
+
+                    request.status !=
+                    "Resolved" &&
+
+                    request.status !=
+                    "Rejected"
+                );
+
+            }
+        ).length;
+
+
+    let pendingMeetings =
+        helpdeskRequests.filter(
+            function (request) {
+
+                return (
+                    request.type ==
+                    "meeting" &&
+
+                    (
+                        request.status ==
+                        "Pending Meeting" ||
+
+                        request.status ==
+                        "Reschedule Requested"
+                    )
+                );
+
+            }
+        ).length;
+
+
+    let confirmedMeetings =
+        helpdeskRequests.filter(
+            function (request) {
+
+                return (
+                    request.type ==
+                    "meeting" &&
+
+                    request.status ==
+                    "Confirmed"
+                );
+
+            }
+        ).length;
+
+
+    document
+        .getElementById(
+            "hr-active-tickets-number"
+        )
+        .textContent =
+        activeTickets;
+
+
+    document
+        .getElementById(
+            "hr-pending-meetings-number"
+        )
+        .textContent =
+        pendingMeetings;
+
+
+    document
+        .getElementById(
+            "hr-confirmed-meetings-number"
+        )
+        .textContent =
+        confirmedMeetings;
+
+
+    document
+        .getElementById(
+            "hr-total-requests-number"
+        )
+        .textContent =
+        helpdeskRequests.length;
+
+}
+
+
+
+// =========================================================
+// Tabs
+// =========================================================
+
+function allRequestsTabButton() {
+
+    currentTab =
+        "all";
+
+
+    changeActiveTab(
+        "all-requests-tab"
+    );
+
+
+    showHrRequests();
+
+}
+
+
+
+function ticketsTabButton() {
+
+    currentTab =
+        "tickets";
+
+
+    changeActiveTab(
+        "tickets-tab"
+    );
+
+
+    showHrRequests();
+
+}
+
+
+
+function meetingsTabButton() {
+
+    currentTab =
+        "meetings";
+
+
+    changeActiveTab(
+        "meetings-tab"
+    );
+
+
+    showHrRequests();
+
+}
+
+
+
+function changeActiveTab(
+    tabId
+) {
+
+    let tabs =
+        document.querySelectorAll(
+            ".tab-button"
+        );
+
+
+    for (
+        let i = 0;
+        i < tabs.length;
+        i++
+    ) {
+
+        tabs[i]
+            .classList
+            .remove(
+                "active-tab"
+            );
+
+    }
+
+
+    document
+        .getElementById(
+            tabId
+        )
+        .classList
+        .add(
+            "active-tab"
+        );
+
+}
+
 
 
 // =========================================================
 // Filter Requests
 // =========================================================
 
-function getFilteredRequests() { // هذه الدالة تطبق Tabs والSearch والFilters والSort.
+function getFilteredHrRequests() {
 
-    let allRequests = getAllRequests(); // نحصل أولًا على جميع الطلبات.
-
-    let searchText = document.getElementById("search-tickets-input").value.toLowerCase().trim(); // نقرأ Search ونحوله لحروف صغيرة ونزيل المسافات الزائدة.
-
-    let ticketTypeFilter = document.getElementById("ticket-type-filter").value; // نقرأ Ticket Type المحدد.
-
-    let ticketStatusFilter = document.getElementById("ticket-status-filter").value; // نقرأ Status المحددة.
-
-    let filteredRequests = []; // Array سنضع داخلها العناصر التي نجحت في جميع Filters.
-
-
-    for (let i = 0; i < allRequests.length; i++) { // نمر على جميع الطلبات.
-
-        let request = allRequests[i]; // نحفظ الطلب الحالي.
+    let searchText =
+        document
+            .getElementById(
+                "hr-search-input"
+            )
+            .value
+            .toLowerCase()
+            .trim();
 
 
-        if (currentTab == "leave" && request.source != "leave") { // إذا Tab الحالي Leave والطلب ليس Leave.
+    let status =
+        document
+            .getElementById(
+                "hr-status-filter"
+            )
+            .value;
 
-            continue; // نتجاهل الطلب وننتقل للطلب التالي.
+
+    let sort =
+        document
+            .getElementById(
+                "hr-sort-select"
+            )
+            .value;
+
+
+    let results =
+        helpdeskRequests.filter(
+            function (request) {
+
+                if (
+                    currentTab ==
+                    "tickets" &&
+                    request.type !=
+                    "ticket"
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    currentTab ==
+                    "meetings" &&
+                    request.type !=
+                    "meeting"
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    status != "all" &&
+                    request.status !=
+                    status
+                ) {
+
+                    return false;
+
+                }
+
+
+                let text =
+                    (
+                        (request.employeeName || "") +
+                        " " +
+                        (request.subject || "") +
+                        " " +
+                        (request.ticket || "") +
+                        " " +
+                        (request.category || "")
+                    ).toLowerCase();
+
+
+                if (
+                    searchText != "" &&
+                    !text.includes(
+                        searchText
+                    )
+                ) {
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            }
+        );
+
+
+    results.sort(
+        function (first, second) {
+
+            let firstDate =
+                new Date(
+                    first.createdAt
+                );
+
+
+            let secondDate =
+                new Date(
+                    second.createdAt
+                );
+
+
+            if (
+                sort == "oldest"
+            ) {
+
+                return (
+                    firstDate -
+                    secondDate
+                );
+
+            }
+
+
+            return (
+                secondDate -
+                firstDate
+            );
+
         }
+    );
 
 
-        if (currentTab == "helpdesk" && request.source != "helpdesk") { // إذا Tab Helpdesk والطلب ليس Helpdesk.
+    return results;
 
-            continue; // نتجاهله.
-        }
+}
 
-
-        if (ticketTypeFilter == "leave" && request.source != "leave") { // إذا المستخدم اختار Leave من Type Filter.
-
-            continue; // لا نعرض أي نوع آخر.
-        }
-
-
-        if (ticketTypeFilter == "ticket" && request.requestType != "Helpdesk") { // إذا اختار Helpdesk Ticket.
-
-            continue; // نتجاهل غير Helpdesk.
-        }
-
-
-        if (ticketTypeFilter == "meeting" && request.requestType != "1:1 Meeting") { // إذا اختار Meeting.
-
-            continue; // نتجاهل غير Meeting.
-        }
-
-
-        if (ticketStatusFilter != "all" && request.status != ticketStatusFilter) { // إذا اختار Status محددة والطلب Status مختلفة.
-
-            continue; // نتجاهله.
-        }
-
-
-        let searchableText = (request.employeeName + " " + request.subject + " " + request.ticketNumber).toLowerCase(); // ندمج الاسم والعنوان ورقم Ticket في نص واحد للبحث.
-
-        if (searchText != "" && !searchableText.includes(searchText)) { // إذا Search غير فارغ والنص لا يحتوي كلمة البحث.
-
-            continue; // نتجاهل الطلب.
-        }
-
-
-        filteredRequests.push(request); // إذا وصلنا هنا فهذا يعني أن الطلب نجح في جميع Filters لذلك نضيفه.
-
-    } // نهاية Loop.
-
-
-    let sortValue = document.getElementById("sort-tickets-select").value; // نقرأ طريقة الترتيب.
-
-
-    filteredRequests.sort(function (firstRequest, secondRequest) { // نرتب Array.
-
-        if (sortValue == "oldest") { // إذا المستخدم اختار Oldest First.
-
-            return firstRequest.createdAt - secondRequest.createdAt; // الأصغر زمنيًا يظهر أولًا.
-        }
-
-        return secondRequest.createdAt - firstRequest.createdAt; // غير ذلك الجديد يظهر أولًا.
-
-    }); // نهاية Sort.
-
-
-    return filteredRequests; // نرجع النتائج النهائية.
-
-} // نهاية getFilteredRequests.
 
 
 // =========================================================
-// Reset Filter Button
+// Status Class
 // =========================================================
 
-function resetFilterButton() { // هذه الدالة مرتبطة بزر Reset Filter مباشرة.
+function getHrStatusClass(
+    status
+) {
 
-    document.getElementById("search-tickets-input").value = ""; // نمسح النص الموجود داخل Search.
+    if (
+        status == "Confirmed" ||
+        status == "Resolved"
+    ) {
 
-    document.getElementById("ticket-type-filter").value = "all"; // نعيد Type Filter إلى All Ticket Types.
+        return "status-green";
 
-    document.getElementById("ticket-status-filter").value = "all"; // نعيد Status Filter إلى All Statuses.
-
-    document.getElementById("sort-tickets-select").value = "newest"; // نعيد Sorting إلى Newest First.
-
-    currentTab = "all"; // نعيد Tab الحالي إلى All.
-
-    currentPage = 1; // نعيد Pagination إلى الصفحة الأولى.
-
-    changeActiveTab(".all-tickets-tab"); // نغير الشكل حتى يصبح All Tickets هو Active.
-
-    showEmployeeRequests(); // نعيد عرض Tickets بعد إلغاء Filters.
-
-} // نهاية resetFilterButton.
-
-
-// =========================================================
-// Create Ticket Button
-// =========================================================
-
-function createTicketButton() { // هذه الدالة تعمل عندما يضغط HR على Create Ticket on Behalf.
-
-    document.getElementById("create-ticket-subject-input").value = ""; // نمسح Subject القديم.
-
-    document.getElementById("create-ticket-details-input").value = ""; // نمسح Details القديمة.
-
-    document.getElementById("create-ticket-type-select").value = "ticket"; // نعيد Type الافتراضي إلى Ticket.
-
-    createTicketTypeChange(); // نحدث ظهور Meeting Fields بناءً على Type.
-
-    document.getElementById("create-ticket-popup-background").classList.remove("hide-element"); // نزيل Class الإخفاء فيظهر Popup.
-
-} // نهاية createTicketButton.
-
-
-// =========================================================
-// Create Ticket Type Change
-// =========================================================
-
-function createTicketTypeChange() { // تعمل عندما يغير HR نوع الطلب من Ticket إلى Meeting أو العكس.
-
-    let ticketType = document.getElementById("create-ticket-type-select").value; // نقرأ النوع المختار.
-
-    let meetingFields = document.getElementById("create-meeting-fields"); // نمسك Div الخاص بحقول Meeting.
-
-
-    if (ticketType == "meeting") { // إذا النوع Meeting.
-
-        meetingFields.classList.remove("hide-element"); // نظهر Meeting Date وTime وChannel.
-
-    } else { // إذا النوع Ticket.
-
-        meetingFields.classList.add("hide-element"); // نخفي Meeting Fields.
-    }
-
-} // نهاية createTicketTypeChange.
-
-
-// =========================================================
-// Save Create Ticket Button
-// =========================================================
-
-function saveCreateTicketButton() { // هذه الدالة مرتبطة بزر Create Ticket داخل Popup.
-
-    let employeeId = Number(document.getElementById("create-ticket-employee-select").value); // نقرأ ID الموظف ونحوله Number.
-
-    let employee = getEmployeeById(employeeId); // نحصل على بيانات الموظف كاملة.
-
-    let ticketType = document.getElementById("create-ticket-type-select").value; // نقرأ Ticket Type.
-
-    let subject = document.getElementById("create-ticket-subject-input").value.trim(); // نقرأ Subject ونزيل المسافات الزائدة.
-
-    let details = document.getElementById("create-ticket-details-input").value.trim(); // نقرأ Details.
-
-
-    if (!employee || subject == "" || details == "") { // نتحقق أن الموظف موجود وأن Subject وDetails غير فارغين.
-
-        showPageMessage("Complete employee, subject and details."); // نعرض رسالة داخل الصفحة.
-
-        return; // نوقف Function ولا ننشئ Ticket.
     }
 
 
-    let newRequest = { // ننشئ Object جديد يمثل Ticket.
+    if (
+        status == "Pending Meeting" ||
+        status ==
+        "Reschedule Requested"
+    ) {
 
-        id: Date.now(), // نستخدم الوقت الحالي كـID فريد.
+        return "status-yellow";
 
-        createdAt: Date.now(), // نحفظ وقت الإنشاء للSorting.
-
-        ticket: "TKT-" + Math.floor(1000 + Math.random() * 9000), // ننشئ Ticket Number عشوائي من 4 أرقام.
-
-        employeeId: employee.id, // نحفظ ID الموظف.
-
-        employeeName: employee.name, // نحفظ اسمه.
-
-        department: employee.department || employee.position || "", // نحفظ Department أو Position إذا Department غير موجود.
-
-        subject: subject, // نحفظ Subject.
-
-        details: details, // نحفظ Details.
-
-        type: ticketType, // نحفظ Ticket أو Meeting.
-
-        createdBy: "HR", // نحدد أن HR هو من أنشأ الطلب.
-
-        date: new Date().toISOString().slice(0, 10) // نحفظ تاريخ اليوم بشكل YYYY-MM-DD.
-
-    }; // نهاية Object.
-
-
-    if (ticketType == "meeting") { // إذا HR ينشئ Meeting.
-
-        let meetingDate = document.getElementById("create-meeting-date-input").value; // نقرأ Meeting Date.
-
-        let startTime = document.getElementById("create-meeting-start-time-input").value; // نقرأ Start Time.
-
-        let endTime = document.getElementById("create-meeting-end-time-input").value; // نقرأ End Time.
-
-
-        if (meetingDate == "" || startTime == "" || endTime == "") { // نتحقق أن جميع معلومات Meeting موجودة.
-
-            showPageMessage("Complete meeting date and time."); // نعرض رسالة.
-
-            return; // نوقف الحفظ.
-        }
-
-
-        newRequest.meetingDate = meetingDate; // نضيف Meeting Date للطلب.
-
-        newRequest.date = meetingDate; // نجعل Date الرئيسي أيضًا تاريخ Meeting.
-
-        newRequest.startTime = startTime; // نحفظ Start Time.
-
-        newRequest.endTime = endTime; // نحفظ End Time.
-
-        newRequest.channel = document.getElementById("create-meeting-channel-select").value; // نحفظ Channel.
-
-        newRequest.status = "Confirmed"; // بما أن HR هو من أنشأ Meeting نعتبرها Confirmed مباشرة.
-
-    } else { // إذا Ticket عادي.
-
-        newRequest.status = "In Review"; // نبدأ Ticket بحالة In Review.
     }
 
 
-    helpdeskRequests.unshift(newRequest); // نضيف الطلب في بداية Array حتى يظهر أولًا.
+    if (
+        status == "Rejected"
+    ) {
 
-    saveRequestsData(); // نحفظ Array داخل localStorage.
+        return "status-red";
 
-    closeCreateTicketButton(); // نغلق Popup.
-
-    showHrHelpdeskPage(); // نحدث الصفحة حتى يظهر Ticket الجديد.
-
-    showPageMessage("Ticket created successfully."); // نعرض رسالة نجاح.
-
-} // نهاية saveCreateTicketButton.
+    }
 
 
-// =========================================================
-// Close Create Ticket Button
-// =========================================================
+    return "status-blue";
 
-function closeCreateTicketButton() { // تعمل عند الضغط على X.
+}
 
-    document.getElementById("create-ticket-popup-background").classList.add("hide-element"); // نخفي Popup.
-
-} // نهاية Function.
 
 
 // =========================================================
-// Cancel Create Ticket Button
+// Show HR Requests
 // =========================================================
 
-function cancelCreateTicketButton() { // تعمل عند الضغط على Cancel.
+function showHrRequests() {
 
-    closeCreateTicketButton(); // نستخدم Function الإغلاق بدل تكرار نفس الكود.
+    let container =
+        document.getElementById(
+            "hr-requests-container"
+        );
 
-} // نهاية Function.
+
+    let requests =
+        getFilteredHrRequests();
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        requests.length == 0
+    ) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                No requests found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    for (
+        let i = 0;
+        i < requests.length;
+        i++
+    ) {
+
+        let request =
+            requests[i];
+
+
+        let employee =
+            getEmployeeById(
+                request.employeeId
+            );
+
+
+        let employeeName =
+            request.employeeName ||
+            (
+                employee
+                    ? employee.name
+                    : "Employee"
+            );
+
+
+        let department =
+            request.department ||
+            (
+                employee
+                    ? (
+                        employee.department ||
+                        employee.position ||
+                        ""
+                    )
+                    : ""
+            );
+
+
+        let meetingInformation =
+            "";
+
+
+        if (
+            request.type ==
+            "meeting"
+        ) {
+
+            meetingInformation = `
+                <div class="request-meta">
+
+                    <span>
+                        ${escapeHtml(request.meetingDate)}
+                    </span>
+
+                    <span>
+                        ${escapeHtml(request.startTime)}
+                        -
+                        ${escapeHtml(request.endTime)}
+                    </span>
+
+                    <span>
+                        ${escapeHtml(request.channel)}
+                    </span>
+
+                </div>
+            `;
+
+        }
+
+
+        let reply =
+            "";
+
+
+        if (request.hrReply) {
+
+            reply = `
+                <div class="hr-reply">
+
+                    <strong>
+                        HR Reply
+                    </strong>
+
+                    <p>
+                        ${escapeHtml(request.hrReply)}
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+
+        container.innerHTML += `
+
+            <article class="hr-request-card">
+
+                <div class="hr-request-header">
+
+                    <div>
+
+                        <small>
+                            ${escapeHtml(request.ticket)}
+                        </small>
+
+                        <h3>
+                            ${escapeHtml(request.subject)}
+                        </h3>
+
+                    </div>
+
+
+                    <span
+                        class="status ${getHrStatusClass(request.status)}">
+
+                        ${escapeHtml(request.status)}
+
+                    </span>
+
+                </div>
+
+
+                <div class="employee-information">
+
+                    <strong>
+                        ${escapeHtml(employeeName)}
+                    </strong>
+
+                    <span>
+                        ${escapeHtml(department)}
+                    </span>
+
+                </div>
+
+
+                <p>
+                    ${escapeHtml(request.details)}
+                </p>
+
+
+                <div class="request-meta">
+
+                    <span>
+                        ${escapeHtml(request.category)}
+                    </span>
+
+                    <span>
+                        ${escapeHtml(request.date)}
+                    </span>
+
+                </div>
+
+
+                ${meetingInformation}
+
+                ${reply}
+
+
+                <div class="request-bottom">
+
+                    <span>
+                        ${
+                            request.type ==
+                            "meeting"
+                                ? "1:1 Meeting"
+                                : "Support Ticket"
+                        }
+                    </span>
+
+
+                    <button
+                        class="primary-button"
+                        onclick="manageRequestButton('${request.id}')">
+
+                        Manage Request
+
+                    </button>
+
+                </div>
+
+            </article>
+        `;
+
+    }
+
+}
+
 
 
 // =========================================================
-// Show Message
+// Reset Filters
 // =========================================================
 
-function showPageMessage(message) { // تستقبل النص الذي نريد عرضه.
+function resetHrFiltersButton() {
 
-    let messageBox = document.getElementById("hr-page-message"); // نمسك عنصر الرسالة.
+    document
+        .getElementById(
+            "hr-search-input"
+        )
+        .value = "";
 
-    messageBox.innerHTML = message; // نضع النص داخل العنصر.
 
-    messageBox.classList.remove("hide-element"); // نظهر العنصر.
+    document
+        .getElementById(
+            "hr-status-filter"
+        )
+        .value =
+        "all";
 
-    setTimeout(function () { // نشغل Function بعد وقت محدد.
 
-        messageBox.classList.add("hide-element"); // نخفي الرسالة مرة أخرى.
+    document
+        .getElementById(
+            "hr-sort-select"
+        )
+        .value =
+        "newest";
 
-    }, 2500); // ننتظر 2500ms أي 2.5 ثانية.
 
-} // نهاية showPageMessage.
+    allRequestsTabButton();
+
+}
+
+
+
+// =========================================================
+// Manage Request
+// =========================================================
+
+function manageRequestButton(
+    requestId
+) {
+
+    let request =
+        helpdeskRequests.find(
+            function (item) {
+
+                return (
+                    String(item.id) ==
+                    String(requestId)
+                );
+
+            }
+        );
+
+
+    if (!request) {
+
+        return;
+
+    }
+
+
+    selectedRequestId =
+        request.id;
+
+
+    document
+        .getElementById(
+            "manage-request-title"
+        )
+        .textContent =
+        request.subject;
+
+
+    document
+        .getElementById(
+            "manage-request-employee"
+        )
+        .textContent =
+        request.employeeName ||
+        "Employee";
+
+
+    document
+        .getElementById(
+            "manage-request-status-select"
+        )
+        .value =
+        request.status;
+
+
+    document
+        .getElementById(
+            "manage-request-reply-input"
+        )
+        .value =
+        request.hrReply ||
+        "";
+
+
+    let meetingFields =
+        document.getElementById(
+            "manage-meeting-fields"
+        );
+
+
+    if (
+        request.type ==
+        "meeting"
+    ) {
+
+        meetingFields
+            .classList
+            .remove(
+                "hide-element"
+            );
+
+
+        document
+            .getElementById(
+                "manage-meeting-date-input"
+            )
+            .value =
+            request.meetingDate ||
+            "";
+
+
+        document
+            .getElementById(
+                "manage-meeting-start-input"
+            )
+            .value =
+            request.startTime ||
+            "";
+
+
+        document
+            .getElementById(
+                "manage-meeting-end-input"
+            )
+            .value =
+            request.endTime ||
+            "";
+
+
+        document
+            .getElementById(
+                "manage-meeting-channel-select"
+            )
+            .value =
+            request.channel ||
+            "Zoom";
+
+    }
+
+    else {
+
+        meetingFields
+            .classList
+            .add(
+                "hide-element"
+            );
+
+    }
+
+
+    document
+        .getElementById(
+            "manage-request-dialog"
+        )
+        .showModal();
+
+}
+
+
+
+// =========================================================
+// Close Manage Dialog
+// =========================================================
+
+function closeManageRequestDialog() {
+
+    document
+        .getElementById(
+            "manage-request-dialog"
+        )
+        .close();
+
+}
+
+
+
+// =========================================================
+// Save Managed Request
+// =========================================================
+
+async function saveManagedRequestButton() {
+
+    let request =
+        helpdeskRequests.find(
+            function (item) {
+
+                return (
+                    String(item.id) ==
+                    String(
+                        selectedRequestId
+                    )
+                );
+
+            }
+        );
+
+
+    if (!request) {
+
+        return;
+
+    }
+
+
+    let changes = {
+
+        status:
+            document
+                .getElementById(
+                    "manage-request-status-select"
+                )
+                .value,
+
+        hrReply:
+            document
+                .getElementById(
+                    "manage-request-reply-input"
+                )
+                .value
+                .trim(),
+
+        updatedBy:
+            "HR",
+
+        updatedAt:
+            new Date()
+                .toISOString()
+
+    };
+
+
+    if (
+        request.type ==
+        "meeting"
+    ) {
+
+        let meetingDate =
+            document
+                .getElementById(
+                    "manage-meeting-date-input"
+                )
+                .value;
+
+
+        let startTime =
+            document
+                .getElementById(
+                    "manage-meeting-start-input"
+                )
+                .value;
+
+
+        let endTime =
+            document
+                .getElementById(
+                    "manage-meeting-end-input"
+                )
+                .value;
+
+
+        if (
+            meetingDate == "" ||
+            startTime == "" ||
+            endTime == ""
+        ) {
+
+            showHrPageMessage(
+                "Complete meeting information."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            meetingDate <
+            getDeviceDate()
+        ) {
+
+            showHrPageMessage(
+                "Past dates are not allowed."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            endTime <= startTime
+        ) {
+
+            showHrPageMessage(
+                "End time must be after start time."
+            );
+
+            return;
+
+        }
+
+
+        changes.meetingDate =
+            meetingDate;
+
+
+        changes.startTime =
+            startTime;
+
+
+        changes.endTime =
+            endTime;
+
+
+        changes.channel =
+            document
+                .getElementById(
+                    "manage-meeting-channel-select"
+                )
+                .value;
+
+    }
+
+
+    try {
+
+        let response =
+            await fetch(
+                API +
+                "/helpdeskRequests/" +
+                selectedRequestId,
+                {
+
+                    method:
+                        "PATCH",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            changes
+                        )
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not update request."
+            );
+
+        }
+
+
+        closeManageRequestDialog();
+
+
+        await loadHrHelpdeskData();
+
+
+        showHrPageMessage(
+            "Request updated successfully."
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+
+        showHrPageMessage(
+            "Could not update request."
+        );
+
+    }
+
+}
+
+
+
+// =========================================================
+// Create Ticket
+// =========================================================
+
+function createTicketButton() {
+
+    fillCreateTicketEmployeeSelect();
+
+
+    document
+        .getElementById(
+            "create-ticket-employee-select"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "create-ticket-type-select"
+        )
+        .value =
+        "ticket";
+
+
+    document
+        .getElementById(
+            "create-ticket-subject-input"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "create-ticket-details-input"
+        )
+        .value = "";
+
+
+    createTicketTypeChange();
+
+
+    document
+        .getElementById(
+            "create-ticket-dialog"
+        )
+        .showModal();
+
+}
+
+
+
+// =========================================================
+// Create Ticket Type
+// =========================================================
+
+function createTicketTypeChange() {
+
+    let type =
+        document
+            .getElementById(
+                "create-ticket-type-select"
+            )
+            .value;
+
+
+    let meetingFields =
+        document.getElementById(
+            "create-ticket-meeting-fields"
+        );
+
+
+    if (
+        type ==
+        "meeting"
+    ) {
+
+        meetingFields
+            .classList
+            .remove(
+                "hide-element"
+            );
+
+    }
+
+    else {
+
+        meetingFields
+            .classList
+            .add(
+                "hide-element"
+            );
+
+    }
+
+}
+
+
+
+// =========================================================
+// Close Create Dialog
+// =========================================================
+
+function closeCreateTicketDialog() {
+
+    document
+        .getElementById(
+            "create-ticket-dialog"
+        )
+        .close();
+
+}
+
+
+
+// =========================================================
+// Save Create Ticket
+// =========================================================
+
+async function saveCreateTicketButton() {
+
+    let employeeId =
+        document
+            .getElementById(
+                "create-ticket-employee-select"
+            )
+            .value;
+
+
+    let employee =
+        getEmployeeById(
+            employeeId
+        );
+
+
+    let type =
+        document
+            .getElementById(
+                "create-ticket-type-select"
+            )
+            .value;
+
+
+    let subject =
+        document
+            .getElementById(
+                "create-ticket-subject-input"
+            )
+            .value
+            .trim();
+
+
+    let details =
+        document
+            .getElementById(
+                "create-ticket-details-input"
+            )
+            .value
+            .trim();
+
+
+    if (
+        !employee ||
+        subject == "" ||
+        details == ""
+    ) {
+
+        showHrPageMessage(
+            "Complete employee, subject and details."
+        );
+
+        return;
+
+    }
+
+
+    let request = {
+
+        ticket:
+            "TKT-" +
+            Math.floor(
+                1000 +
+                Math.random() * 9000
+            ),
+
+        employeeId:
+            employee.id,
+
+        employeeName:
+            employee.name,
+
+        department:
+            employee.department ||
+            employee.position ||
+            "",
+
+        type:
+            type,
+
+        category:
+            document
+                .getElementById(
+                    "create-ticket-category-select"
+                )
+                .value,
+
+        subject:
+            subject,
+
+        details:
+            details,
+
+        createdBy:
+            "HR",
+
+        date:
+            getDeviceDate(),
+
+        createdAt:
+            new Date()
+                .toISOString(),
+
+        hrReply:
+            ""
+
+    };
+
+
+    if (
+        type ==
+        "meeting"
+    ) {
+
+        let meetingDate =
+            document
+                .getElementById(
+                    "create-meeting-date-input"
+                )
+                .value;
+
+
+        let startTime =
+            document
+                .getElementById(
+                    "create-meeting-start-input"
+                )
+                .value;
+
+
+        let endTime =
+            document
+                .getElementById(
+                    "create-meeting-end-input"
+                )
+                .value;
+
+
+        if (
+            meetingDate == "" ||
+            startTime == "" ||
+            endTime == ""
+        ) {
+
+            showHrPageMessage(
+                "Complete meeting information."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            meetingDate <
+            getDeviceDate()
+        ) {
+
+            showHrPageMessage(
+                "Past dates are not allowed."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            endTime <= startTime
+        ) {
+
+            showHrPageMessage(
+                "End time must be after start time."
+            );
+
+            return;
+
+        }
+
+
+        request.meetingDate =
+            meetingDate;
+
+
+        request.startTime =
+            startTime;
+
+
+        request.endTime =
+            endTime;
+
+
+        request.channel =
+            document
+                .getElementById(
+                    "create-meeting-channel-select"
+                )
+                .value;
+
+
+        // HR أنشأ الاجتماع.
+        request.status =
+            "Confirmed";
+
+    }
+
+    else {
+
+        request.status =
+            "In Review";
+
+    }
+
+
+    try {
+
+        let response =
+            await fetch(
+                API +
+                "/helpdeskRequests",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            request
+                        )
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not create request."
+            );
+
+        }
+
+
+        closeCreateTicketDialog();
+
+
+        await loadHrHelpdeskData();
+
+
+        showHrPageMessage(
+            "Request created successfully."
+        );
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+
+        showHrPageMessage(
+            "Could not create request."
+        );
+
+    }
+
+}
+
+
+
+// =========================================================
+// HR Message
+// =========================================================
+
+function showHrPageMessage(
+    message
+) {
+
+    let messageBox =
+        document.getElementById(
+            "hr-page-message"
+        );
+
+
+    messageBox.textContent =
+        message;
+
+
+    messageBox
+        .classList
+        .add(
+            "show-message"
+        );
+
+
+    clearTimeout(
+        showHrPageMessage.timer
+    );
+
+
+    showHrPageMessage.timer =
+        setTimeout(
+            function () {
+
+                messageBox
+                    .classList
+                    .remove(
+                        "show-message"
+                    );
+
+            },
+            2800
+        );
+
+}
+
+
+
+// =========================================================
+// Start
+// =========================================================
+
+startHrHelpdeskPage();

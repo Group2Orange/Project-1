@@ -1,918 +1,678 @@
-<!DOCTYPE html> <!-- يخبر المتصفح أن الملف مكتوب باستخدام HTML5 -->
+<!DOCTYPE html>
+<html lang="en">
 
-<html lang="en"> <!-- بداية الصفحة وتحديد أن لغة الصفحة الأساسية هي الإنجليزية -->
+<head>
 
-<head> <!-- بداية إعدادات الصفحة التي لا تظهر مباشرة للمستخدم -->
+    <meta charset="UTF-8">
 
-    <meta charset="UTF-8"> <!-- يسمح باستخدام الأحرف الإنجليزية والعربية والرموز بشكل صحيح -->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- يجعل الصفحة Responsive على الهاتف والكمبيوتر -->
-
-    <title>Helpdesk & People Ops Support</title> <!-- اسم الصفحة الذي يظهر في Tab المتصفح -->
-
-
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
-    <!-- استدعاء خطوط Public Sans و Space Grotesk المستخدمة في تصميم المشروع -->
+    <title>Helpdesk Support</title>
 
 
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
-    <!-- استدعاء مكتبة Material Symbols حتى نستخدم الأيقونات -->
+    <!-- الخطوط -->
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    >
 
 
-    <link rel="stylesheet"
-          href="../../shared/shared.css">
-    <!-- ربط CSS المشترك الذي يحتوي على Navbar وألوان المشروع -->
+    <!-- الأيقونات -->
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    >
 
 
-    <link rel="stylesheet"
-          href="../../shared/footer.css">
-    <!-- ربط CSS الخاص بالـFooter المشترك -->
+    <!-- الملفات المشتركة -->
+    <link
+        rel="stylesheet"
+        href="../../shared/shared.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../shared/employee-sidebar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../shared/footer.css"
+    >
 
 
-    <link rel="stylesheet"
-          href="../../shared/employee-sidebar.css">
-    <!-- ربط CSS الخاص بالـSidebar المشترك للموظف -->
+    <!-- CSS الصفحة -->
+    <link
+        rel="stylesheet"
+        href="helpDesk.css"
+    >
+
+</head>
 
 
-    <link rel="stylesheet"
-          href="helpDesk.css">
-    <!-- ربط CSS الخاص بصفحة Helpdesk فقط -->
-
-</head> <!-- نهاية Head -->
+<body class="has-footer">
 
 
-<body class="has-footer"> <!-- بداية محتوى الصفحة وإضافة class يساعد في ترتيب Footer -->
-
-
-    <nav class="navbar"
-         data-navbar="employee">
+    <!-- Navbar خارجي -->
+    <nav
+        class="navbar"
+        data-navbar="employee">
     </nav>
-    <!-- مكان Navbar الخاص بالموظف ويتم تحميله من navbar.js -->
 
 
-    <!-- ========================================================= -->
-    <!-- Page Header -->
-    <!-- ========================================================= -->
 
-    <header class="employee-helpdesk-header">
-    <!-- بداية الجزء العلوي من الصفحة -->
+    <main class="employee-helpdesk-page">
 
+        <div class="employee-helpdesk-layout">
 
-        <div class="employee-helpdesk-title">
-        <!-- يحتوي على Breadcrumb والعنوان والوصف -->
 
+            <!-- Sidebar خارجي -->
+            <aside
+                class="employee-sidebar"
+                data-employee-sidebar
+                data-sidebar-active="helpdesk"
+                aria-label="Employee workspace">
+            </aside>
 
-            <p class="employee-helpdesk-path">
-                Workspace › Helpdesk & People Ops Support
-            </p>
-            <!-- يعرض للمستخدم مكان الصفحة داخل النظام -->
 
 
-            <h1 class="employee-helpdesk-main-title">
-                Helpdesk & People Ops Support
-            </h1>
-            <!-- العنوان الرئيسي للصفحة -->
+            <!-- محتوى الصفحة -->
+            <section class="employee-helpdesk-content">
 
 
-            <p class="employee-helpdesk-description">
-                Submit support requests or schedule a 1:1 meeting with HR.
-            </p>
-            <!-- وصف بسيط لوظيفة الصفحة -->
+                <!-- عنوان الصفحة -->
+                <header class="employee-helpdesk-header">
 
+                    <div>
 
-        </div>
-        <!-- نهاية عنوان الصفحة -->
+                        <p class="page-eyebrow">
+                            EMPLOYEE WORKSPACE
+                        </p>
 
+                        <h1>
+                            Helpdesk & People Ops
+                        </h1>
 
-        <button class="my-requests-button"
-                onclick="myRequestsButton()">
-        <!-- زر My Requests ويشغل Function تحمل نفس معنى اسم الزر -->
-
-
-            <span class="material-symbols-outlined">
-                inbox
-            </span>
-            <!-- أيقونة Inbox -->
-
-
-            My Requests
-            <!-- النص الظاهر داخل الزر -->
-
-
-            <span id="my-requests-number">
-                0
-            </span>
-            <!-- JavaScript يضع هنا عدد طلبات الموظف -->
-
-
-        </button>
-        <!-- نهاية My Requests Button -->
-
-
-    </header>
-    <!-- نهاية Header -->
-
-
-    <!-- ========================================================= -->
-    <!-- Statistics -->
-    <!-- ========================================================= -->
-
-    <section class="employee-statistics-section">
-    <!-- بداية قسم الإحصائيات -->
-
-
-        <div class="active-tickets-card">
-        <!-- Card يعرض عدد Tickets النشطة -->
-
-
-            <span class="statistics-title">
-                Active Tickets
-            </span>
-            <!-- اسم الإحصائية -->
-
-
-            <h2 id="employee-active-tickets-number">
-                0
-            </h2>
-            <!-- JavaScript يضع هنا عدد Tickets النشطة -->
-
-
-            <small>
-                Open
-            </small>
-            <!-- وصف الرقم -->
-
-
-        </div>
-        <!-- نهاية Active Tickets Card -->
-
-
-        <div class="scheduled-meetings-card">
-        <!-- Card يعرض عدد Meetings المؤكدة -->
-
-
-            <span class="statistics-title">
-                Scheduled 1:1s
-            </span>
-            <!-- اسم الإحصائية -->
-
-
-            <h2 id="employee-meetings-number">
-                0
-            </h2>
-            <!-- JavaScript يضع عدد الاجتماعات Confirmed -->
-
-
-            <small>
-                Confirmed
-            </small>
-            <!-- معنى الرقم -->
-
-
-        </div>
-        <!-- نهاية Meetings Card -->
-
-
-        <div class="resolved-tickets-card">
-        <!-- Card يعرض Tickets المنتهية -->
-
-
-            <span class="statistics-title">
-                Resolved Inquiries
-            </span>
-            <!-- اسم الإحصائية -->
-
-
-            <h2 id="employee-resolved-number">
-                0
-            </h2>
-            <!-- JavaScript يضع عدد Tickets التي Status = Resolved -->
-
-
-            <small>
-                Completed
-            </small>
-            <!-- وصف الرقم -->
-
-
-        </div>
-        <!-- نهاية Resolved Card -->
-
-
-        <div class="assigned-partner-card">
-        <!-- Card يعرض مسؤول HR -->
-
-
-            <span class="statistics-title">
-                Assigned Partner
-            </span>
-            <!-- اسم الإحصائية -->
-
-
-            <h3>
-                Sarah Jenkins
-            </h3>
-            <!-- اسم موظف HR المسؤول -->
-
-
-            <small>
-                HR Lead
-            </small>
-            <!-- وظيفته -->
-
-
-        </div>
-        <!-- نهاية Assigned Partner -->
-
-
-    </section>
-    <!-- نهاية Statistics -->
-
-
-    <!-- ========================================================= -->
-    <!-- Main Layout -->
-    <!-- ========================================================= -->
-
-    <main class="employee-helpdesk-layout">
-    <!-- بداية Layout الرئيسي ويتكون من Sidebar + Form + Right Side -->
-
-
-        <div data-employee-sidebar
-             data-sidebar-active="helpdesk">
-        </div>
-        <!-- مكان Employee Sidebar المشترك ويحدد أن Helpdesk هو العنصر Active -->
-
-
-        <!-- ===================================================== -->
-        <!-- Request Form -->
-        <!-- ===================================================== -->
-
-        <section class="submit-request-section">
-        <!-- بداية Form إرسال Ticket أو Meeting -->
-
-
-            <div class="submit-request-title">
-            <!-- عنوان Form -->
-
-
-                <h2>
-                    Submit Request or Schedule a Sync
-                </h2>
-                <!-- عنوان Form -->
-
-
-                <p>
-                    Choose the request type and complete the information.
-                </p>
-                <!-- وصف Form -->
-
-
-            </div>
-            <!-- نهاية عنوان Form -->
-
-
-            <label class="form-label">
-                Inquiry Type
-            </label>
-            <!-- عنوان اختيار نوع الطلب -->
-
-
-            <div class="request-type-buttons">
-            <!-- يحتوي زري Standard Ticket وMeeting -->
-
-
-                <button id="standard-ticket-button"
-                        class="standard-ticket-button selected-request-type"
-                        onclick="standardTicketButton()">
-                <!-- زر Standard Ticket ويشغل standardTicketButton -->
-
-
-                    <span class="material-symbols-outlined">
-                        mail
-                    </span>
-                    <!-- أيقونة Mail -->
-
-
-                    Standard Ticket
-                    <!-- النص -->
-
-
-                </button>
-                <!-- نهاية Standard Ticket Button -->
-
-
-                <button id="live-meeting-button"
-                        class="live-meeting-button"
-                        onclick="liveMeetingButton()">
-                <!-- زر Meeting ويشغل liveMeetingButton -->
-
-
-                    <span class="material-symbols-outlined">
-                        videocam
-                    </span>
-                    <!-- أيقونة Video -->
-
-
-                    1:1 Live Meeting
-                    <!-- النص -->
-
-
-                </button>
-                <!-- نهاية Meeting Button -->
-
-
-            </div>
-            <!-- نهاية Request Type Buttons -->
-
-
-            <!-- ================================================= -->
-            <!-- Meeting Information -->
-            <!-- ================================================= -->
-
-            <div id="meeting-information-section"
-                 class="meeting-information-section hide-element">
-            <!-- معلومات Meeting وتكون مخفية عندما يكون الطلب Standard Ticket -->
-
-
-                <div class="meeting-information-title">
-                <!-- عنوان Meeting Preferences -->
-
-
-                    <b>
-                        Meeting Preferences
-                    </b>
-                    <!-- عنوان -->
-
-
-                    <small>
-                        Host: Sarah Jenkins
-                    </small>
-                    <!-- اسم HR -->
-
-
-                </div>
-                <!-- نهاية Meeting Title -->
-
-
-                <label class="form-label">
-                    Meeting Channel
-                </label>
-                <!-- عنوان اختيار Channel -->
-
-
-                <div class="meeting-channel-buttons">
-                <!-- أزرار اختيار طريقة Meeting -->
-
-
-                    <button id="zoom-channel-button"
-                            class="zoom-channel-button selected-meeting-channel"
-                            onclick="zoomChannelButton()">
-                        Zoom
-                    </button>
-                    <!-- اختيار Zoom -->
-
-
-                    <button id="google-meet-channel-button"
-                            class="google-meet-channel-button"
-                            onclick="googleMeetChannelButton()">
-                        Google Meet
-                    </button>
-                    <!-- اختيار Google Meet -->
-
-
-                    <button id="hr-room-channel-button"
-                            class="hr-room-channel-button"
-                            onclick="hrRoomChannelButton()">
-                        HR Room
-                    </button>
-                    <!-- اختيار HR Room -->
-
-
-                    <button id="phone-call-channel-button"
-                            class="phone-call-channel-button"
-                            onclick="phoneCallChannelButton()">
-                        Phone Call
-                    </button>
-                    <!-- اختيار Phone Call -->
-
-
-                </div>
-                <!-- نهاية Channel Buttons -->
-
-
-                <label class="form-label">
-                    Meeting Date
-                </label>
-                <!-- عنوان Meeting Date -->
-
-
-                <input id="meeting-date-input"
-                       class="meeting-date-input"
-                       type="date">
-                <!-- الموظف يختار تاريخ الاجتماع -->
-
-
-                <div class="meeting-time-row">
-                <!-- يحتوي Start وEnd Time -->
-
-
-                    <div class="meeting-start-time-box">
-                    <!-- بداية Start Time -->
-
-
-                        <label class="form-label">
-                            From
-                        </label>
-                        <!-- عنوان البداية -->
-
-
-                        <input id="meeting-start-time-input"
-                               class="meeting-start-time-input"
-                               type="time">
-                        <!-- الموظف يحدد وقت بداية Meeting -->
-
+                        <p class="page-description">
+                            Send an HR support request
+                            or schedule a 1:1 meeting.
+                        </p>
 
                     </div>
-                    <!-- نهاية Start Time -->
 
 
-                    <div class="meeting-end-time-box">
-                    <!-- بداية End Time -->
+                    <button
+                        class="my-requests-button"
+                        type="button"
+                        onclick="myRequestsButton()">
+
+                        <span class="material-symbols-outlined">
+                            inbox
+                        </span>
+
+                        My Requests
+
+                        <span id="my-requests-number">
+                            0
+                        </span>
+
+                    </button>
+
+                </header>
 
 
-                        <label class="form-label">
-                            To
-                        </label>
-                        <!-- عنوان النهاية -->
+
+                <!-- Statistics -->
+                <section class="employee-statistics-grid">
 
 
-                        <input id="meeting-end-time-input"
-                               class="meeting-end-time-input"
-                               type="time">
-                        <!-- الموظف يحدد وقت نهاية Meeting -->
+                    <article class="employee-statistic-card">
 
+                        <span class="material-symbols-outlined">
+                            confirmation_number
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Active Tickets
+                            </small>
+
+                            <strong id="active-tickets-number">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <article class="employee-statistic-card">
+
+                        <span class="material-symbols-outlined">
+                            video_chat
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Scheduled 1:1s
+                            </small>
+
+                            <strong id="scheduled-meetings-number">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                </section>
+
+
+
+                <div class="employee-main-grid">
+
+
+                    <!-- إنشاء Request -->
+                    <section class="request-form-card">
+
+
+                        <div class="section-heading">
+
+                            <div>
+
+                                <p class="section-label">
+                                    NEW REQUEST
+                                </p>
+
+                                <h2>
+                                    How can HR help?
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- اختيار النوع -->
+                        <div class="request-type-switch">
+
+
+                            <button
+                                id="standard-ticket-button"
+                                class="request-type-button selected-request-type"
+                                type="button"
+                                onclick="standardTicketButton()">
+
+                                Standard Ticket
+
+                            </button>
+
+
+                            <button
+                                id="meeting-request-button"
+                                class="request-type-button"
+                                type="button"
+                                onclick="meetingRequestButton()">
+
+                                1:1 Meeting
+
+                            </button>
+
+
+                        </div>
+
+
+
+                        <!-- Category -->
+                        <div class="form-field">
+
+                            <label for="request-category-select">
+                                Category
+                            </label>
+
+                            <select id="request-category-select">
+
+                                <option>
+                                    General HR Support
+                                </option>
+
+                                <option>
+                                    Payroll, Bonus & Compensation
+                                </option>
+
+                                <option>
+                                    Benefits
+                                </option>
+
+                                <option>
+                                    Workplace Issues
+                                </option>
+
+                                <option>
+                                    Policy Question
+                                </option>
+
+                                <option>
+                                    Technical Portal Issue
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- Subject -->
+                        <div class="form-field">
+
+                            <label for="request-subject-input">
+                                Subject
+                            </label>
+
+                            <input
+                                id="request-subject-input"
+                                type="text"
+                                maxlength="100"
+                                placeholder="Enter request subject"
+                            >
+
+                        </div>
+
+
+
+                        <!-- Details -->
+                        <div class="form-field">
+
+                            <label for="request-details-input">
+                                Details
+                            </label>
+
+                            <textarea
+                                id="request-details-input"
+                                rows="5"
+                                maxlength="1000"
+                                placeholder="Tell HR what you need help with...">
+                            </textarea>
+
+                        </div>
+
+
+
+                        <!-- Attachment -->
+                        <div class="form-field">
+
+                            <label for="attachment-file-input">
+                                Attachment
+                            </label>
+
+                            <input
+                                id="attachment-file-input"
+                                type="file"
+                                onchange="attachmentFileChanged()"
+                            >
+
+                            <small id="attachment-file-name">
+                                No file selected
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- Meeting Fields -->
+                        <div
+                            id="meeting-information-section"
+                            class="meeting-fields hide-element">
+
+
+                            <h3>
+                                Meeting Details
+                            </h3>
+
+
+                            <div class="meeting-grid">
+
+
+                                <div class="form-field full-width">
+
+                                    <label for="meeting-date-input">
+                                        Date
+                                    </label>
+
+                                    <input
+                                        id="meeting-date-input"
+                                        type="date"
+                                    >
+
+                                </div>
+
+
+
+                                <div class="form-field">
+
+                                    <label for="meeting-start-time-input">
+                                        From
+                                    </label>
+
+                                    <input
+                                        id="meeting-start-time-input"
+                                        type="time"
+                                    >
+
+                                </div>
+
+
+
+                                <div class="form-field">
+
+                                    <label for="meeting-end-time-input">
+                                        To
+                                    </label>
+
+                                    <input
+                                        id="meeting-end-time-input"
+                                        type="time"
+                                    >
+
+                                </div>
+
+
+
+                                <div class="form-field full-width">
+
+                                    <label for="meeting-channel-select">
+                                        Channel
+                                    </label>
+
+                                    <select id="meeting-channel-select">
+
+                                        <option>
+                                            Zoom
+                                        </option>
+
+                                        <option>
+                                            Google Meet
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Buttons -->
+                        <div class="form-actions">
+
+
+                            <button
+                                class="secondary-button"
+                                type="button"
+                                onclick="saveDraftButton()">
+
+                                Save Draft
+
+                            </button>
+
+
+                            <button
+                                class="primary-button"
+                                type="button"
+                                onclick="submitRequestButton()">
+
+                                Submit Request
+
+                            </button>
+
+
+                        </div>
+
+
+                    </section>
+
+
+
+                    <!-- Upcoming Meeting -->
+                    <aside class="upcoming-card">
+
+
+                        <p class="section-label">
+                            NEXT 1:1
+                        </p>
+
+                        <h2>
+                            Upcoming Meeting
+                        </h2>
+
+
+                        <div id="upcoming-meeting-container">
+                        </div>
+
+
+                    </aside>
+
+
+                </div>
+
+
+
+                <!-- My Requests -->
+                <section
+                    id="my-requests-section"
+                    class="my-requests-section">
+
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                HISTORY
+                            </p>
+
+                            <h2>
+                                My Requests
+                            </h2>
+
+                            <p>
+                                Track your tickets,
+                                meetings and HR replies.
+                            </p>
+
+                        </div>
 
                     </div>
-                    <!-- نهاية End Time -->
 
 
-                </div>
-                <!-- نهاية Time Row -->
+                    <div
+                        id="my-requests-container"
+                        class="my-requests-container">
+                    </div>
 
 
-            </div>
-            <!-- نهاية Meeting Information -->
+                </section>
 
 
-            <!-- ================================================= -->
-            <!-- Category -->
-            <!-- ================================================= -->
+            </section>
 
-            <label class="form-label">
-                Topic Category
-            </label>
-            <!-- اسم حقل Category -->
-
-
-            <select id="request-category-select"
-                    class="request-category-select">
-            <!-- قائمة اختيار Category -->
-
-
-                <option value="Payroll, Bonus & Compensation">
-                    Payroll, Bonus & Compensation
-                </option>
-                <!-- Payroll -->
-
-
-                <option value="Leave & Time Off">
-                    Leave & Time Off
-                </option>
-                <!-- Leave -->
-
-
-                <option value="Benefits">
-                    Benefits
-                </option>
-                <!-- Benefits -->
-
-
-                <option value="Workplace Issues">
-                    Workplace Issues
-                </option>
-                <!-- Workplace -->
-
-
-            </select>
-            <!-- نهاية Category -->
-
-
-            <!-- ================================================= -->
-            <!-- Subject -->
-            <!-- ================================================= -->
-
-            <label class="form-label">
-                Subject
-            </label>
-            <!-- عنوان Subject -->
-
-
-            <input id="request-subject-input"
-                   class="request-subject-input"
-                   type="text"
-                   placeholder="Enter request subject">
-            <!-- الموظف يكتب عنوان الطلب -->
-
-
-            <!-- ================================================= -->
-            <!-- Details -->
-            <!-- ================================================= -->
-
-            <label class="form-label">
-                Request Details
-            </label>
-            <!-- عنوان Details -->
-
-
-            <textarea id="request-details-input"
-                      class="request-details-input"
-                      placeholder="Write your request details..."></textarea>
-            <!-- الموظف يكتب تفاصيل الطلب -->
-
-
-            <!-- ================================================= -->
-            <!-- Attachment -->
-            <!-- ================================================= -->
-
-            <label class="form-label">
-                Attachment
-            </label>
-            <!-- عنوان Attachment -->
-
-
-            <label class="attachment-upload-box"
-                   for="attachment-file-input">
-            <!-- عند الضغط على هذا العنصر يفتح File Input -->
-
-
-                <span class="material-symbols-outlined">
-                    cloud_upload
-                </span>
-                <!-- أيقونة Upload -->
-
-
-                <span id="attachment-file-name">
-                    Click to upload a file
-                </span>
-                <!-- اسم الملف يظهر هنا بعد اختياره -->
-
-
-                <small>
-                    PDF, PNG, JPG or DOCX
-                </small>
-                <!-- أنواع الملفات المقترحة -->
-
-
-            </label>
-            <!-- نهاية Upload Box -->
-
-
-            <input id="attachment-file-input"
-                   type="file"
-                   hidden
-                   onchange="attachmentFileInputChange()">
-            <!-- File Input مخفي وعند تغير الملف يشغل Function -->
-
-
-            <!-- ================================================= -->
-            <!-- Form Buttons -->
-            <!-- ================================================= -->
-
-            <div class="request-form-buttons">
-            <!-- يحتوي Save Draft وSubmit -->
-
-
-                <button class="save-draft-button"
-                        onclick="saveDraftButton()">
-                    Save Draft
-                </button>
-                <!-- يحفظ البيانات مؤقتًا في localStorage -->
-
-
-                <button class="submit-request-button"
-                        onclick="submitRequestButton()">
-                    Submit Request
-                </button>
-                <!-- يرسل Ticket أو Meeting إلى HR -->
-
-
-            </div>
-            <!-- نهاية Form Buttons -->
-
-
-        </section>
-        <!-- نهاية Request Form -->
-
-
-        <!-- ===================================================== -->
-        <!-- Right Side -->
-        <!-- ===================================================== -->
-
-        <aside class="employee-helpdesk-right-side">
-        <!-- الجزء الموجود يمين Form -->
-
-
-            <!-- ================================================= -->
-            <!-- Upcoming Meeting -->
-            <!-- ================================================= -->
-
-            <div class="upcoming-meeting-card">
-            <!-- Card يعرض أحدث Meeting -->
-
-
-                <h3>
-                    Upcoming 1:1 Meeting
-                </h3>
-                <!-- عنوان Card -->
-
-
-                <div id="upcoming-meeting-content">
-                <!-- JavaScript يضع Meeting هنا -->
-
-
-                    <p>
-                        No meeting scheduled.
-                    </p>
-                    <!-- يظهر افتراضيًا إذا لا يوجد Meeting -->
-
-
-                </div>
-
-
-            </div>
-            <!-- نهاية Upcoming Meeting -->
-
-
-            <!-- ================================================= -->
-            <!-- Recent Requests -->
-            <!-- ================================================= -->
-
-            <div id="my-recent-requests-card"
-                 class="my-recent-requests-card">
-            <!-- Card يعرض آخر طلبات الموظف -->
-
-
-                <h3>
-                    Recent Support Requests
-                </h3>
-                <!-- عنوان Card -->
-
-
-                <div id="recent-requests-container">
-                </div>
-                <!-- JavaScript ينشئ الطلبات هنا -->
-
-
-            </div>
-            <!-- نهاية Recent Requests -->
-
-
-            <!-- ================================================= -->
-            <!-- Common Answers -->
-            <!-- ================================================= -->
-
-            <div class="common-answers-card">
-            <!-- Card أسئلة شائعة -->
-
-
-                <h3>
-                    Common Self-Serve Answers
-                </h3>
-                <!-- عنوان -->
-
-
-                <button class="pto-rules-button"
-                        onclick="ptoRulesButton()">
-                    PTO Rollover Rules
-                </button>
-                <!-- يعرض معلومة PTO بدون Alert -->
-
-
-                <button class="life-events-button"
-                        onclick="lifeEventsButton()">
-                    Qualifying Life Events
-                </button>
-                <!-- يعرض معلومة Life Events -->
-
-
-                <button class="remote-work-button"
-                        onclick="remoteWorkButton()">
-                    Remote Work Policy
-                </button>
-                <!-- يعرض معلومة Remote Work -->
-
-
-                <p id="common-answer-text"
-                   class="common-answer-text">
-                </p>
-                <!-- النص يظهر هنا عند الضغط على أحد الأزرار -->
-
-
-            </div>
-            <!-- نهاية Common Answers -->
-
-
-        </aside>
-        <!-- نهاية Right Side -->
-
+        </div>
 
     </main>
-    <!-- نهاية Main Layout -->
 
 
-    <!-- ========================================================= -->
-    <!-- Employee Reschedule Popup -->
-    <!-- ========================================================= -->
 
-    <div id="employee-reschedule-popup-background"
-         class="popup-background hide-element">
-    <!-- خلفية Popup وهي مخفية افتراضيًا -->
-
-
-        <div class="employee-reschedule-popup">
-        <!-- الصندوق الأبيض للـPopup -->
+    <!-- Message -->
+    <div
+        id="employee-page-message"
+        class="page-message">
+    </div>
 
 
-            <div class="popup-title-row">
-            <!-- عنوان Popup وزر الإغلاق -->
+
+    <!-- Reschedule Dialog -->
+    <dialog
+        id="reschedule-dialog"
+        class="helpdesk-dialog">
 
 
-                <h2>
-                    Request New Meeting Time
-                </h2>
-                <!-- عنوان Popup -->
+        <div class="dialog-header">
+
+            <h2>
+                Request Reschedule
+            </h2>
+
+            <button
+                type="button"
+                class="icon-button"
+                onclick="closeRescheduleDialog()">
+
+                ✕
+
+            </button>
+
+        </div>
 
 
-                <button class="close-employee-reschedule-button"
-                        onclick="closeEmployeeRescheduleButton()">
-                    ×
-                </button>
-                <!-- زر X لإغلاق Popup -->
 
+        <div class="dialog-body">
+
+
+            <div class="form-field">
+
+                <label for="reschedule-date-input">
+                    New Date
+                </label>
+
+                <input
+                    id="reschedule-date-input"
+                    type="date"
+                >
 
             </div>
-            <!-- نهاية Popup Title -->
 
 
-            <label>
-                New Date
-            </label>
-            <!-- عنوان التاريخ -->
+
+            <div class="meeting-grid">
 
 
-            <input id="employee-reschedule-date-input"
-                   type="date">
-            <!-- التاريخ الجديد الذي يطلبه الموظف -->
+                <div class="form-field">
 
-
-            <div class="popup-time-row">
-            <!-- Start وEnd بجانب بعض -->
-
-
-                <div>
-
-                    <label>
+                    <label for="reschedule-start-time-input">
                         From
                     </label>
-                    <!-- عنوان Start -->
 
-
-                    <input id="employee-reschedule-start-time-input"
-                           type="time">
-                    <!-- Start Time الجديد -->
-
+                    <input
+                        id="reschedule-start-time-input"
+                        type="time"
+                    >
 
                 </div>
 
 
-                <div>
 
-                    <label>
+                <div class="form-field">
+
+                    <label for="reschedule-end-time-input">
                         To
                     </label>
-                    <!-- عنوان End -->
 
-
-                    <input id="employee-reschedule-end-time-input"
-                           type="time">
-                    <!-- End Time الجديد -->
-
+                    <input
+                        id="reschedule-end-time-input"
+                        type="time"
+                    >
 
                 </div>
 
 
             </div>
-            <!-- نهاية Time Row -->
 
 
-            <label>
-                Meeting Channel
-            </label>
-            <!-- عنوان Channel -->
 
+            <div class="form-field">
 
-            <select id="employee-reschedule-channel-select">
-            <!-- اختيار Channel الجديد -->
+                <label for="reschedule-channel-select">
+                    Channel
+                </label>
 
+                <select id="reschedule-channel-select">
 
-                <option value="Zoom">
-                    Zoom
-                </option>
+                    <option>
+                        Zoom
+                    </option>
 
+                    <option>
+                        Google Meet
+                    </option>
 
-                <option value="Google Meet">
-                    Google Meet
-                </option>
-
-
-                <option value="HR Room">
-                    HR Room
-                </option>
-
-
-                <option value="Phone Call">
-                    Phone Call
-                </option>
-
-
-            </select>
-            <!-- نهاية Channel -->
-
-
-            <div class="popup-buttons">
-            <!-- أزرار Popup -->
-
-
-                <button class="cancel-employee-reschedule-button"
-                        onclick="cancelEmployeeRescheduleButton()">
-                    Cancel
-                </button>
-                <!-- يلغي تغيير الموعد -->
-
-
-                <button class="save-employee-reschedule-button"
-                        onclick="saveEmployeeRescheduleButton()">
-                    Request Reschedule
-                </button>
-                <!-- يرسل طلب تغيير الموعد إلى HR -->
-
+                </select>
 
             </div>
-            <!-- نهاية Popup Buttons -->
 
 
         </div>
-        <!-- نهاية Popup -->
 
 
-    </div>
-    <!-- نهاية Popup Background -->
+
+        <div class="dialog-actions">
 
 
-    <!-- ========================================================= -->
-    <!-- Page Message -->
-    <!-- ========================================================= -->
+            <button
+                class="secondary-button"
+                onclick="closeRescheduleDialog()">
 
-    <div id="employee-page-message"
-         class="employee-page-message hide-element">
-    </div>
-    <!-- يظهر رسائل Success وValidation بدل alert -->
+                Cancel
+
+            </button>
 
 
-    <footer class="site-footer"
-            data-footer>
+            <button
+                class="primary-button"
+                onclick="saveRescheduleButton()">
+
+                Send Request
+
+            </button>
+
+
+        </div>
+
+
+    </dialog>
+
+
+
+    <!-- Footer خارجي -->
+    <footer
+        class="site-footer"
+        data-footer>
     </footer>
-    <!-- Footer المشترك -->
 
+
+
+    <!-- الملفات الخارجية -->
+    <script src="../../shared/navbar.js?v=2"></script>
+
+    <script src="../../shared/employee-sidebar.js"></script>
 
     <script src="../../shared/footer.js"></script>
-    <!-- تحميل Footer -->
 
 
-    <script src="../../shared/navbar.js?v=2"></script>
-    <script src="../../shared/employee-sidebar.js"></script>
-    <!-- تحميل Employee Sidebar -->
-
-
+    <!-- JavaScript الصفحة -->
     <script src="helpDesk.js"></script>
-    <!-- تحميل JavaScript الخاص بالصفحة -->
 
 
 </body>
-<!-- نهاية محتوى الصفحة -->
-
 
 </html>
-<!-- نهاية HTML -->

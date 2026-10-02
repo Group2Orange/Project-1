@@ -1,536 +1,832 @@
-/* =========================================================
-   General
-========================================================= */
+:root {
+
+    --primary: #0E7C86;
+    --primary-dark: #09646c;
+
+    --text: #14181C;
+    --muted: #6b7280;
+
+    --border: #dfe6ea;
+
+    --background: #f4f7fb;
+
+}
+
 
 * {
-    box-sizing: border-box; /* يخلي width يشمل padding والـborder بدل ما يزيد الحجم النهائي للعنصر */
+
+    box-sizing: border-box;
+
 }
+
+
+body {
+
+    margin: 0;
+
+    background: var(--background);
+
+    color: var(--text);
+
+    font-family:
+        "Public Sans",
+        sans-serif;
+
+}
+
 
 button,
 input,
 select,
 textarea {
-    font-family: var(--font-text); /* يجعل Inputs والأزرار تستخدم نفس خط المشروع */
+
+    font: inherit;
+
 }
+
 
 button {
-    cursor: pointer; /* يحول شكل الماوس إلى يد عند المرور فوق أي Button */
+
+    cursor: pointer;
+
 }
 
 
-/* =========================================================
-   HR Header
-========================================================= */
+.hr-helpdesk-page {
 
-.hr-page-header {
-    max-width: 1280px; /* يمنع الـHeader من التمدد أكثر من 1280px على الشاشات الكبيرة */
-    margin: auto; /* يجعل الـHeader في منتصف الصفحة أفقيًا */
-    padding: 28px 30px 20px; /* 28 أعلى و30 يمين ويسار و20 أسفل */
-    display: flex; /* يجعل عنوان الصفحة والأزرار بجانب بعض */
-    justify-content: space-between; /* يدفع العنوان لليسار والأزرار لليمين */
-    align-items: flex-end; /* يجعل العناصر مصطفة من الأسفل */
-    gap: 20px; /* يعطي مسافة 20px بين القسمين */
-}
+    padding:
+        30px 24px 50px;
 
-.hr-page-path {
-    margin: 0 0 5px; /* يلغي باقي الـmargin ويترك 5px فقط أسفل النص */
-    color: var(--color-primary-dark); /* يستخدم اللون الرئيسي الداكن من shared.css */
-    font-size: 11px; /* يجعل حجم Breadcrumb صغير */
-}
-
-.hr-page-main-title {
-    margin: 0; /* يزيل الـmargin الافتراضي الموجود في h1 */
-    font-size: 28px; /* يحدد حجم عنوان الصفحة */
-}
-
-.hr-page-description {
-    margin: 5px 0 0; /* يعطي 5px فقط فوق الوصف */
-    color: var(--color-text-muted); /* يعطي الوصف لونًا رماديًا هادئًا */
-    font-size: 11px; /* يجعل النص أصغر من العنوان */
-}
-
-.hr-header-buttons {
-    display: flex; /* يجعل أزرار Header بجانب بعض */
-    gap: 8px; /* يعطي 8px بين كل Button والثاني */
 }
 
 
-/* =========================================================
-   Export Button
-========================================================= */
+.hr-helpdesk-layout {
 
-.export-csv-button {
-    padding: 9px 13px; /* يعطي مساحة داخل Button */
-    display: flex; /* يجعل الأيقونة والنص بجانب بعض */
-    align-items: center; /* يوسّط الأيقونة والنص عموديًا */
-    gap: 5px; /* يترك مسافة بين الأيقونة والنص */
-    background-color: white; /* يجعل خلفية Button بيضاء */
-    color: var(--color-secondary); /* يجعل لون النص رمادي داكن */
-    border: 1px solid var(--color-border); /* يرسم Border خفيف حول الزر */
-    border-radius: 6px; /* يجعل زوايا Button دائرية قليلًا */
+    width:
+        min(1500px, 100%);
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        270px minmax(0, 1fr);
+
+    gap: 28px;
+
+    align-items: start;
+
 }
 
 
-/* =========================================================
-   Create Ticket Button
-========================================================= */
+.hr-helpdesk-content {
 
-.create-ticket-button {
-    padding: 9px 13px; /* مساحة داخل الزر */
-    display: flex; /* الأيقونة والنص بجانب بعض */
-    align-items: center; /* توسيط عمودي */
-    gap: 5px; /* مسافة بين الأيقونة والنص */
-    background-color: var(--color-primary-dark); /* لون خلفية Teal */
-    color: white; /* يجعل النص أبيض */
-    border: none; /* يزيل الـBorder الافتراضي */
-    border-radius: 6px; /* تدوير الزوايا */
-}
+    min-width: 0;
 
-.export-csv-button .material-symbols-outlined,
-.create-ticket-button .material-symbols-outlined {
-    font-size: 17px; /* يجعل أيقونات الزرين بحجم مناسب */
 }
 
 
-/* =========================================================
-   Statistics Section
-========================================================= */
+.hr-helpdesk-header {
 
-.hr-statistics-section {
-    max-width: 1280px; /* نفس عرض Header */
-    margin: auto; /* توسيط القسم */
-    padding: 0 30px 25px; /* يمين ويسار 30 وأسفل 25 */
-    display: grid; /* استخدام Grid */
-    grid-template-columns: repeat(3, 1fr); /* إنشاء 3 أعمدة بنفس العرض */
-    gap: 18px; /* مسافة بين الكروت */
-}
+    display: flex;
 
-.total-tickets-card,
-.leave-requests-card,
-.helpdesk-requests-card {
-    padding: 20px; /* مساحة داخل كل Card */
-    background-color: white; /* خلفية بيضاء */
-    border: 1px solid var(--color-border); /* Border خفيف */
-    border-radius: 10px; /* تدوير زوايا Card */
-}
+    justify-content:
+        space-between;
 
-.statistics-card-title {
-    display: flex; /* الاسم والأيقونة بجانب بعض */
-    justify-content: space-between; /* الاسم يسار والأيقونة يمين */
-    color: var(--color-secondary); /* لون النص */
-    font-size: 11px; /* حجم النص */
-}
+    align-items:
+        flex-start;
 
-.statistics-card-title .material-symbols-outlined {
-    color: var(--color-primary); /* لون أيقونة الإحصائية */
-    font-size: 18px; /* حجم الأيقونة */
-}
+    gap: 20px;
 
-.statistics-number-row {
-    display: flex; /* الرقم والكلمة بجانب بعض */
-    align-items: flex-end; /* محاذاة العناصر للأسفل */
-    gap: 6px; /* مسافة بينهم */
-}
+    margin-bottom: 24px;
 
-.statistics-number-row h2 {
-    margin: 18px 0 4px; /* 18 أعلى و4 أسفل */
-    font-size: 29px; /* حجم الرقم الكبير */
-}
-
-.statistics-number-row span {
-    margin-bottom: 9px; /* يرفع كلمة Open أو Pending قليلًا */
-    color: var(--color-secondary); /* لون النص */
-    font-size: 10px; /* حجم النص */
-}
-
-.total-tickets-card small,
-.leave-requests-card small,
-.helpdesk-requests-card small {
-    color: var(--color-secondary); /* لون النص السفلي */
-    font-size: 8px; /* حجم صغير */
-}
-
-.green-statistics-text {
-    color: var(--color-tertiary) !important; /* يجبر النص على اللون الأخضر */
 }
 
 
-/* =========================================================
-   Main
-========================================================= */
+.hr-helpdesk-header h1 {
 
-.hr-main-content {
-    max-width: 1280px; /* أقصى عرض */
-    margin: auto; /* توسيط */
-    padding: 0 30px 60px; /* مسافة أسفل 60 */
-    display: grid; /* استخدام Grid */
-    grid-template-columns: minmax(0, 1fr) 320px; /* الجزء الأساسي يأخذ المساحة واليمين 320px */
-    gap: 20px; /* مسافة بين Requests والـSidebar */
-    align-items: start; /* تبدأ العناصر من أعلى */
+    margin: 0;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:
+        clamp(30px, 4vw, 46px);
+
 }
 
 
-/* =========================================================
-   Requests Section
-========================================================= */
+.page-eyebrow,
+.section-label {
 
-.requests-section {
-    background-color: white; /* خلفية بيضاء */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 10px; /* تدوير */
-    overflow: hidden; /* يمنع العناصر الداخلية من الخروج عن الزوايا */
+    margin: 0 0 7px;
+
+    color: var(--primary);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
 }
 
 
-/* =========================================================
-   Tabs
-========================================================= */
+.page-description {
 
-.requests-tabs {
-    padding: 10px 14px; /* مسافات داخلية */
-    display: flex; /* Tabs بجانب بعض */
-    align-items: center; /* توسيط عمودي */
-    gap: 8px; /* مسافة */
-    border-bottom: 1px solid var(--color-border); /* خط أسفل Tabs */
+    color: var(--muted);
+
 }
 
-.all-tickets-tab,
-.leave-tickets-tab,
-.helpdesk-tickets-tab {
-    padding: 7px 11px; /* حجم Button */
-    background-color: transparent; /* بدون خلفية افتراضيًا */
-    color: var(--color-secondary); /* لون النص */
-    border: none; /* بدون Border */
-    border-radius: 15px; /* يعطي شكل Pill */
-    font-size: 9px; /* حجم الخط */
+
+.create-button {
+
+    min-height: 45px;
+
+    border:
+        1px solid var(--primary);
+
+    border-radius: 12px;
+
+    padding: 0 16px;
+
+    background: var(--primary);
+
+    color: white;
+
+    font-weight: 700;
+
 }
 
-.all-tickets-tab span,
-.leave-tickets-tab span,
-.helpdesk-tickets-tab span {
-    margin-left: 4px; /* مسافة بين النص والعدد */
-    padding: 2px 5px; /* مساحة حول الرقم */
-    background-color: var(--color-surface); /* خلفية Badge */
-    border-radius: 10px; /* يجعل Badge دائري */
-    font-size: 7px; /* حجم الرقم */
+
+.create-button:hover {
+
+    background:
+        var(--primary-dark);
+
 }
+
+
+/* Statistics */
+
+.hr-statistics-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.statistic-card {
+
+    background: white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 17px;
+
+    padding: 20px;
+
+}
+
+
+.statistic-card small {
+
+    color: var(--muted);
+
+}
+
+
+.statistic-card strong {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 28px;
+
+}
+
+
+/* Requests */
+
+.requests-panel {
+
+    padding: 24px;
+
+    background: white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+}
+
+
+.panel-heading h2 {
+
+    margin: 0;
+
+}
+
+
+.tabs {
+
+    display: flex;
+
+    gap: 5px;
+
+    margin:
+        20px 0 15px;
+
+    padding-bottom: 15px;
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.tab-button {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 9px 14px;
+
+    background: #f1f5f7;
+
+    font-weight: 700;
+
+}
+
 
 .active-tab {
-    background-color: var(--color-primary); /* Tab النشط يأخذ اللون الرئيسي */
-    color: white; /* النص أبيض */
-}
 
-.active-tab span {
-    background-color: white; /* Badge داخل Tab النشط أبيض */
-    color: var(--color-primary); /* رقم Badge باللون الرئيسي */
-}
+    color: var(--primary);
 
-.sort-tickets-select {
-    margin-left: auto; /* يدفع Sort إلى أقصى اليمين */
-    border: none; /* يزيل Border */
-    outline: none; /* يزيل خط Focus */
-    color: var(--color-secondary); /* لون النص */
-    font-size: 8px; /* حجم النص */
+    background: #e8f5f6;
+
 }
 
 
-/* =========================================================
-   Filters
-========================================================= */
+.filters {
 
-.requests-filters {
-    padding: 12px; /* مساحة داخل Filters */
-    display: grid; /* استخدام Grid */
-    grid-template-columns: 1fr 210px 170px 90px; /* Search مرن ثم Type ثم Status ثم Reset */
-    gap: 8px; /* المسافة */
-    border-bottom: 1px solid var(--color-border); /* خط أسفل Filters */
-}
+    display: grid;
 
-.search-tickets-box {
-    display: flex; /* Icon وInput بجانب بعض */
-    align-items: center; /* توسيط */
-    gap: 6px; /* مسافة */
-    padding: 0 9px; /* مسافة داخلية يمين ويسار */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 6px; /* تدوير */
-}
+    grid-template-columns:
+        1fr 190px 160px auto;
 
-.search-tickets-box .material-symbols-outlined {
-    color: var(--color-secondary); /* لون Search Icon */
-    font-size: 17px; /* حجم Icon */
-}
+    gap: 10px;
 
-.search-tickets-input {
-    width: 100%; /* يأخذ باقي عرض Search Box */
-    height: 36px; /* ارتفاع Input */
-    border: none; /* إزالة Border */
-    outline: none; /* إزالة Outline */
-    font-size: 9px; /* حجم النص */
-}
+    margin-bottom: 20px;
 
-.ticket-type-filter,
-.ticket-status-filter {
-    padding: 0 9px; /* مسافة داخل Select */
-    background-color: white; /* خلفية بيضاء */
-    color: var(--color-secondary); /* لون النص */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 6px; /* تدوير */
-    font-size: 9px; /* حجم النص */
-}
-
-.reset-filter-button {
-    display: flex; /* Icon ونص */
-    align-items: center; /* توسيط عمودي */
-    justify-content: center; /* توسيط أفقي */
-    gap: 4px; /* مسافة */
-    background-color: white; /* الخلفية */
-    color: var(--color-secondary); /* اللون */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 6px; /* تدوير */
-    font-size: 8px; /* حجم النص */
-}
-
-.reset-filter-button:hover {
-    color: var(--color-primary); /* يغير لون النص عند Hover */
-    border-color: var(--color-primary); /* يغير Border عند Hover */
 }
 
 
-/* =========================================================
-   Bulk Actions
-========================================================= */
+.filters input,
+.filters select {
 
-.bulk-actions-section {
-    padding: 9px 13px; /* مساحة */
-    display: flex; /* العناصر بجانب بعض */
-    align-items: center; /* توسيط عمودي */
-    gap: 12px; /* مسافة */
-    border-bottom: 1px solid var(--color-border); /* خط */
-    font-size: 8px; /* حجم النص */
-}
+    height: 44px;
 
-.select-all-requests-label {
-    display: flex; /* Checkbox والنص بجانب بعض */
-    align-items: center; /* توسيط */
-    gap: 4px; /* مسافة */
-}
+    border:
+        1px solid var(--border);
 
-.assign-selected-button,
-.batch-status-button,
-.mark-read-button {
-    padding: 0; /* إزالة Padding */
-    display: flex; /* Icon ونص بجانب بعض */
-    align-items: center; /* توسيط */
-    gap: 4px; /* مسافة */
-    background-color: transparent; /* بدون خلفية */
-    color: var(--color-secondary); /* اللون */
-    border: none; /* بدون Border */
-    font-size: 8px; /* الحجم */
+    border-radius: 10px;
+
+    padding: 0 12px;
+
+    outline: none;
+
 }
 
 
-/* =========================================================
-   Requests Container
-========================================================= */
+.filters input:focus,
+.filters select:focus {
 
-.employee-requests-container {
-    padding: 13px; /* مسافة حول Cards */
-}
+    border-color: var(--primary);
 
-.employee-request-card {
-    margin-bottom: 11px; /* مسافة بين Cards */
-    padding: 14px; /* مساحة داخل Card */
-    display: grid; /* Grid */
-    grid-template-columns: auto minmax(0, 1fr) auto; /* Checkbox + Content + Status */
-    gap: 10px; /* مسافة */
-    align-items: start; /* يمنع Status من التمدد بالطول */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 9px; /* تدوير */
-}
-
-.pending-request-card {
-    border-left: 3px solid var(--color-primary); /* خط ملون للـPending */
-}
-
-.employee-information-row {
-    display: flex; /* معلومات الموظف بجانب بعض */
-    align-items: center; /* توسيط */
-    flex-wrap: wrap; /* يسمح بالنزول لسطر جديد */
-    gap: 7px; /* مسافة */
-}
-
-.employee-avatar {
-    width: 35px; /* عرض Avatar */
-    height: 35px; /* ارتفاع Avatar */
-    display: grid; /* Grid */
-    place-items: center; /* توسيط الأحرف */
-    background-color: var(--color-primary-light); /* خلفية */
-    color: var(--color-primary-dark); /* لون الأحرف */
-    border-radius: 50%; /* دائرة */
-    font-size: 9px; /* حجم الحروف */
-    font-weight: bold; /* غامق */
-}
-
-.employee-request-name {
-    font-size: 10px; /* حجم الاسم */
-    font-weight: 700; /* غامق */
-}
-
-.employee-request-meta,
-.request-ticket-number {
-    color: var(--color-secondary); /* لون المعلومات الثانوية */
-    font-size: 8px; /* حجم صغير */
-}
-
-.request-type-badge {
-    padding: 3px 6px; /* مساحة */
-    background-color: #e8f7f2; /* أخضر فاتح */
-    color: var(--color-tertiary); /* أخضر */
-    border-radius: 4px; /* تدوير */
-    font-size: 7px; /* حجم */
-}
-
-.request-subject {
-    margin: 7px 0 4px; /* مسافات */
-    font-size: 10px; /* حجم */
-    font-weight: 600; /* غامق */
-}
-
-.request-description {
-    margin: 0; /* إزالة Margin */
-    color: var(--color-text-muted); /* لون */
-    font-size: 8px; /* حجم */
-    line-height: 1.5; /* مسافة بين الأسطر */
-}
-
-.request-status-badge {
-    width: fit-content; /* عرض Badge فقط حسب النص */
-    height: fit-content; /* ارتفاعه فقط حسب النص */
-    padding: 4px 8px; /* مساحة حول النص */
-    align-self: start; /* يمنعه من التمدد بالطول */
-    justify-self: end; /* يضعه في اليمين */
-    border-radius: 12px; /* شكل Pill */
-    white-space: nowrap; /* يمنع النص من النزول لسطرين */
-    font-size: 7px; /* حجم */
-    font-weight: 600; /* غامق */
-}
-
-.blue-status-badge {
-    background-color: #eaf3fc; /* خلفية زرقاء فاتحة */
-    color: #2470a0; /* نص أزرق */
-}
-
-.green-status-badge {
-    background-color: #e6f7ef; /* خلفية خضراء */
-    color: var(--color-tertiary); /* نص أخضر */
-}
-
-.orange-status-badge {
-    background-color: #fff3dd; /* خلفية برتقالية فاتحة */
-    color: #946000; /* نص برتقالي داكن */
-}
-
-.red-status-badge {
-    background-color: #fdeaea; /* خلفية حمراء فاتحة */
-    color: var(--color-danger); /* نص أحمر */
 }
 
 
-/* =========================================================
-   Popup
-========================================================= */
+.requests-container {
 
-.popup-background {
-    position: fixed; /* يثبت Popup على الشاشة */
-    inset: 0; /* يعادل top/right/bottom/left = 0 */
-    z-index: 1000; /* يضع Popup فوق باقي العناصر */
-    display: grid; /* Grid */
-    place-items: center; /* توسيط Popup */
-    padding: 20px; /* مسافة عن أطراف الشاشة */
-    background-color: rgba(20, 24, 28, 0.45); /* خلفية سوداء شفافة */
-}
+    display: grid;
 
-.hide-element {
-    display: none !important; /* يخفي العنصر تمامًا */
-}
+    gap: 13px;
 
-.create-ticket-popup,
-.reply-ticket-popup,
-.reschedule-meeting-popup {
-    width: min(460px, 100%); /* أقصى عرض 460 لكن لا يتجاوز الشاشة */
-    padding: 22px; /* مساحة داخل Popup */
-    background-color: white; /* خلفية بيضاء */
-    border-radius: 10px; /* تدوير */
-}
-
-.popup-title-row {
-    display: flex; /* العنوان وX بجانب بعض */
-    justify-content: space-between; /* كل واحد بطرف */
-    align-items: center; /* توسيط */
-}
-
-.popup-title-row h2 {
-    margin: 0; /* إزالة Margin */
-    font-size: 18px; /* حجم العنوان */
-}
-
-.create-ticket-popup label,
-.reply-ticket-popup label,
-.reschedule-meeting-popup label {
-    display: block; /* Label بسطر منفصل */
-    margin: 14px 0 5px; /* مسافات */
-    font-size: 10px; /* حجم */
-    font-weight: 600; /* غامق */
-}
-
-.create-ticket-popup input,
-.create-ticket-popup select,
-.create-ticket-popup textarea,
-.reply-ticket-popup textarea,
-.reschedule-meeting-popup input,
-.reschedule-meeting-popup select {
-    width: 100%; /* كامل عرض Popup */
-    padding: 9px; /* مساحة داخلية */
-    border: 1px solid var(--color-border); /* Border */
-    border-radius: 5px; /* تدوير */
-}
-
-.popup-time-row {
-    display: grid; /* Grid */
-    grid-template-columns: 1fr 1fr; /* عمودين بنفس العرض */
-    gap: 8px; /* مسافة */
-}
-
-.popup-buttons {
-    margin-top: 18px; /* مسافة أعلى */
-    display: flex; /* الأزرار بجانب بعض */
-    justify-content: flex-end; /* الأزرار على اليمين */
-    gap: 8px; /* مسافة */
-}
-
-.save-create-ticket-button,
-.save-reply-ticket-button,
-.save-reschedule-meeting-button {
-    padding: 8px 12px; /* حجم */
-    background-color: var(--color-primary); /* Teal */
-    color: white; /* النص أبيض */
-    border: none; /* بدون Border */
-    border-radius: 5px; /* تدوير */
 }
 
 
-/* =========================================================
-   Toast Message
-========================================================= */
+.hr-request-card {
+
+    padding: 18px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 15px;
+
+}
+
+
+.hr-request-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+
+}
+
+
+.hr-request-card h3 {
+
+    margin:
+        5px 0;
+
+}
+
+
+.hr-request-card p {
+
+    color: #4B5563;
+
+    line-height: 1.6;
+
+}
+
+
+.employee-information {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+}
+
+
+.request-meta {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin: 12px 0;
+
+}
+
+
+.request-meta span {
+
+    background: #f3f6f7;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+}
+
+
+.request-bottom {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding-top: 12px;
+
+    border-top:
+        1px solid #edf1f3;
+
+}
+
+
+.status {
+
+    border-radius: 50px;
+
+    padding: 6px 10px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+.status-blue {
+
+    color: #1d4ed8;
+
+    background: #eaf1ff;
+
+}
+
+
+.status-yellow {
+
+    color: #a15c00;
+
+    background: #fff4d8;
+
+}
+
+
+.status-green {
+
+    color: #047857;
+
+    background: #e7f8f0;
+
+}
+
+
+.status-red {
+
+    color: #b91c1c;
+
+    background: #feecec;
+
+}
+
+
+.hr-reply {
+
+    margin: 12px 0;
+
+    padding: 12px;
+
+    border-left:
+        3px solid var(--primary);
+
+    border-radius: 8px;
+
+    background: #f0f8f8;
+
+}
+
+
+/* Forms */
+
+.form-field {
+
+    margin-bottom: 16px;
+
+}
+
+
+.form-field label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: 700;
+
+}
+
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+
+    width: 100%;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    outline: none;
+
+}
+
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+
+    border-color: var(--primary);
+
+}
+
+
+.two-columns {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 0 12px;
+
+}
+
+
+.full-width {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.meeting-box {
+
+    padding: 16px;
+
+    background: #f7fbfb;
+
+    border:
+        1px solid #d5ebed;
+
+    border-radius: 14px;
+
+}
+
+
+/* Dialog */
+
+.hr-dialog {
+
+    width:
+        min(620px, calc(100% - 30px));
+
+    max-height:
+        calc(100vh - 40px);
+
+    overflow: auto;
+
+    border: 0;
+
+    border-radius: 18px;
+
+    padding: 0;
+
+}
+
+
+.hr-dialog::backdrop {
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+}
+
+
+.dialog-header,
+.dialog-body,
+.dialog-actions {
+
+    padding: 20px;
+
+}
+
+
+.dialog-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.dialog-header h2 {
+
+    margin: 0;
+
+}
+
+
+.dialog-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.primary-button,
+.secondary-button {
+
+    min-height: 42px;
+
+    padding: 0 14px;
+
+    border-radius: 10px;
+
+    font-weight: 700;
+
+}
+
+
+.primary-button {
+
+    border:
+        1px solid var(--primary);
+
+    background: var(--primary);
+
+    color: white;
+
+}
+
+
+.secondary-button {
+
+    border:
+        1px solid var(--border);
+
+    background: white;
+
+}
+
+
+.icon-button {
+
+    border: 0;
+
+    background: transparent;
+
+}
+
+
+/* Message */
 
 .page-message {
-    position: fixed; /* تثبيت */
-    right: 25px; /* 25 من اليمين */
-    bottom: 25px; /* 25 من الأسفل */
-    z-index: 1500; /* فوق Popup لو لزم */
-    padding: 12px 16px; /* مساحة */
-    background-color: var(--color-primary-dark); /* لون */
-    color: white; /* نص أبيض */
-    border-radius: 7px; /* تدوير */
-    font-size: 10px; /* حجم */
+
+    position: fixed;
+
+    right: 20px;
+
+    bottom: 20px;
+
+    z-index: 1000;
+
+    background: #24343a;
+
+    color: white;
+
+    padding: 13px 16px;
+
+    border-radius: 11px;
+
+    opacity: 0;
+
+    transform:
+        translateY(10px);
+
+    pointer-events: none;
+
+    transition: 0.2s;
+
+}
+
+
+.page-message.show-message {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+.hide-element {
+
+    display: none !important;
+
+}
+
+
+.empty-state {
+
+    padding: 35px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+}
+
+
+/* Responsive */
+
+@media (max-width: 1150px) {
+
+    .hr-helpdesk-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .hr-statistics-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .filters {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .hr-helpdesk-page {
+
+        padding:
+            20px 13px 40px;
+
+    }
+
+
+    .hr-helpdesk-header {
+
+        flex-direction: column;
+
+    }
+
+
+    .hr-statistics-grid,
+    .filters,
+    .two-columns {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .full-width {
+
+        grid-column: auto;
+
+    }
+
+
+    .dialog-actions {
+
+        flex-direction:
+            column-reverse;
+
+    }
+
+
+    .primary-button,
+    .secondary-button,
+    .create-button {
+
+        width: 100%;
+
+    }
+
 }
