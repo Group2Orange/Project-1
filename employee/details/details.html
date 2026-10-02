@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="details.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
 
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -28,7 +29,7 @@
 
 <!-- ================= NAVBAR ================= -->
 
-<nav class="navbar" data-navbar="hr"></nav>
+<nav class="navbar" data-navbar="employee"></nav>
 
 
 
@@ -38,91 +39,7 @@
 <div class="layout">
 
 
-  <!-- ================= SIDEBAR ================= -->
-
-  <aside class="sidebar">
-
-
-    <div class="profile-box">
-
-      <div class="avatar" id="profileAvatar">
-        MC
-      </div>
-
-      <div>
-
-        <h3 id="sideName">
-          Marcus Chen
-        </h3>
-
-        <p id="sidePosition">
-          Senior Frontend Engineer
-        </p>
-
-      </div>
-
-    </div>
-
-
-
-    <div class="menu">
-
-
-      <div>
-        <i class="fa-solid fa-briefcase"
-           style="color: rgb(0, 124, 134);"></i>
-        My Workspace
-      </div>
-
-
-      <div class="selected">
-        <i class="fa-sharp fa-solid fa-circle-info"
-           style="color: rgb(0, 124, 134);"></i>
-        My Details
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-list-check"
-           style="color: rgb(0, 124, 134);"></i>
-        My Tasks
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-right-from-bracket"
-           style="color: rgb(0, 124, 134);"></i>
-        Leave & Time Off
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-file"
-           style="color: rgb(0, 124, 134);"></i>
-        Policies & Docs
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-phone-volume"
-           style="color: rgb(0, 124, 134);"></i>
-        Feedback & Surveys
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-hand-holding-heart"
-           style="color: rgb(0, 124, 134);"></i>
-        Helpdesk Support
-      </div>
-
-
-    </div>
-
-  </aside>
-
-
-
+  <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="details" aria-label="Employee workspace"></aside>
 
   <!-- ================= CONTENT ================= -->
 
@@ -171,7 +88,7 @@
 
 
         <!-- EDIT PAGE -->
-        <button onclick="window.location.href='/Project-1/common/edit-profile/edit-profile.html'">
+        <button onclick="window.location.href='../../common/edit-profile/edit-profile.html'">
           <i class="fa-solid fa-pen"></i>
           Edit Details
         </button>
@@ -590,6 +507,7 @@
 
 <script src="../../shared/navbar.js"></script>
 
+<script src="../../shared/employee-sidebar.js"></script>
 <script src="details.js"></script>
 
 

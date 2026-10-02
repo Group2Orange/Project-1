@@ -112,7 +112,8 @@ h3 {
 }
 
 
-.header-left {
+    font-size: 11px;
+    line-height: 9px;
 
     max-width: 700px;
 
@@ -141,7 +142,9 @@ h3 {
 
     font-size: 28px;
 
-    line-height: 1.2;
+    font-size: 11px;
+    color: var(--text);
+}
 
     font-weight: 600;
 
@@ -158,7 +161,8 @@ h3 {
 
     font-size: 13px;
 
-    line-height: 1.45;
+    font-size: 11px;
+    line-height: 12px;
 
     max-width: 650px;
 
@@ -196,7 +200,8 @@ h3 {
 
     border-radius: 8px;
 
-    font-size: 10px;
+    font-size: 11px;
+    line-height: 11px;
 
     font-weight: 600;
 
@@ -223,11 +228,14 @@ h3 {
 }
 
 
-.stat-icon {
+    font-size: 11px;
+    line-height: 10px;
+}
 
     color: var(--primary);
 
-    font-size: 14px;
+    font-size: 11px;
+    line-height: 8px;
 
 }
 
@@ -264,7 +272,7 @@ h3 {
    FILTER BAR
 ===================================================== */
 
-.filter-bar {
+    font-size: 11px;
 
     margin-top: 18px;
 
@@ -284,7 +292,7 @@ h3 {
 
     justify-content: space-between;
 
-    gap: 20px;
+    font-size: 11px;
 
 }
 
@@ -318,7 +326,7 @@ h3 {
 
     font-family: "Public Sans", sans-serif;
 
-    font-size: 9px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -374,6 +382,8 @@ h3 {
 
 }
 
+.stat-top > span {
+    font-size: 11px;
 
 .sort-container select {
 
@@ -423,7 +433,7 @@ h3 {
 
 .feedback-card {
 
-    background: var(--card);
+    font-size: 11px;
 
     border: 1px solid var(--border);
 
@@ -487,6 +497,7 @@ h3 {
 
     min-width: 0;
 
+    font-size: 11px;
 }
 
 
@@ -502,9 +513,7 @@ h3 {
 
     border: 1px solid #E4E7EC;
 
-    border-radius: 9px;
-
-    padding: 9px 13px;
+    font-size: 11px;
 
     display: flex;
 
@@ -529,6 +538,8 @@ h3 {
 
 }
 
+.filter-title {
+    font-size: 11px;
 
 .avatar {
 
@@ -550,8 +561,6 @@ h3 {
     justify-content: center;
 
     font-size: 11px;
-
-    font-weight: 700;
 
 }
 
@@ -575,6 +584,9 @@ h3 {
 
     min-width: 0;
 
+    font-size: 11px;
+
+    cursor: pointer;
 }
 
 
@@ -595,7 +607,7 @@ h3 {
 
     font-size: 9px;
 
-    font-style: italic;
+    font-size: 11px;
 
 }
 
@@ -644,6 +656,7 @@ h3 {
 
 }
 
+    font-size: 11px;
 
 .field h2 {
 
@@ -695,6 +708,9 @@ h3 {
 
 }
 
+.identity-tag,
+.department-tag {
+    font-size: 11px;
 
 .documents {
 
@@ -713,7 +729,7 @@ h3 {
 
     background: #F2F4F7;
 
-    border: 1px solid #E4E7EC;
+    font-size: 11px;
 
     border-radius: 8px;
 
@@ -748,7 +764,7 @@ h3 {
 
 .document div:last-child {
 
-    display: flex;
+    font-size: 11px;
 
     flex-direction: column;
 
@@ -795,9 +811,8 @@ h3 {
 }
 
 
-/* =====================================================
-   PRIORITY PANEL
-===================================================== */
+.date {
+    font-size: 11px;
 
 .priority-panel {
 
@@ -824,7 +839,7 @@ h3 {
 
     font-weight: 700;
 
-    letter-spacing: 0.5px;
+    font-size: 11px;
 
     margin-bottom: 2px;
 
@@ -874,14 +889,14 @@ h3 {
 
     flex-shrink: 0;
 
-    border-radius: 50%;
+    font-size: 11px;
 
 }
 
 
 .priority-option.high .priority-circle {
 
-    background: var(--high);
+    font-size: 11px;
 
 }
 
@@ -890,12 +905,7 @@ h3 {
 
     background: var(--medium);
 
-}
-
-
-.priority-option.low .priority-circle {
-
-    background: var(--low);
+    font-size: 11px;
 
 }
 
@@ -904,7 +914,7 @@ h3 {
 
     margin-left: auto;
 
-    font-size: 12px;
+    font-size: 11px;
 
 }
 
@@ -923,6 +933,8 @@ h3 {
 
 }
 
+.card-footer > span {
+    font-size: 11px;
 
 .priority-option.selected.medium {
 
@@ -960,7 +972,7 @@ h3 {
 
     color: var(--muted);
 
-    font-size: 8px;
+    font-size: 11px;
 
     display: flex;
 
@@ -994,8 +1006,7 @@ h3 {
     }
 
 
-    .filter-bar {
-        flex-direction: column;
+    font-size: 11px;
 
         align-items: flex-start;
     }
@@ -1023,7 +1034,7 @@ h3 {
 
         width: 100%;
 
-    }
+    font-size: 11px;
 
 
     .employee-box {
@@ -1052,7 +1063,8 @@ h3 {
 
         padding: 20px 0 40px;
 
-    }
+    font-size: 11px;
+}
 
 
     .page-header {
@@ -1061,6 +1073,8 @@ h3 {
 
     }
 
+.footer-right i {
+    font-size: 11px;
 
     .header-left h1 {
 

@@ -2,6 +2,7 @@
   const placeholder = document.querySelector('[data-employee-sidebar]');
 
   if (placeholder) {
+    const sidebarScriptUrl = document.currentScript.src;
     const activePage = placeholder.dataset.sidebarActive;
     const file = new URL('employee-sidebar.html', document.currentScript.src);
 
@@ -61,6 +62,21 @@
         }
 
         updateTaskSummary();
+        if (localStorage.getItem('employeeTasks') === null) {
+          fetch(new URL('../employee/my-tasks/default-tasks.json', sidebarScriptUrl))
+            .then(response => {
+              if (!response.ok) throw new Error(`Task data: ${response.status}`);
+              return response.json();
+            })
+            .then(tasks => {
+              if (localStorage.getItem('employeeTasks') === null) {
+                localStorage.setItem('employeeTasks', JSON.stringify(tasks));
+                updateTaskSummary();
+                window.dispatchEvent(new Event('teamspace:tasks-changed'));
+              }
+            })
+            .catch(error => console.error('Could not load default task progress:', error));
+        }
         window.addEventListener('storage', event => {
           if (event.key === 'employeeTasks') updateTaskSummary();
         });

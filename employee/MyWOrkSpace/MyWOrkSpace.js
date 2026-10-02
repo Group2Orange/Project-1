@@ -94,4 +94,5 @@ renderWorkspaceTasks();
 window.addEventListener('storage', event => {
   if (event.key === 'employeeTasks') renderWorkspaceTasks();
 });
+window.addEventListener('teamspace:tasks-changed', renderWorkspaceTasks);
 window.addEventListener('pageshow', renderWorkspaceTasks);
