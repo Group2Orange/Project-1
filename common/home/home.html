@@ -17,9 +17,23 @@
       }, 4200);
     })();
   </script>
-  <title>Home and Services | HR System</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <title>TeamSpace HR | Home</title>
+  <meta name="description" content="TeamSpace HR brings people, tasks, employee services, feedback and administrative operations into one workplace platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <script>
+    /* Hide icon ligature text until the icon font is ready (fails open after 3s). */
+    (() => {
+      const root = document.documentElement;
+      root.classList.add('icons-pending');
+      const done = () => root.classList.remove('icons-pending');
+      setTimeout(done, 3000);
+      if (document.fonts && document.fonts.load) document.fonts.load('24px "Material Symbols Outlined"').then(done, done);
+      else done();
+    })();
+  </script>
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="home.css">
@@ -115,9 +129,6 @@
         <span class="signal-legend-title">FROM EARTH. THROUGH ORBIT. BACK TO YOU.</span>
         <div><span><i class="signal-key-up"></i>UPLINK</span><b>→</b><span><i class="signal-key-relay"></i>RELAY</span><b>→</b><span><i class="signal-key-down"></i>DOWNLINK</span></div>
       </div>
-      <a href="#about-company" class="hero-scroll" aria-label="Scroll to company introduction">
-        <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_down</span>
-      </a>
     </section>
     <!-- COMPANY INTRO -->
     <section class="company-intro-section" id="about-company">
@@ -179,39 +190,40 @@
         <div class="home-section-heading">
           <div>
             <p class="home-section-label">Employee Voice</p>
-            <h2>Employee & Team Feedback & Voices</h2>
+            <h2>Employee Feedback &amp; Team Voices</h2>
           </div>
           <p class="home-section-description">Real perspectives from employees that help shape a stronger, more connected workplace.</p>
         </div>
       </div>
+      <p class="feedback-interaction-hint"><span class="material-symbols-outlined" aria-hidden="true">touch_app</span>Click a card to focus it and pause the stories.</p>
       <div class="feedback-slider" id="feedbackSlider">
         <div class="feedback-track" id="feedbackTrack">
           <div class="feedback-group" id="feedbackGroup">
-            <article class="testimonial testimonial-teal" tabindex="0">
+            <article class="testimonial testimonial-teal" tabindex="0" role="button" aria-pressed="false">
               <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
               <p>“TeamSpace makes it much easier to understand my tasks and stay connected with the HR team.”</p>
               <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
                 <div><strong>Sarah Anderson</strong><span>Software Developer</span></div></div>
             </article>
-            <article class="testimonial testimonial-green" tabindex="0">
+            <article class="testimonial testimonial-green" tabindex="0" role="button" aria-pressed="false">
               <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
               <p>“Having employee services and requests in one place has made our workflow much smoother.”</p>
               <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
                 <div><strong>David Wilson</strong><span>Project Coordinator</span></div></div>
             </article>
-            <article class="testimonial testimonial-yellow" tabindex="0">
+            <article class="testimonial testimonial-yellow" tabindex="0" role="button" aria-pressed="false">
               <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
               <p>“Feedback is now clearer and more accessible. It feels like employees have a stronger voice.”</p>
               <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
                 <div><strong>Omar Khalil</strong><span>UI/UX Designer</span></div></div>
             </article>
-            <article class="testimonial testimonial-orange" tabindex="0">
+            <article class="testimonial testimonial-orange" tabindex="0" role="button" aria-pressed="false">
               <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
               <p>“The platform gives us a simple way to follow important updates without unnecessary complexity.”</p>
               <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
                 <div><strong>Emma Carter</strong><span>Quality Assurance</span></div></div>
             </article>
-            <article class="testimonial testimonial-blue" tabindex="0">
+            <article class="testimonial testimonial-blue" tabindex="0" role="button" aria-pressed="false">
               <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
               <p>“The task workflow gives our team much better visibility into deadlines and daily priorities.”</p>
               <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
@@ -302,12 +314,91 @@
         </div>
       </div>
     </section>
+    <!-- NETWORK HEALTH -->
+    <section class="home-section network-health-section" id="network-health">
+      <div class="home-container">
+        <div class="home-section-heading network-health-heading reveal">
+          <div>
+            <p class="home-section-label">Network Health</p>
+            <h2>A live view of how TeamSpace stays connected</h2>
+          </div>
+          <p class="home-section-description">Follow the service path from core connectivity to secure employee access without turning the home page into a statistics dashboard.</p>
+        </div>
+
+        <div class="network-health-board reveal" data-network-board>
+          <div class="network-health-overview">
+            <div class="network-health-state">
+              <span class="network-health-live-dot" aria-hidden="true"></span>
+              <div>
+                <span>Live infrastructure</span>
+                <strong>All systems operational</strong>
+              </div>
+            </div>
+            <div class="network-health-phase" data-network-phase>Routing signal</div>
+          </div>
+
+          <div class="network-route" aria-label="TeamSpace service route">
+            <article class="network-route-node" data-route-node="uplink">
+              <span class="network-route-icon material-symbols-outlined" aria-hidden="true">lan</span>
+              <div><span>Core Network</span><strong>Connected</strong></div>
+            </article>
+            <span class="network-route-link" aria-hidden="true"><i></i></span>
+            <article class="network-route-node" data-route-node="relay">
+              <span class="network-route-icon material-symbols-outlined" aria-hidden="true">cloud</span>
+              <div><span>Cloud Services</span><strong>Synced</strong></div>
+            </article>
+            <span class="network-route-link" aria-hidden="true"><i></i></span>
+            <article class="network-route-node" data-route-node="downlink">
+              <span class="network-route-icon material-symbols-outlined" aria-hidden="true">badge</span>
+              <div><span>Employee Portal</span><strong>Available</strong></div>
+            </article>
+            <span class="network-route-link" aria-hidden="true"><i></i></span>
+            <article class="network-route-node" data-route-node="received">
+              <span class="network-route-icon material-symbols-outlined" aria-hidden="true">shield_lock</span>
+              <div><span>Security Layer</span><strong>Protected</strong></div>
+            </article>
+          </div>
+
+          <div class="network-health-details">
+            <div class="network-service-list" aria-label="Service status">
+              <div class="network-service-row">
+                <span class="network-service-symbol material-symbols-outlined" aria-hidden="true">router</span>
+                <div><strong>Connectivity backbone</strong><p>Internal traffic is moving normally across connected departments.</p></div>
+                <span class="network-service-state">Stable</span>
+              </div>
+              <div class="network-service-row">
+                <span class="network-service-symbol material-symbols-outlined" aria-hidden="true">sync</span>
+                <div><strong>Cloud synchronization</strong><p>Employee and operational data are syncing normally in the background.</p></div>
+                <span class="network-service-state">Active</span>
+              </div>
+              <div class="network-service-row">
+                <span class="network-service-symbol material-symbols-outlined" aria-hidden="true">encrypted</span>
+                <div><strong>Secure access</strong><p>Protected sessions and access controls are operating as expected.</p></div>
+                <span class="network-service-state">Protected</span>
+              </div>
+            </div>
+
+            <aside class="network-event-stream" aria-label="Latest infrastructure activity">
+              <p class="network-event-label">Latest activity</p>
+              <div class="network-event">
+                <span></span>
+                <div><strong>Route verification complete</strong><p>Core, cloud and portal paths responded successfully.</p></div>
+              </div>
+              <div class="network-event">
+                <span></span>
+                <div><strong>Security checks healthy</strong><p>No service-impacting access events detected.</p></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- MODULES -->
     <section class="home-section modules-section" id="modules">
       <div class="home-container">
         <div class="home-section-heading">
           <div>
-            <p class="home-section-label">Administrative Services & Modules</p>
+            <p class="home-section-label">Administrative Services &amp; Modules</p>
             <h2>Everything your team needs in one place</h2>
           </div>
           <p class="home-section-description">Practical HR modules designed to simplify daily employee and administrative operations.</p>
@@ -321,15 +412,15 @@
           </article>
           <article class="module-card reveal reveal-network" style="--delay:.25s">
             <div class="module-icon module-icon-blue"><span class="material-symbols-outlined" aria-hidden="true">task</span></div>
-            <h3>Your Tasks & Workflow</h3>
+            <h3>Your Tasks &amp; Workflow</h3>
             <p>Organize assigned work, priorities, progress and deadlines in one workspace.</p>
             <a href="/employee/my-tasks/my-tasks.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
           </article>
           <article class="module-card reveal reveal-network" style="--delay:.5s">
             <div class="module-icon module-icon-orange"><span class="material-symbols-outlined" aria-hidden="true">event_available</span></div>
-            <h3>Leave & HR Requests</h3>
+            <h3>Leave &amp; HR Requests</h3>
             <p>Submit employee requests and follow their status through a clear workflow.</p>
-            <a href="/employee/Leave&TimeOff/Leave&TimeOff.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+            <a href="/employee/Leave&amp;TimeOff/Leave&amp;TimeOff.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
           </article>
           <article class="module-card reveal reveal-network" style="--delay:.75s">
             <div class="module-icon module-icon-purple"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span></div>
@@ -354,51 +445,233 @@
       </div>
     </section>
     <!-- COMPANY CAROUSEL -->
-    <section class="home-section company-section" id="company">
-      <div class="home-container">
-        <div class="home-section-heading">
-          <div>
-            <p class="home-section-label">Inside Our Company</p>
-            <h2>Life & Technology at TeamSpace</h2>
-          </div>
-          <p class="home-section-description">A closer look at our workplace, technology, people and the environment behind TeamSpace HR.</p>
-        </div>
-        <div class="company-carousel" id="companyCarousel">
-          <button class="company-control company-control-prev" id="companyPrev" type="button" aria-label="Previous company media">
-            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-          </button>
-          <div class="company-track" id="companyTrack">
-            <article class="company-slide">
-              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Our collaborative workspace"><source src="/common/home/company/341476_medium.mp4" type="video/mp4"></video></div>
-              <div class="company-slide-content"><span>Our Workspace</span><h3>Built for collaboration</h3><p>Modern spaces designed for communication, productivity and teamwork.</p></div>
-            </article>
-            <article class="company-slide">
-              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Secure access technology"><source src="/common/home/company/mixkit-close-up-of-a-fingerprint-logging-47323-hd-ready.mp4" type="video/mp4"></video></div>
-              <div class="company-slide-content"><span>Technology</span><h3>Infrastructure behind our platform</h3><p>Reliable technology that keeps our teams and services connected.</p></div>
-            </article>
-            <article class="company-slide">
-              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Engineers working in a data center"><source src="/common/home/company/mixkit-timelapse-of-engineers-working-on-data-center-23374-hd-ready.mp4" type="video/mp4"></video></div>
-              <div class="company-slide-content"><span>Our People</span><h3>Teams working together</h3><p>Collaboration across departments creates better employee experiences.</p></div>
-            </article>
-            <article class="company-slide">
-              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="TeamSpace technology and people"><source src="/common/home/Hero video/teamspace-hero-web.mp4" type="video/mp4"></video></div>
-              <div class="company-slide-content"><span>Innovation</span><h3>Technology meets people</h3><p>Creating smarter HR experiences through thoughtful digital solutions.</p></div>
-            </article>
-            <article class="company-slide">
-              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Teams collaborating"><source src="/common/home/company/wmremove-transformed.mp4" type="video/mp4"></video></div>
-              <div class="company-slide-content"><span>Our People</span><h3>Teams working together</h3><p>Collaboration across departments creates better employee experiences.</p></div>
-            </article>
-          </div><!-- fixed: .company-track now closed -->
-          <button class="company-control company-control-next" id="companyNext" type="button" aria-label="Next company media">
-            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-          </button>
-        </div>
-        <div class="company-nav">
-          <div class="company-progress" id="companyProgress" aria-hidden="true"><span></span></div>
-          <div class="company-dots" id="companyDots"></div>
-        </div>
+<section class="home-section company-section" id="company">
+  <div class="home-container">
+
+    <div class="home-section-heading">
+      <div>
+        <p class="home-section-label">Inside Our Company</p>
+        <h2>Technology, Infrastructure & People Behind Our Operations</h2>
       </div>
-    </section>
+
+      <p class="home-section-description">
+        Discover the people, technology and infrastructure behind our daily operations,
+        from enterprise connectivity and secure systems to cloud services and collaborative teams.
+      </p>
+    </div>
+
+    <div class="company-carousel" id="companyCarousel">
+
+      <button
+        class="company-control company-control-prev"
+        id="companyPrev"
+        type="button"
+        aria-label="Previous company media"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+      </button>
+
+      <div class="company-track" id="companyTrack">
+
+        <!-- WORK ENVIRONMENT -->
+        <article class="company-slide">
+          <div class="company-media">
+            <video
+              data-company-video
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Our collaborative workspace"
+            >
+              <source src="./company/341476_medium.mp4" type="video/mp4">
+            </video>
+
+            <div class="company-media-fallback" aria-hidden="true">
+              <span class="material-symbols-outlined">groups</span>
+              <small>Our Workplace</small>
+            </div>
+
+            <span class="company-media-tag">Our Workplace</span>
+          </div>
+
+          <div class="company-slide-content">
+            <span>Work Environment</span>
+            <h3>Connected teams. Shared goals.</h3>
+            <p>
+              Our workplace brings technical, operational and administrative teams
+              together to support reliable services and efficient daily operations.
+            </p>
+          </div>
+        </article>
+
+        <!-- SECURITY -->
+        <article class="company-slide">
+          <div class="company-media">
+            <video
+              data-company-video
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Secure access technology"
+            >
+              <source
+                src="./company/mixkit-close-up-of-a-fingerprint-logging-47323-hd-ready.mp4"
+                type="video/mp4"
+              >
+            </video>
+
+            <div class="company-media-fallback" aria-hidden="true">
+              <span class="material-symbols-outlined">fingerprint</span>
+              <small>Secure Access</small>
+            </div>
+
+            <span class="company-media-tag">Security</span>
+          </div>
+
+          <div class="company-slide-content">
+            <span>Secure Operations</span>
+            <h3>Security built into every connection</h3>
+            <p>
+              Secure access, identity protection and continuous monitoring help protect
+              our systems, services and internal digital environment.
+            </p>
+          </div>
+        </article>
+
+        <!-- NETWORK INFRASTRUCTURE -->
+        <article class="company-slide">
+          <div class="company-media">
+            <video
+              data-company-video
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Engineers working in a data center"
+            >
+              <source
+                src="./company/mixkit-timelapse-of-engineers-working-on-data-center-23374-hd-ready.mp4"
+                type="video/mp4"
+              >
+            </video>
+
+            <div class="company-media-fallback" aria-hidden="true">
+              <span class="material-symbols-outlined">dns</span>
+              <small>Network Infrastructure</small>
+            </div>
+
+            <span class="company-media-tag">Infrastructure</span>
+          </div>
+
+          <div class="company-slide-content">
+            <span>Network Engineering</span>
+            <h3>Infrastructure that keeps business connected</h3>
+            <p>
+              Our engineers support the network and data infrastructure responsible
+              for keeping communication, systems and services available and reliable.
+            </p>
+          </div>
+        </article>
+
+        <!-- DIGITAL INNOVATION -->
+        <article class="company-slide">
+          <div class="company-media">
+            <video
+              data-company-video
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Technology and digital services"
+            >
+              <source
+                src="/common/home/company/teamspace-hero-web.mp4"
+                type="video/mp4"
+              >
+            </video>
+
+            <div class="company-media-fallback" aria-hidden="true">
+              <span class="material-symbols-outlined">hub</span>
+              <small>Digital Innovation</small>
+            </div>
+
+            <span class="company-media-tag">Innovation</span>
+          </div>
+
+          <div class="company-slide-content">
+            <span>Digital Solutions</span>
+            <h3>Turning infrastructure into smarter services</h3>
+            <p>
+              We combine networking, cloud technologies and digital platforms
+              to create scalable solutions that support modern business operations.
+            </p>
+          </div>
+        </article>
+
+        <!-- PEOPLE -->
+        <article class="company-slide">
+          <div class="company-media">
+            <video
+              data-company-video
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Teams collaborating"
+            >
+              <source
+                src="./company/wmremove-transformed.mp4"
+                type="video/mp4"
+              >
+            </video>
+
+            <div class="company-media-fallback" aria-hidden="true">
+              <span class="material-symbols-outlined">diversity_3</span>
+              <small>Our People</small>
+            </div>
+
+            <span class="company-media-tag">Our People</span>
+          </div>
+
+          <div class="company-slide-content">
+            <span>People & Collaboration</span>
+            <h3>The people behind every connection</h3>
+            <p>
+              Engineers, specialists and operational teams work together to deliver
+              dependable technology and continuously improve the way we operate.
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+      <button
+        class="company-control company-control-next"
+        id="companyNext"
+        type="button"
+        aria-label="Next company media"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+      </button>
+
+    </div>
+
+    <div class="company-nav">
+      <div
+        class="company-progress"
+        id="companyProgress"
+        aria-hidden="true"
+      >
+        <span></span>
+      </div>
+
+      <div class="company-dots" id="companyDots"></div>
+    </div>
+
+  </div>
+</section>
   </main>
   <div data-footer></div>
   <script src="home.js"></script>

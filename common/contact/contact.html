@@ -363,7 +363,7 @@ PNG, JPG, PDF or DOCX up to 10MB
 <div class="submit-row">
 
 
-<button class="submit">
+<button class="submit" type="button">
 
 Send Feedback →
 
@@ -378,6 +378,55 @@ Send Feedback →
 
 
 </main>
+
+
+<section class="feedback-success" id="feedbackSuccess" aria-hidden="true">
+  <div class="feedback-success-backdrop" data-feedback-close></div>
+
+  <div class="feedback-success-card" role="dialog" aria-modal="true" aria-labelledby="feedbackSuccessTitle" aria-describedby="feedbackSuccessDescription">
+    <div class="feedback-success-brand">
+      <span class="feedback-success-brand-icon material-symbols-outlined" aria-hidden="true">forum</span>
+      <span>
+        <strong>TeamSpace</strong>
+        <small>Employee Feedback</small>
+      </span>
+    </div>
+
+    <div class="feedback-success-visual" aria-hidden="true">
+      <span class="feedback-success-ring"></span>
+      <div class="feedback-success-icon">
+        <span class="material-symbols-outlined" data-success-icon>send</span>
+      </div>
+    </div>
+
+    <p class="feedback-success-eyebrow" data-success-eyebrow>Secure delivery</p>
+    <h2 id="feedbackSuccessTitle">Sending your feedback...</h2>
+    <p id="feedbackSuccessDescription">Your message is being securely delivered to People Operations.</p>
+
+    <div class="feedback-route" aria-hidden="true">
+      <div class="feedback-route-node">
+        <span class="material-symbols-outlined">person</span>
+        <small>You</small>
+      </div>
+      <span class="feedback-route-line feedback-route-line-one"></span>
+      <div class="feedback-route-node feedback-route-node-center">
+        <span class="material-symbols-outlined">hub</span>
+        <small>TeamSpace</small>
+      </div>
+      <span class="feedback-route-line feedback-route-line-two"></span>
+      <div class="feedback-route-node">
+        <span class="material-symbols-outlined">groups</span>
+        <small>People Ops</small>
+      </div>
+    </div>
+
+    <div class="feedback-success-progress" aria-hidden="true"><span></span></div>
+
+    <button class="feedback-success-done" id="closeFeedbackSuccess" type="button" hidden>
+      Done
+    </button>
+  </div>
+</section>
 
 
   <footer class="site-footer" data-footer></footer>

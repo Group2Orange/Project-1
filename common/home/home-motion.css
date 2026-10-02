@@ -74,7 +74,6 @@ html.intro-pending, html.intro-leaving { overflow:hidden; }
 .hero-line { width:180px; height:2px; margin-top:24px; background:linear-gradient(90deg,#55ddd4,transparent); transform-origin:left; animation:lineDraw 1s .6s var(--ease-out) both; }
 .hero-stat { animation:stepIn .8s var(--ease-out) both; animation-delay:calc(1.1s + var(--i) * .13s); }
 .hero-stat-icon .material-symbols-outlined { font-size:20px; }
-.hero-scroll .material-symbols-outlined { animation:scrollHint 2.2s ease-in-out infinite; }
 .net-line { display:none; }
 .company-intro-stats > div { position:relative; }
 .company-intro-stats > div::before { content:""; display:block; width:5px; height:5px; margin:0 auto 9px; border-radius:50%; background:#008f8b; box-shadow:0 0 0 4px #008f8b0d; }
@@ -147,7 +146,6 @@ html.intro-pending, html.intro-leaving { overflow:hidden; }
 .company-dots button { width:10px; height:10px; padding:0; border:0; border-radius:50%; background:#c4d4d6; cursor:pointer; }
 .company-dots button.on { background:#008f8b; transform:scale(1.25); }
 .company-media::before { content:""; position:absolute; inset:0; z-index:2; background:linear-gradient(110deg,transparent 30%,#55ddd433 50%,transparent 70%); transform:translateX(-120%); pointer-events:none; }
-.company-slide.is-active .company-media::before { animation:mediaSweep 1.2s var(--ease-out) both; }
 .home-section:not(.section-visible) .feedback-track, .document-hidden .feedback-track { animation-play-state:paused; }
 
 @keyframes splashOrbit { to { transform:rotate(360deg); } }
@@ -155,7 +153,6 @@ html.intro-pending, html.intro-leaving { overflow:hidden; }
 @keyframes stepIn { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
 @keyframes wordIn { from { opacity:0; transform:translateY(.35em); filter:blur(5px); } to { opacity:1; transform:none; filter:blur(0); } }
 @keyframes lineDraw { from { transform:scaleX(0); } to { transform:scaleX(1); } }
-@keyframes scrollHint { 0%,100% { transform:translateY(-3px); } 50% { transform:translateY(4px); } }
 @keyframes mediaSweep { to { transform:translateX(120%); } }
 
 @media (max-width:1000px) {
@@ -286,4 +283,22 @@ body.has-signal-world { isolation:isolate; background:#04131e; }
 }
 @media (prefers-reduced-motion:reduce) {
   .has-signal-world .hero-overlay { transition:none; }
+}
+/* 07 — Network route motion and focused feedback. */
+.network-health-live-dot { animation:panelPulse 1.8s ease-in-out infinite; }
+.network-route-link i { animation:routePacket 2.8s linear infinite; }
+.network-route-link:nth-of-type(2) i { animation-delay:.45s; }
+.network-route-link:nth-of-type(3) i { animation-delay:.9s; }
+.feedback-slider.has-selected .testimonial.is-selected .testimonial-icon { animation-play-state:paused; }
+.company-slide.is-active .company-media::before { animation:mediaSweep 1.05s var(--ease-out) both; }
+@keyframes panelPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.12);opacity:.8} }
+@keyframes routePacket { 0%{left:0;opacity:0} 12%{opacity:1} 88%{opacity:1} 100%{left:100%;opacity:0} }
+@media (max-width:950px) {
+  .network-route-link i { animation-name:routePacketVertical; }
+}
+@keyframes routePacketVertical {
+  0% { top:0; opacity:0; }
+  12% { opacity:1; }
+  88% { opacity:1; }
+  100% { top:100%; opacity:0; }
 }

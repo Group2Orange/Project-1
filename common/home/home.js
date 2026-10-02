@@ -166,23 +166,87 @@
     });
   }
 
-  /* ===== Feedback marquee loop ===== */
+  /* ===== Feedback marquee loop + click focus ===== */
   function feedback() {
-    const track = $("#feedbackTrack"), group = $("#feedbackGroup");
-    if (!track || !group) return;
-    if (track.children.length > 1) return;
-    const clone = group.cloneNode(true);
-    clone.removeAttribute("id");
-    clone.setAttribute("aria-hidden", "true");
-    $$("[tabindex]", clone).forEach((i) => i.setAttribute("tabindex", "-1"));
-    track.appendChild(clone);
+    const slider = $("#feedbackSlider"), track = $("#feedbackTrack"), group = $("#feedbackGroup");
+    if (!slider || !track || !group) return;
+
+    if (track.children.length === 1) {
+      const clone = group.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.setAttribute("aria-hidden", "true");
+      $$("[tabindex]", clone).forEach((item) => item.setAttribute("tabindex", "-1"));
+      track.appendChild(clone);
+    }
+
+    const clearSelection = () => {
+      slider.classList.remove("has-selected");
+      $$(".testimonial", slider).forEach((card) => {
+        card.classList.remove("is-selected");
+        if (!card.closest('[aria-hidden="true"]')) card.setAttribute("aria-pressed", "false");
+      });
+    };
+
+    const selectCard = (card) => {
+      const alreadySelected = card.classList.contains("is-selected");
+      clearSelection();
+      if (alreadySelected) return;
+      slider.classList.add("has-selected");
+      card.classList.add("is-selected");
+      if (!card.closest('[aria-hidden="true"]')) card.setAttribute("aria-pressed", "true");
+    };
+
+    slider.addEventListener("click", (event) => {
+      const card = event.target.closest(".testimonial");
+      if (card) selectCard(card);
+    });
+
+    slider.addEventListener("keydown", (event) => {
+      const card = event.target.closest(".testimonial");
+      if (!card || !["Enter", " "].includes(event.key)) return;
+      event.preventDefault();
+      selectCard(card);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (slider.classList.contains("has-selected") && !slider.contains(event.target)) clearSelection();
+    });
   }
+
+  function networkHealth() {
+    const section = $('#network-health');
+    if (!section) return;
+
+    const world = $('#signalWorld');
+    const phase = $('[data-network-phase]', section);
+    const board = $('[data-network-board]', section);
+    const nodes = $$('[data-route-node]', section);
+    const phases = {
+      uplink: 'Core route active',
+      relay: 'Cloud relay active',
+      downlink: 'Portal delivery active',
+      received: 'Secure delivery confirmed'
+    };
+
+    const syncPhase = () => {
+      const key = world?.dataset.phase || 'uplink';
+      if (phase) phase.textContent = phases[key] || 'Routing signal';
+      if (board) board.dataset.phase = key;
+      nodes.forEach((node) => node.classList.toggle('is-active', node.dataset.routeNode === key));
+    };
+
+    syncPhase();
+    if ('MutationObserver' in window && world) {
+      new MutationObserver(syncPhase).observe(world, { attributes: true, attributeFilter: ['data-phase'] });
+    }
+  }
+
   /* ===== Carousel ===== */
   function carousel() {
     const car = $("#companyCarousel"), tr = $("#companyTrack");
     if (!car || !tr) return;
     const slides = $$(".company-slide", tr), dots = $("#companyDots"), bar = $("#companyProgress");
-    let timer = null;
+    let timer = null, activeIndex = -1;
     const step = () => {
       const s = slides[0];
       return s ? s.getBoundingClientRect().width + (parseFloat(getComputedStyle(tr).columnGap) || 18) : 0;
@@ -194,6 +258,10 @@
       if (tr.scrollLeft >= max - 4) i = slides.length - 1;
       slides.forEach((el, k) => el.classList.toggle("is-active", k === i));
       $$("button", dots).forEach((b, k) => b.classList.toggle("on", k === i));
+      if (i !== activeIndex) {
+        activeIndex = i;
+        car.dispatchEvent(new CustomEvent("company:active-change", { detail: { index: i } }));
+      }
     };
     const move = (dir) => {
       const s = step(); if (!s) return;
@@ -226,23 +294,44 @@
     reduce.addEventListener("change", play);
     mark(); play();
   }
-  /* ===== Video visibility (only visible videos play) ===== */
+  /* ===== Company video loading + visibility ===== */
   function videos() {
-    const vids = $$("video");
+    const vids = $$('[data-company-video]');
     if (!vids.length) return;
-    if (!("IntersectionObserver" in window)) return;
-    const state = new Map();
-    const apply = (v) => {
-      if (reduce.matches || document.hidden || !state.get(v)) v.pause();
-      else v.play().catch(() => {});
+
+    const visible = new WeakMap();
+    const canPlay = (video) => !reduce.matches && !document.hidden && visible.get(video);
+
+    const sync = (video) => {
+      const media = video.closest('.company-media');
+      if (video.readyState >= 2) media?.classList.add('is-ready');
+      if (canPlay(video)) video.play().catch(() => {});
+      else video.pause();
     };
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { state.set(e.target, e.isIntersecting); apply(e.target); });
-    }, { threshold: 0.4 });
-    vids.forEach((v) => io.observe(v));
-    const all = () => vids.forEach(apply);
-    document.addEventListener("visibilitychange", all);
-    reduce.addEventListener("change", all);
+
+    vids.forEach((video) => {
+      const media = video.closest('.company-media');
+      video.muted = true;
+      video.playsInline = true;
+      video.addEventListener('loadeddata', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); sync(video); });
+      video.addEventListener('canplay', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); });
+      video.addEventListener('error', () => { media?.classList.add('has-error'); media?.classList.remove('is-ready'); });
+      if (video.readyState >= 2) media?.classList.add('is-ready');
+    });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => { visible.set(entry.target, entry.isIntersecting && entry.intersectionRatio >= .35); sync(entry.target); });
+      }, { threshold: [0, .35, .65] });
+      vids.forEach((video) => io.observe(video));
+    } else {
+      vids.forEach((video) => { visible.set(video, true); sync(video); });
+    }
+
+    const syncAll = () => vids.forEach(sync);
+    document.addEventListener('visibilitychange', syncAll);
+    reduce.addEventListener('change', syncAll);
+    $('#companyCarousel')?.addEventListener('company:active-change', syncAll);
   }
 
   /* A lightweight 2D-canvas renderer of a rotating 3D globe. All artwork is local. */
@@ -680,6 +769,6 @@
     try { fn(); } catch (error) { console.warn(`TeamSpace: ${fn.name} unavailable`, error); }
   };
   const ready = splash();
-  [scrollProgress, pointerEffects, feedback, carousel, orbitalNetwork].forEach(initialize);
+  [scrollProgress, pointerEffects, feedback, networkHealth, carousel, orbitalNetwork].forEach(initialize);
   ready.then(() => [reveals, counters, signalWorld, videos].forEach(initialize));
 })();
