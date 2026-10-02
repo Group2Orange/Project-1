@@ -1,27 +1,32 @@
-// My Details uses the profile saved by login. Extra optional fields come from
-// this page's sample data until they are added to Data/employee.json.
+// My Details reads the signed-in employee directly from the local API.
+const API = 'http://127.0.0.1:3000';
 (async function showEmployeeDetails() {
-  let user;
+  let session;
   try {
-    user = JSON.parse(localStorage.getItem('loggedUser'));
+    session = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('loggedUser'));
   } catch {
-    user = null;
+    session = null;
   }
-  if (!user || user.role !== 'EMP') {
-    window.location.replace(user?.role === 'HR' ? '../../common/home/home.html' : '../../common/login/login.html');
+  if (!session || session.role !== 'EMP') {
+    window.location.replace(session?.role === 'HR' ? '../../hr/workspace/workspace.html' : '../../common/login/login.html');
     return;
   }
 
-  let extra = {};
+  let user;
   try {
-    const response = await fetch('data.json');
-    if (response.ok) {
-      const data = await response.json();
-      extra = data.employees?.find(employee => Number(employee.id) === Number(user.id)) || {};
-    }
-  } catch (error) {
-    console.warn('Optional details are unavailable:', error);
+    // OLD WAY: read loggedUser from localStorage and merge this page's data.json.
+    // const user = JSON.parse(localStorage.getItem('loggedUser'));
+    // NEW WAY: use the session ID to read the latest details from the API.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`);
+    if (!response.ok) throw new Error('Could not load employee details.');
+    user = await response.json();
   }
+  catch (error) {
+    console.error(error);
+    document.querySelector('.content').prepend(Object.assign(document.createElement('p'), { textContent: error.message }));
+    return;
+  }
+  if (!user) return;
 
   const name = user.name || user.fullName || 'Employee';
   const parts = name.trim().split(/\s+/);
@@ -36,7 +41,7 @@
   text('position', user.position);
   text('emailText', user.email);
   text('phone', user.phone);
-  text('officeLocation', user.officeLocation || extra.officeLocation);
+  text('officeLocation', user.officeLocation);
   text('joinDate', user.joiningDate);
   text('headerStatus', status === 'Active' ? 'Active Employee' : status);
 
@@ -44,9 +49,9 @@
   field('inputEmail', user.email);
   field('inputDate', user.joiningDate);
   field('inputPosition', user.position);
-  field('inputID', user.employeeId || extra.employeeId || user.id);
+  field('inputID', user.employeeId || user.id);
   field('inputDepartment', user.department);
-  field('inputSalary', user.salary?.amount ?? extra.salary?.amount);
-  text('currency', user.salary?.currency || extra.salary?.currency || '');
+  field('inputSalary', user.salary?.amount);
+  text('currency', user.salary?.currency || '');
   field('inputStatus', status);
 })();

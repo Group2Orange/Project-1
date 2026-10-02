@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sendBtn.addEventListener(
         "click",
-        () => {
+        async () => {
 
 
 
@@ -381,168 +381,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-            let feedback = {
-
-
-
-                id:
-                    Date.now(),
-
-
-
-
-                name:
-
-                    anonymous
-
-                    ?
-
-                    "Anonymous"
-
-                    :
-
-                    (
-                        user
-                        ?
-                        user.name
-                        :
-                        "Guest User"
-                    ),
-
-
-
-
-
-
-                email:
-
-                    anonymous
-
-                    ?
-
-                    "Hidden"
-
-                    :
-
-                    (
-                        user
-                        ?
-                        user.email
-                        :
-                        ""
-                    ),
-
-
-
-
-
-
-                category:
-                    selectedCategory,
-
-
-
-
-
-
-                subject:
-                    subject,
-
-
-
-
-
-
-                message:
-                    message,
-
-
-
-
-
-
-                attachment:
-                    uploadedFile,
-
-
-
-
-
-
-                date:
-                    new Date()
-                    .toLocaleString(),
-
-
-
-
-
-
-                // HR decides this later
-                priority:
-                    null
-
-
-
+            const feedback = {
+                employeeId: user?.id ? Number(user.id) : null,
+                name: anonymous ? "Anonymous" : (user ? user.name : "Guest User"),
+                email: anonymous ? "Hidden" : (user ? user.email : ""),
+                anonymous,
+                category: selectedCategory,
+                subject,
+                message,
+                attachment: uploadedFile,
+                createdAt: new Date().toISOString(),
+                priority: null,
+                read: false
             };
 
-
-
-
-
-
-
-
-
-            // ===============================
-            // Save Feedback
-            // ===============================
-
-
-
-            let feedbacks =
-
-                JSON.parse(
-
-                    localStorage.getItem(
-                        "feedbacks"
-                    )
-
-                )
-                ||
-                [];
-
-
-
-
-
-
-            feedbacks.push(
-                feedback
-            );
-
-
-
-
-
-
-            localStorage.setItem(
-
-                "feedbacks",
-
-                JSON.stringify(
-                    feedbacks
-                )
-
-            );
-
-
-
-
-
-
-
-
+            try {
+                const response = await fetch("http://127.0.0.1:3000/feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(feedback)
+                });
+                if (!response.ok) throw new Error("Feedback could not be saved.");
+            } catch (error) {
+                console.error("Feedback submission failed:", error);
+                alert("Could not send feedback. Make sure the API is running, then try again.");
+                return;
+            }
 
             // ===============================
             // Success Message
