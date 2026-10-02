@@ -1,0 +1,1109 @@
+/* =========================
+   Colors
+========================= */
+
+:root {
+
+    --primary: #0E7C86;
+
+    --secondary: #4B5563;
+
+    --tertiary: #059669;
+
+    --neutral: #14181C;
+
+    --background: #f3f6fb;
+
+    --white: #ffffff;
+
+    --border: #dbe1e8;
+}
+
+
+/* =========================
+   General
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family: "Public Sans", sans-serif;
+
+    background-color: var(--background);
+
+    color: var(--neutral);
+}
+
+
+h1,
+h2,
+h3,
+h4 {
+
+    font-family: "Space Grotesk", sans-serif;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+
+button,
+input,
+select,
+textarea {
+
+    font-family: "Public Sans", sans-serif;
+}
+
+
+
+/* =========================
+   Header
+========================= */
+
+#pageHeader {
+    width: min(100%, 1500px);
+
+    margin: auto;
+
+    padding: 30px 25px 20px;
+
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    gap: 25px;
+}
+
+
+#breadcrumb {
+
+    margin: 0;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+#pageHeader h1 {
+
+    margin: 5px 0;
+
+    font-size: 27px;
+}
+
+
+#subtitle {
+
+    margin: 0;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+#headerRight {
+
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.small-pill {
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 25px;
+
+    padding: 8px 13px;
+
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+
+    color: var(--neutral);
+
+    font-size: 12px;
+}
+
+
+button.small-pill {
+
+    cursor: pointer;
+}
+
+
+.small-pill div {
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.green-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    background-color: var(--tertiary);
+
+    border-radius: 50%;
+}
+
+
+
+/* =========================
+   Top Cards
+========================= */
+
+#topCards {
+    width: min(100%, 1500px);
+
+    margin: auto;
+
+    padding: 0 25px 20px;
+
+
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+
+.stat-card {
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 15px;
+}
+
+
+.stat-title {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+.stat-title i {
+
+    color: var(--primary);
+}
+
+
+.stat-number {
+
+    margin-top: 12px;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 27px;
+}
+
+
+.stat-card h3 {
+
+    margin: 15px 0 4px;
+
+    font-size: 13px;
+}
+
+
+.stat-card small {
+
+    font-size: 12px;
+}
+
+
+.green-text {
+
+    color: var(--tertiary);
+}
+
+
+
+/* =========================
+   Main
+========================= */
+
+#main {
+    width: min(100%, 1500px);
+
+    margin: auto;
+
+    padding: 0 25px 70px;
+
+
+    display: grid;
+
+    grid-template-columns: 220px minmax(0, 1fr) minmax(240px, 310px);
+
+    gap: 18px;
+}
+
+
+
+/* =========================
+   Left Side
+========================= */
+
+#leftSide {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+#confidentialCard {
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 12px;
+}
+
+
+#confidentialCard h4 {
+
+    margin-top: 0;
+
+    color: var(--primary);
+
+    font-size: 12px;
+}
+
+
+#confidentialCard p {
+
+    color: var(--secondary);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+#confidentialCard small {
+
+    font-size: 12px;
+}
+
+
+
+/* =========================
+   Search
+========================= */
+
+#searchBox {
+
+    margin-bottom: 5px;
+
+    padding: 8px 10px;
+
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+
+#searchBox i {
+
+    color: var(--secondary);
+}
+
+
+#searchBox input {
+
+    flex: 1;
+
+    border: none;
+
+    outline: none;
+
+    font-size: 12px;
+}
+
+
+#searchBox button {
+
+    padding: 7px 10px;
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+#searchMessage {
+
+    min-height: 15px;
+
+    margin: 3px 0 7px;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+
+/* =========================
+   Request Card
+========================= */
+
+#requestCard {
+
+    padding: 20px;
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+
+#requestHeader {
+
+    padding-bottom: 15px;
+
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: start;
+
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+#requestHeader h2 {
+
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+#requestHeader p {
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+#ticketNew {
+
+    padding: 5px 8px;
+
+    background-color: #e8f4f5;
+
+    color: var(--primary);
+
+    border-radius: 4px;
+
+    font-size: 12px;
+}
+
+
+#requestCard label {
+
+    display: block;
+
+    margin: 15px 0 6px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+
+/* =========================
+   Inquiry Type
+========================= */
+
+#typeOptions {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+
+.type-option {
+
+    padding: 12px;
+
+
+    display: flex;
+
+    gap: 10px;
+
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+
+    cursor: pointer;
+}
+
+
+.type-option:hover {
+
+    border-color: var(--primary);
+}
+
+
+.type-option.selected {
+
+    border: 2px solid var(--primary);
+}
+
+
+.type-option i {
+
+    color: var(--primary);
+}
+
+
+.type-option b {
+
+    font-size: 12px;
+}
+
+
+.type-option small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+
+/* =========================
+   Meeting Box
+========================= */
+
+#meetingBox {
+
+    margin-top: 15px;
+
+    padding: 14px;
+
+    background-color: #f7f9fc;
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+}
+
+
+#meetingTitle {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    font-size: 12px;
+}
+
+
+#meetingTitle i {
+
+    color: var(--primary);
+}
+
+
+#channels {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 7px;
+}
+
+
+#channels button,
+.time-btn,
+.duration-btn {
+
+    padding: 7px;
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+#timeButtons,
+#durationButtons {
+
+    display: flex;
+
+    gap: 7px;
+}
+
+
+.selected-btn {
+
+    background-color: var(--primary) !important;
+
+    color: var(--white) !important;
+
+    border-color: var(--primary) !important;
+}
+
+
+
+/* =========================
+   Inputs
+========================= */
+
+#requestCard input,
+#requestCard select,
+#requestCard textarea {
+
+    width: 100%;
+
+    padding: 9px;
+
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+
+    font-size: 12px;
+}
+
+
+#requestCard input:focus,
+#requestCard select:focus,
+#requestCard textarea:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+}
+
+
+#requestCard textarea {
+
+    min-height: 90px;
+
+    resize: vertical;
+}
+
+
+
+/* =========================
+   Upload
+========================= */
+
+#uploadBox {
+
+    padding: 22px;
+
+    text-align: center;
+
+
+    border: 1px dashed #b7c2cf;
+
+    border-radius: 6px;
+
+
+    cursor: pointer;
+}
+
+
+#uploadBox:hover {
+
+    border-color: var(--primary);
+
+    background-color: #f8fbfb;
+}
+
+
+#uploadBox.dragging {
+
+    border-color: var(--tertiary);
+
+    background-color: #edf9f5;
+}
+
+
+#uploadBox i {
+
+    color: var(--primary);
+
+    font-size: 20px;
+}
+
+
+#uploadBox p {
+
+    margin: 5px 0;
+
+    font-size: 12px;
+}
+
+
+#uploadBox small {
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+
+/* =========================
+   Form Buttons
+========================= */
+
+#formButtons {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+
+#draftBtn,
+#submitBtn {
+
+    padding: 9px 13px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+#draftBtn {
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+}
+
+
+#submitBtn {
+
+    background-color: var(--primary);
+
+    color: var(--white);
+
+    border: none;
+}
+
+
+#submitBtn:hover {
+
+    background-color: var(--tertiary);
+}
+
+
+#message {
+
+    margin-top: 12px;
+
+    min-height: 15px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+
+/* =========================
+   Right Side
+========================= */
+
+#rightSide {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+.right-card {
+
+    padding: 15px;
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+
+.right-title {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+
+.right-card h3 {
+
+    margin-top: 0;
+
+    font-size: 12px;
+}
+
+
+.right-card h3 i {
+
+    color: var(--primary);
+}
+
+
+.right-card b {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 12px;
+}
+
+
+.right-card small {
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+.confirmed {
+
+    color: var(--tertiary);
+
+    font-size: 12px;
+}
+
+
+
+/* =========================
+   Meeting Info
+========================= */
+
+.meeting-info {
+
+    margin-top: 10px;
+
+    padding: 8px;
+
+    background-color: #f5f7fb;
+
+    border-radius: 5px;
+}
+
+
+.meeting-info p {
+
+    margin: 4px 0;
+
+    font-size: 12px;
+}
+
+
+.meeting-info i {
+
+    color: var(--primary);
+}
+
+
+.meeting-buttons {
+
+    display: flex;
+
+    gap: 7px;
+
+    margin-top: 10px;
+}
+
+
+.meeting-buttons button {
+
+    flex: 1;
+
+    padding: 7px;
+
+
+    background-color: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+.meeting-buttons .join {
+
+    color: var(--primary);
+}
+
+
+
+/* =========================
+   Tickets
+========================= */
+
+.ticket {
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.ticket span {
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+.ticket b {
+
+    margin: 5px 0;
+}
+
+
+.ticket-status {
+
+    color: #b98113 !important;
+}
+
+
+.link-btn {
+
+    background: none;
+
+    color: var(--primary);
+
+    border: none;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+
+
+/* =========================
+   Answers
+========================= */
+
+.right-card a {
+
+    padding: 9px 0;
+
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+
+    color: var(--secondary);
+
+    font-size: 12px;
+}
+
+
+.right-card a:hover {
+
+    color: var(--primary);
+}
+
+
+.right-card a span {
+
+    margin-left: auto;
+}
+
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1000px) {
+
+    #topCards {
+
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    #main {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #pageHeader {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #topCards {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #typeOptions {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #channels {
+
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    #headerRight {
+
+        flex-direction: column;
+    }
+
+
+    #footerTop,
+    #footerBottom {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+        text-align: center;
+    }
+
+
+    #footerBottom div {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+    }
+
+}

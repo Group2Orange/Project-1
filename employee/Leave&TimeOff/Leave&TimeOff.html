@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Leave or Early-Departure Request | HR System</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="Leave&TimeOff.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
+</head>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="employee"></nav>
+
+  
+   <main class="leave-page">
+    <div class="leave-container">
+
+      <div class="leave-side-column">
+        <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="leave" aria-label="Employee workspace"></aside>
+        <div class="guidelines-card">
+          <div class="guidelines-header">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h4>Leave Guidelines</h4>
+          </div>
+
+          <ul class="guidelines-list">
+            <li>
+              <span class="material-symbols-outlined">info</span>
+              <span><strong>2 Week Notice:</strong> Requests spanning &gt;3 consecutive working days require approval at least 14 days in advance.</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">event_repeat</span>
+              <span><strong>Annual Rollover:</strong> Up to 5 unused PTO days can be rolled over to Q1 2026.</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">medical_services</span>
+              <span><strong>Sick Leave:</strong> Medical absences over 3 consecutive days require digital certification.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== MAIN ========== -->
+      <section class="leave-main">
+
+        <header class="leave-header">
+          <div>
+            <h1>Leave &amp; Time Off</h1>
+            <p>Review your time-off balances, submit leave requests, and track approval status.</p>
+          </div>
+
+          <button class="btn-primary" id="btnRequestTimeOff">
+            <span class="material-symbols-outlined">add</span>
+            Request Time Off
+          </button>
+        </header>
+
+        <!-- Balance Cards -->
+        <div class="balance-cards">
+
+          <div class="balance-card">
+            <div class="balance-card-header">
+              <span class="balance-label">Annual PTO</span>
+              <span class="material-symbols-outlined balance-icon">event_available</span>
+            </div>
+            <div class="balance-value">
+              <strong id="annualPtoUsed">0</strong>
+              <span>/ <span id="annualPtoTotal">0</span> days</span>
+            </div>
+            <div class="progress-bar thin">
+              <div class="progress-fill" id="annualPtoFill" style="width: 0%;"></div>
+            </div>
+            <div class="balance-footer" id="annualPtoFooter">—</div>
+          </div>
+
+          <div class="balance-card">
+            <div class="balance-card-header">
+              <span class="balance-label">Sick &amp; Medical</span>
+              <span class="material-symbols-outlined balance-icon">medical_services</span>
+            </div>
+            <div class="balance-value">
+              <strong id="sickUsed">0</strong>
+              <span>/ <span id="sickTotal">0</span> days</span>
+            </div>
+            <div class="progress-bar thin">
+              <div class="progress-fill" id="sickFill" style="width: 0%;"></div>
+            </div>
+            <div class="balance-footer" id="sickFooter">—</div>
+          </div>
+
+          <div class="balance-card">
+            <div class="balance-card-header">
+              <span class="balance-label">Floating Holidays</span>
+              <span class="material-symbols-outlined balance-icon">celebration</span>
+            </div>
+            <div class="balance-value">
+              <strong id="floatingUsed">0</strong>
+              <span>/ <span id="floatingTotal">0</span> days</span>
+            </div>
+            <div class="progress-bar thin">
+              <div class="progress-fill" id="floatingFill" style="width: 0%;"></div>
+            </div>
+            <div class="balance-footer" id="floatingFooter">—</div>
+          </div>
+
+          <div class="balance-card">
+            <div class="balance-card-header">
+              <span class="balance-label">Unpaid Leaves</span>
+              <span class="material-symbols-outlined balance-icon">event_busy</span>
+            </div>
+            <div class="balance-value">
+              <strong id="unpaidUsed">0</strong>
+              <span>/ <span id="unpaidTotal">0</span> days</span>
+            </div>
+            <div class="progress-bar thin">
+              <div class="progress-fill" id="unpaidFill" style="width: 0%;"></div>
+            </div>
+            <div class="balance-footer" id="unpaidFooter">—</div>
+          </div>
+
+        </div>
+
+        <!-- Tabs + Search -->
+        <div class="tabs-bar">
+          <div class="tabs">
+            <button class="tab active" id="tabAll">All Requests (<span id="tabCountAll">0</span>)</button>
+            <button class="tab" id="tabUpcoming">Upcoming &amp; Approved (<span id="tabCountUpcoming">0</span>)</button>
+            <button class="tab" id="tabHistory">Past History (<span id="tabCountHistory">0</span>)</button>
+          </div>
+
+          <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="searchInput" placeholder="Search by leave type...">
+          </div>
+        </div>
+
+        <!-- Upcoming & Active -->
+        <section class="section" id="upcomingSection">
+          <div class="section-title">
+            <span class="material-symbols-outlined">event_upcoming</span>
+            <h2>Upcoming &amp; Active Time Off</h2>
+            <span class="section-meta" id="upcomingMeta">0 Scheduled Periods</span>
+          </div>
+
+          <div class="upcoming-cards" id="upcomingCards"></div>
+        </section>
+
+        <!-- History -->
+        <section class="section" id="historySection">
+          <div class="section-title">
+            <span class="material-symbols-outlined">history</span>
+            <h2>Recent Leave History &amp; Records</h2>
+          </div>
+
+          <p class="section-subtitle">Logged requests, approved absences, and audit notes.</p>
+
+          <div class="history-table-wrapper">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>LEAVE TYPE</th>
+                  <th>DATE RANGE</th>
+                  <th>DURATION</th>
+                  <th>REASON / NOTES</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <span id="paginationInfo">Showing 0 of 0 total leave events</span>
+          </div>
+        </section>
+
+      </section>
+    </div>
+  </main>
+
+
+  <!-- ========== MODAL: Request Time Off ========== -->
+  <div class="modal-overlay" id="requestModal">
+    <div class="modal">
+
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="material-symbols-outlined modal-icon">event_available</span>
+          <div>
+            <h2>Request Time Off</h2>
+            <p>Submit your leave request for manager review and approval.</p>
+          </div>
+        </div>
+        <button class="modal-close" id="btnCloseModal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Request Kind: Full Day / Early Departure -->
+        <div class="form-group">
+          <label>Request Kind</label>
+          <div class="radio-row">
+            <label class="radio-option">
+              <input type="radio" name="requestKind" value="fullDay" checked>
+              <span>Full Day Leave</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="requestKind" value="earlyDeparture">
+              <span>Early Departure (Hours)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ===== FULL DAY BLOCK ===== -->
+        <div id="fullDayBlock">
+
+          <!-- Leave Type -->
+          <div class="form-group">
+            <label for="leaveType">Leave Type</label>
+            <div class="select-wrapper">
+              <select id="leaveType" class="form-select">
+                <option value="Annual PTO">Annual PTO</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Floating Holiday">Floating Holiday</option>
+                <option value="Unpaid">Unpaid</option>
+              </select>
+              <span class="material-symbols-outlined select-arrow">expand_more</span>
+            </div>
+            <span class="field-error-msg" id="leaveTypeError" style="display: none;"></span>
+          </div>
+
+          <!-- Date Range -->
+          <div class="form-group">
+            <label>Date Range</label>
+            <div class="date-row">
+              <div class="date-field">
+                <span class="date-label">Start Date</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <input type="date" id="startDate">
+                </div>
+                <span class="field-error-msg" id="startDateError" style="display: none;"></span>
+              </div>
+              <div class="date-field">
+                <span class="date-label">End Date</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <input type="date" id="endDate">
+                </div>
+                <span class="field-error-msg" id="endDateError" style="display: none;"></span>
+              </div>
+            </div>
+
+            <label class="checkbox-row">
+              <input type="checkbox" id="halfDay">
+              <span>First day is a half-day (4 hours)</span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- ===== EARLY DEPARTURE BLOCK ===== -->
+        <div id="earlyDepartureBlock" class="hidden">
+
+          <div class="form-group">
+            <label>Today's Date (Auto)</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined">calendar_today</span>
+              <input type="date" id="departureDate" readonly>
+            </div>
+            <span class="field-error-msg" id="departureDateError" style="display: none;"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Departure Hours</label>
+            <div class="date-row">
+              <div class="date-field">
+                <span class="date-label">From (Leave at)</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">schedule</span>
+                  <input type="time" id="fromTime">
+                </div>
+                <span class="field-error-msg" id="fromTimeError" style="display: none;"></span>
+              </div>
+              <div class="date-field">
+                <span class="date-label">Until (Return at)</span>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined">schedule</span>
+                  <input type="time" id="toTime">
+                </div>
+                <span class="field-error-msg" id="toTimeError" style="display: none;"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Reason -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="reason">Reason / Notes</label>
+            <span class="optional-tag">Optional</span>
+          </div>
+          <textarea id="reason" class="form-textarea" rows="4"
+            placeholder="Provide context for your request..."></textarea>
+          <span class="field-error-msg" id="reasonError" style="display: none;"></span>
+        </div>
+
+        <!-- Policy Notice -->
+        <div class="policy-notice">
+          <span class="material-symbols-outlined">info</span>
+          <p><strong>Policy Notice:</strong> Requests spanning more than 3 consecutive working days require approval at least 14 days in advance.</p>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="btnCancelRequest">Cancel</button>
+        <button type="button" class="btn-primary" id="btnSubmitRequest">
+          <span class="material-symbols-outlined">send</span>
+          Submit Request
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="Leave&TimeOff.js"></script>
+  <script src="../../shared/employee-sidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TeamSpace HR · Project Flow Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail" aria-label="Guide navigation">
+      <a class="brand" href="#overview"><span class="brand-mark">▦</span><span><strong>TeamSpace HR</strong><small>Flow simulator</small></span></a>
+      <div class="rail-note">Explore the actual routes, storage, and source code used by this project.</div>
+      <nav id="flowNav" class="flow-nav" aria-label="Project flows"></nav>
+      <div class="rail-foot"><span class="live-dot"></span> Read-only simulation <small>No project data is changed here.</small></div>
+    </aside>
+
+    <main class="main" id="overview">
+      <header class="topbar"><div><span class="eyebrow">INTERACTIVE PROJECT MAP</span><h1>How TeamSpace HR works</h1><p>Pick a flow, then walk through each action and the code that runs.</p></div><a class="repo-link" href="../README.md">Project README <span aria-hidden="true">↗</span></a></header>
+
+      <section class="architecture" aria-label="Architecture overview">
+        <div class="architecture-node"><span class="node-icon browser-icon">◫</span><div><strong>Browser pages</strong><small>HTML + JavaScript</small></div></div>
+        <span class="connector" aria-hidden="true">⇄</span>
+        <div class="architecture-node"><span class="node-icon storage-icon">▤</span><div><strong>localStorage</strong><small>Session, tasks, leave, helpdesk</small></div></div>
+        <span class="connector" aria-hidden="true">⇄</span>
+        <div class="architecture-node"><span class="node-icon api-icon">⌁</span><div><strong>Local API</strong><small>json-server · port 3000</small></div></div>
+        <span class="connector" aria-hidden="true">→</span>
+        <div class="architecture-node"><span class="node-icon json-icon">{ }</span><div><strong>api/db.json</strong><small>Shared on that server</small></div></div>
+      </section>
+
+      <div class="workspace">
+        <section class="simulator" aria-label="Selected flow">
+          <div class="flow-heading"><div><span id="flowGroup" class="eyebrow"></span><h2 id="flowTitle"></h2><p id="flowDescription"></p></div><span id="flowCount" class="step-count"></span></div>
+          <div id="stepTrack" class="step-track" aria-label="Flow steps"></div>
+          <div class="step-body">
+            <div class="execution-card"><div class="card-top"><span class="mini-label">CURRENT ACTION</span><span id="stepBadge" class="type-badge"></span></div><h3 id="stepTitle"></h3><p id="stepDescription"></p><div class="io-grid"><div><span>Input / trigger</span><strong id="stepInput"></strong></div><div><span>Result</span><strong id="stepResult"></strong></div></div></div>
+            <div class="code-card"><div class="card-top"><span class="mini-label">CODE USED BY THIS FLOW</span><a id="sourceLink" target="_blank" rel="noopener">Open source ↗</a></div><div class="file-line"><span class="file-dot"></span><code id="sourcePath"></code></div><pre><code id="codeSnippet"></code></pre><p class="code-note">The snippets focus on the relevant lines. This guide does not execute requests or change your data.</p></div>
+          </div>
+          <div class="player"><button id="previousStep" type="button" class="secondary">← Previous</button><div class="player-middle"><button id="restartFlow" type="button" class="text-button">↺ Restart</button><span id="playerPosition" aria-live="polite"></span></div><button id="nextStep" type="button" class="primary">Next step →</button></div>
+        </section>
+
+        <aside class="inspector" aria-label="Flow state and context">
+          <div class="inspector-heading"><span class="eyebrow">SIMULATED STATE</span><h2>What changes?</h2><p>These are illustrations of the selected step, not live browser values.</p></div>
+          <div id="stateCards" class="state-cards"></div>
+          <div class="context-card"><span class="mini-label">WHY THIS STEP MATTERS</span><p id="stepWhy"></p></div>
+          <div class="context-card important"><span class="mini-label">DATA BOUNDARY</span><p id="flowCaveat"></p></div>
+        </aside>
+      </div>
+      <footer class="guide-footer"><span>Built from this repository’s current source files.</span><span>Open through Live Server so source links resolve correctly.</span></footer>
+    </main>
+  </div>
+</body>
+</html>

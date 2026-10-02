@@ -1,0 +1,343 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Sarah Jenkins",
+      "email": "hr@company.com",
+      "password": "hrPassword123",
+      "role": "HR",
+      "position": "HR Manager",
+      "department": "Human Resources",
+      "phone": "+962790000001",
+      "status": "Active",
+      "joiningDate": "2023-01-15",
+      "image": "assets/images/profiles/sarah.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Lana Ahmed",
+      "email": "Lana@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Network Operations Engineer",
+      "department": "Network Operations Center (NOC)",
+      "phone": "+962791234567",
+      "status": "Active",
+      "joiningDate": "2024-03-01",
+      "image": "assets/images/profiles/lana.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Alex Rivera",
+      "email": "alex.r@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "RF Optimization Engineer",
+      "department": "Radio Access Network (RAN)",
+      "phone": "+962792345678",
+      "status": "Blocked",
+      "joiningDate": "2024-02-10",
+      "image": "assets/images/profiles/alex.jpg"
+    },
+    {
+      "id": 4,
+      "name": "David Chen",
+      "email": "david.c@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Core Network Engineer",
+      "department": "Core Network & IMS",
+      "phone": "+962793456789",
+      "status": "Active",
+      "joiningDate": "2023-08-20",
+      "image": "assets/images/profiles/david.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Emma Watson",
+      "email": "emma.w@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Telecom Solutions Architect",
+      "department": "IT & Digital Services",
+      "phone": "+962794567890",
+      "status": "Active",
+      "joiningDate": "2024-05-12",
+      "image": "assets/images/profiles/emma.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Omar Al-Farsi",
+      "email": "omar.f@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Network Security Engineer",
+      "department": "Cybersecurity & Resilience",
+      "phone": "+962795678901",
+      "status": "Active",
+      "joiningDate": "2023-11-01",
+      "image": "assets/images/profiles/omar.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Jessica Taylor",
+      "email": "jessica.t@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Customer Experience Specialist",
+      "department": "Customer Care & Experience",
+      "phone": "+962796789012",
+      "status": "Active",
+      "joiningDate": "2024-01-10",
+      "image": "assets/images/profiles/jessica.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Michael Brown",
+      "email": "michael.b@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Project Manager - Network Deployment",
+      "department": "Project Management Office (PMO)",
+      "phone": "+962797890123",
+      "status": "Active",
+      "joiningDate": "2022-09-15",
+      "image": "assets/images/profiles/michael.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Laila Hassan",
+      "email": "laila.h@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "Data Analyst - Network Performance",
+      "department": "Data Analytics & Insights",
+      "phone": "+962798901234",
+      "status": "Active",
+      "joiningDate": "2024-04-01",
+      "image": "assets/images/profiles/laila.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Daniel Kim",
+      "email": "daniel.k@company.com",
+      "password": "empPassword123",
+      "role": "EMP",
+      "position": "B2B Sales Executive",
+      "department": "Enterprise & B2B Sales",
+      "phone": "+962799012345",
+      "status": "Inactive",
+      "joiningDate": "2023-06-18",
+      "image": "assets/images/profiles/daniel.jpg"
+    }
+  ],
+
+  "leaveBalances": [
+    {
+      "employeeId": 1,
+      "annualPto": { "used": 6,  "total": 20 },
+      "sickLeave": { "used": 2,  "total": 8 },
+      "floatingHoliday": { "used": 1, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 2,
+      "annualPto": { "used": 6,  "total": 20 },
+      "sickLeave": { "used": 2,  "total": 8 },
+      "floatingHoliday": { "used": 1, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 3,
+      "annualPto": { "used": 4,  "total": 20 },
+      "sickLeave": { "used": 1,  "total": 8 },
+      "floatingHoliday": { "used": 0, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 2, "total": 30 }
+    },
+    {
+      "employeeId": 4,
+      "annualPto": { "used": 8,  "total": 20 },
+      "sickLeave": { "used": 3,  "total": 8 },
+      "floatingHoliday": { "used": 2, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 5,
+      "annualPto": { "used": 5,  "total": 20 },
+      "sickLeave": { "used": 0,  "total": 8 },
+      "floatingHoliday": { "used": 1, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 1, "total": 30 }
+    },
+    {
+      "employeeId": 6,
+      "annualPto": { "used": 3,  "total": 20 },
+      "sickLeave": { "used": 1,  "total": 8 },
+      "floatingHoliday": { "used": 0, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 7,
+      "annualPto": { "used": 7,  "total": 20 },
+      "sickLeave": { "used": 4,  "total": 8 },
+      "floatingHoliday": { "used": 1, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 8,
+      "annualPto": { "used": 10, "total": 20 },
+      "sickLeave": { "used": 2,  "total": 8 },
+      "floatingHoliday": { "used": 2, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 9,
+      "annualPto": { "used": 2,  "total": 20 },
+      "sickLeave": { "used": 0,  "total": 8 },
+      "floatingHoliday": { "used": 1, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 0, "total": 30 }
+    },
+    {
+      "employeeId": 10,
+      "annualPto": { "used": 12, "total": 20 },
+      "sickLeave": { "used": 5,  "total": 8 },
+      "floatingHoliday": { "used": 3, "total": 3, "expiresOn": "2026-03-31" },
+      "unpaid": { "used": 4, "total": 30 }
+    }
+  ],
+
+  "leaveRequests": [
+    {
+      "id": 1,
+      "employeeId": 2,
+      "type": "Annual PTO",
+      "startDate": "2025-12-22",
+      "endDate": "2026-01-02",
+      "days": 7,
+      "halfDay": false,
+      "reason": "Year-End Holiday Vacation",
+      "status": "Pending",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-11-10"
+    },
+    {
+      "id": 2,
+      "employeeId": 2,
+      "type": "Floating Holiday",
+      "startDate": "2025-11-28",
+      "endDate": "2025-11-29",
+      "days": 2,
+      "halfDay": false,
+      "reason": "Thanksgiving Family Leave",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "approvedBy": "Sarah Jenkins",
+      "approvedAt": "2025-11-04",
+      "handoverPartner": "Alex Rivera (Sprint covered)",
+      "submittedAt": "2025-10-25"
+    },
+    {
+      "id": 3,
+      "employeeId": 2,
+      "type": "Annual PTO",
+      "startDate": "2025-08-11",
+      "endDate": "2025-08-15",
+      "days": 5,
+      "halfDay": false,
+      "reason": "Summer Vacation (Family roadtrip)",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-07-20"
+    },
+    {
+      "id": 4,
+      "employeeId": 2,
+      "type": "Sick Leave",
+      "startDate": "2025-10-02",
+      "endDate": "2025-10-02",
+      "days": 1,
+      "halfDay": false,
+      "reason": "Dental Appointment & Follow-up",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-10-01"
+    },
+    {
+      "id": 5,
+      "employeeId": 2,
+      "type": "Floating Holiday",
+      "startDate": "2025-06-19",
+      "endDate": "2025-06-20",
+      "days": 2,
+      "halfDay": false,
+      "reason": "Personal Milestone / Anniversary",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-06-01"
+    },
+    {
+      "id": 6,
+      "employeeId": 2,
+      "type": "Annual PTO",
+      "startDate": "2025-05-05",
+      "endDate": "2025-05-05",
+      "days": 1,
+      "halfDay": false,
+      "reason": "Spring Long Weekend",
+      "status": "Rejected",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-04-28"
+    },
+    {
+      "id": 7,
+      "employeeId": 3,
+      "type": "Sick Leave",
+      "startDate": "2025-09-15",
+      "endDate": "2025-09-16",
+      "days": 2,
+      "halfDay": false,
+      "reason": "Flu recovery",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-09-15"
+    },
+    {
+      "id": 8,
+      "employeeId": 4,
+      "type": "Annual PTO",
+      "startDate": "2025-10-20",
+      "endDate": "2025-10-24",
+      "days": 5,
+      "halfDay": false,
+      "reason": "Family trip to Aqaba",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-10-01"
+    },
+    {
+      "id": 9,
+      "employeeId": 5,
+      "type": "Floating Holiday",
+      "startDate": "2025-12-01",
+      "endDate": "2025-12-01",
+      "days": 1,
+      "halfDay": false,
+      "reason": "Personal day",
+      "status": "Pending",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-11-20"
+    },
+    {
+      "id": 10,
+      "employeeId": 6,
+      "type": "Unpaid",
+      "startDate": "2025-07-01",
+      "endDate": "2025-07-03",
+      "days": 3,
+      "halfDay": false,
+      "reason": "Personal matters",
+      "status": "Approved",
+      "reviewer": "Sarah Jenkins",
+      "submittedAt": "2025-06-15"
+    }
+  ]
+}

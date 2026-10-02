@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Work Space | HR System</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="MyWOrkSpace.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
+</head>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="employee"></nav>
+
+  <main class="workspace-page">
+    <div class="workspace-layout">
+      <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="workspace" aria-label="Employee workspace"></aside>
+
+      <div class="workspace-content">
+        <header class="workspace-welcome workspace-card">
+          <div>
+            <p class="workspace-eyebrow">MY WORKSPACE</p>
+            <h1 id="workspaceGreeting">Welcome back, Marcus <span aria-hidden="true">👋</span></h1>
+            <span class="workspace-mode"><span aria-hidden="true"></span>Work mode: In-office</span>
+            <p class="workspace-welcome-copy">Here is your overview for <span id="workspaceDate">today</span>.</p>
+          </div>
+          <a class="workspace-action" href="../Leave&amp;TimeOff/Leave&amp;TimeOff.html#request-time-off">
+            <span class="material-symbols-outlined" aria-hidden="true">event</span>
+            Request Time Off
+          </a>
+        </header>
+
+        <section class="workspace-stats" aria-label="Workspace summary">
+          <article class="workspace-stat workspace-card">
+            <div class="workspace-stat-top"><span>Today's Schedule</span><span class="material-symbols-outlined" aria-hidden="true">schedule</span></div>
+            <strong>3 <small>meetings</small></strong>
+            <p>Sample agenda for your day</p>
+          </article>
+          <article class="workspace-stat workspace-card">
+            <div class="workspace-stat-top"><span>Active Tasks</span><span class="material-symbols-outlined" aria-hidden="true">task_alt</span></div>
+            <strong id="workspaceActiveTasks">0</strong>
+            <p id="workspaceTaskSummary">Open My Tasks to see your work</p>
+          </article>
+          <article class="workspace-stat workspace-card">
+            <div class="workspace-stat-top"><span>Leave Balance</span><span class="material-symbols-outlined" aria-hidden="true">beach_access</span></div>
+            <strong>14 <small>days</small></strong>
+            <p>Example PTO balance</p>
+          </article>
+          <article class="workspace-stat workspace-card">
+            <div class="workspace-stat-top"><span>Weekly Hours</span><span class="material-symbols-outlined" aria-hidden="true">schedule_send</span></div>
+            <strong>31.2 <small>/ 40h</small></strong>
+            <p>Example work week</p>
+          </article>
+        </section>
+
+        <div class="workspace-columns">
+          <section class="workspace-priorities workspace-card" aria-labelledby="prioritiesTitle">
+            <div class="workspace-section-heading">
+              <div>
+                <h2 id="prioritiesTitle"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span>Today's Priorities &amp; Active Tasks</h2>
+                <p id="workspaceTasksNote">A preview of your work. Open My Tasks to see the full list.</p>
+              </div>
+              <a id="workspaceTasksLink" href="../my-tasks/my-tasks.html">Go to My Tasks <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="workspace-task-list" id="workspaceTaskList" aria-live="polite"></div>
+          </section>
+
+          <div class="workspace-rail">
+            <section class="workspace-agenda workspace-card" aria-labelledby="agendaTitle">
+              <div class="workspace-section-heading">
+                <div>
+                  <h2 id="agendaTitle"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Today's Agenda</h2>
+                  <p>Example schedule</p>
+                </div>
+                <span class="workspace-section-count">3 events</span>
+              </div>
+              <ol class="workspace-timeline">
+                <li>
+                  <time>10:30 AM – 11:00 AM</time>
+                  <strong>Sprint 24 Daily Standup</strong>
+                  <span>Google Meet · Project team</span>
+                </li>
+                <li>
+                  <time>02:00 PM – 02:30 PM</time>
+                  <strong>1:1 Sync with Sarah Jenkins</strong>
+                  <span>HR Lead · Monthly catch-up</span>
+                </li>
+                <li>
+                  <time>04:00 PM – 05:00 PM</time>
+                  <strong>Frontend Architecture Review</strong>
+                  <span>Engineering · All hands</span>
+                </li>
+              </ol>
+            </section>
+
+            <section class="workspace-requests workspace-card" aria-labelledby="requestsTitle">
+              <div class="workspace-section-heading">
+                <div>
+                  <h2 id="requestsTitle"><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Pending Requests</h2>
+                  <p>Leave and time-off updates</p>
+                </div>
+              </div>
+              <div class="workspace-request-empty">
+                <span class="material-symbols-outlined" aria-hidden="true">inbox</span>
+                <p>Review your requests and approval status on Leave &amp; Time Off.</p>
+                <a href="../Leave&amp;TimeOff/Leave&amp;TimeOff.html">View time off <span aria-hidden="true">→</span></a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/employee-sidebar.js"></script>
+  <script src="MyWOrkSpace.js"></script>
+</body>
+</html>

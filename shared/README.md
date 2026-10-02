@@ -194,3 +194,12 @@ Home uses its own footer markup in `common/home/home.html` and styles in `home.c
 It shares the base footer styles but does not load `footer.js`. Its contact details and
 map location are samples from the design; replace them with real details before publishing.
 The embedded map requires internet access. System status is not connected to monitoring.
+
+## Theme colors
+
+`theme.css` defines the light and dark color variables used by shared components. The navbar's
+theme button switches `data-theme` on the `<html>` element and remembers the choice in
+`localStorage` as `teamspaceTheme`. In a screen's CSS, use variables such as
+`var(--color-page)`, `var(--color-card)`, `var(--color-text)`, `var(--color-text-muted)`,
+`var(--color-border)`, and `var(--color-primary-dark)` instead of a literal color.
+New screen styles should use these variables so both themes stay readable.

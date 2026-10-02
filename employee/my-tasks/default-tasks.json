@@ -1,0 +1,79 @@
+[
+  {
+    "id": "TASK-001",
+    "title": "Submit Benefits Election Form",
+    "description": "Review Open Enrollment coverage plan tiers and sign confirmation for FY2026.",
+    "priority": "Normal",
+    "category": "onboarding",
+    "team": "HR Onboarding",
+    "dueDate": "2026-10-01",
+    "status": "todo",
+    "order": 1
+  },
+  {
+    "id": "TASK-002",
+    "title": "Prepare Q4 Frontend Architecture RFC",
+    "description": "Draft proposal for micro-frontend module federation and performance testing harness.",
+    "priority": "Normal",
+    "category": "sprint",
+    "team": "Engineering",
+    "dueDate": "2026-10-18",
+    "status": "todo",
+    "order": 2
+  },
+  {
+    "id": "TASK-003",
+    "title": "Verify Personal Emergency Contact",
+    "description": "Annual HR record audit requires confirmed home address and secondary phone line.",
+    "priority": "Routine",
+    "category": "onboarding",
+    "team": "Compliance",
+    "dueDate": "2026-09-25",
+    "status": "todo",
+    "order": 3
+  },
+  {
+    "id": "TASK-004",
+    "title": "Complete Security Awareness Training V2",
+    "description": "Mandatory quarterly compliance module with phishing simulations.",
+    "priority": "High",
+    "category": "onboarding",
+    "team": "Compliance",
+    "dueDate": "2026-09-30",
+    "status": "progress",
+    "order": 1
+  },
+  {
+    "id": "TASK-005",
+    "title": "Review Sprint 24 Pull Requests",
+    "description": "Review pending reconciliation unit tests and leave actionable feedback before release.",
+    "priority": "Normal",
+    "category": "sprint",
+    "team": "Engineering",
+    "dueDate": "2026-10-01",
+    "status": "progress",
+    "order": 2
+  },
+  {
+    "id": "TASK-006",
+    "title": "Q3 Home Office Stipend Reimbursement",
+    "description": "Submitted receipt for ergonomic desk chair and monitor arm.",
+    "priority": "Normal",
+    "category": "review",
+    "team": "Finance",
+    "dueDate": "2026-10-02",
+    "status": "review",
+    "order": 1
+  },
+  {
+    "id": "TASK-007",
+    "title": "Sign Updated Employee Handbook",
+    "description": "E-signature executed via DocuSign portal.",
+    "priority": "Normal",
+    "category": "onboarding",
+    "team": "Compliance",
+    "dueDate": "2026-09-26",
+    "status": "completed",
+    "order": 1
+  }
+]

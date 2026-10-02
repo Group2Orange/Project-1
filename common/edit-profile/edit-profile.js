@@ -1,307 +1,108 @@
+// Read and update this employee directly through the local API.
+const API = 'http://127.0.0.1:3000';
+const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+if (!user) location.replace('../login/login.html');
 
-/* =====================================================
-   1. CONSTANTS & KEYS
-   ===================================================== */
+const form = document.getElementById('editProfileForm');
+const fullName = document.getElementById('fullName');
+const phone = document.getElementById('phone');
+const photo = document.getElementById('profileImage');
+let newImage = null;
 
-var storageKeyEmployees = "hr_employees";
-var jsonFilePath = "emploee.json";
-
-
-var currentEmployeeId = 2;
-
-/*
-  
-   var currentEmployeeId = Number(localStorage.getItem("currentUserId"));
-*/
-
-
-/* =====================================================
-   2. SEED DATA (JSON → localStorage) - مرة وحدة فقط
-   ===================================================== */
-
-function seedEmployees() {
-    var existing = localStorage.getItem(storageKeyEmployees);
-
-    // إذا البيانات موجودة من قبل، ما نقرأ من JSON
-    if (existing) {
-        console.log("✅ Data already in localStorage");
-        renderEmployeeFromStorage();
-        return;
-    }
-
-    // أول مرة: نقرأ من JSON
-    fetch(jsonFilePath)
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error("HTTP Error: " + response.status);
-            }
-            return response.json();
-        })
-        .then(function (data) {
-            // نخزن الموظفين فقط بـ localStorage
-            localStorage.setItem(
-                storageKeyEmployees,
-                JSON.stringify(data.employees)
-            );
-            console.log("✅ Seeded employees from JSON");
-
-            // نعرض البيانات
-            renderEmployeeFromStorage();
-        })
-        .catch(function (error) {
-            console.error("❌ Failed to load JSON:", error);
-            alert("Could not load employee data. Make sure you run via local server.");
-        });
-}
-
-
-/* =====================================================
-   3. STORAGE HELPERS
-   ===================================================== */
-
-function getEmployees() {
-    var raw = localStorage.getItem(storageKeyEmployees);
-    if (!raw) return [];
-    return JSON.parse(raw);
-}
-
-function saveEmployees(list) {
-    localStorage.setItem(storageKeyEmployees, JSON.stringify(list));
-}
-
-function getCurrentEmployee() {
-    var list = getEmployees();
-
-    for (var i = 0; i < list.length; i++) {
-        if (list[i].id === currentEmployeeId) {
-            return list[i];
-        }
-    }
-    return null;
-}
-
-function updateEmployee(updated) {
-    var list = getEmployees();
-
-    for (var i = 0; i < list.length; i++) {
-        if (list[i].id === updated.id) {
-            // نحدث الحقول المطلوبة فقط
-            list[i].name = updated.name;
-            list[i].phone = updated.phone;
-            if (updated.image) {
-                list[i].image = updated.image;
-            }
-            saveEmployees(list);
-            return true;
-        }
-    }
-    return false;
-}
-
-
-/* =====================================================
-   4. RENDER (تعبئة الفورم ببيانات الموظف)
-   ===================================================== */
-
-function renderEmployeeFromStorage() {
-    var emp = getCurrentEmployee();
-
-    if (!emp) {
-        console.error("Employee not found. ID = " + currentEmployeeId);
-        alert("Employee not found.");
-        return;
-    }
-
-    // --- Header ---
-    document.getElementById("employeeName").textContent = emp.name;
-
-    var imgEl = document.getElementById("profileImage");
-    if (emp.image) {
-        imgEl.style.backgroundImage = "url('" + emp.image + "')";
-    }
-
-    // --- Editable Fields ---
-    document.getElementById("fullName").value = emp.name || "";
-    document.getElementById("phone").value = emp.phone || "";
-
-    // --- Read-Only Fields ---
-    document.getElementById("position").value = emp.position || "";
-    document.getElementById("department").value = emp.department || "";
-    document.getElementById("email").value = emp.email || "";
-    document.getElementById("employeeId").value = emp.id || "";
-}
-
-
-/* =====================================================
-   5. PHONE VALIDATION (Regular Expression)
-   ===================================================== */
-
-function isValidPhone(phone) {
-    // يقبل: +9627XXXXXXXX أو 07XXXXXXXX
-    var clean = phone.replace(/\s/g, "");
-    var pattern = /^(\+9627|07)\d{8}$/;
-    return pattern.test(clean);
+async function renderProfile() {
+  let current;
+  try {
+    // OLD WAY: current = JSON.parse(localStorage.getItem('loggedUser'));
+    // NEW WAY: read the current employee from api/db.json through the API.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(user.id)}`);
+    if (!response.ok) throw new Error('Could not load profile.');
+    current = await response.json();
+  }
+  catch (error) {
+    document.getElementById('employeeName').textContent = error.message;
+    return;
+  }
+  if (!current) return;
+  document.getElementById('employeeName').textContent = current.name;
+  fullName.value = current.name || '';
+  phone.value = current.phone || '';
+  document.getElementById('position').value = current.position || '';
+  document.getElementById('department').value = current.department || '';
+  document.getElementById('email').value = current.email || '';
+  document.getElementById('employeeId').value = current.id || '';
+  photo.style.backgroundImage = current.image?.startsWith('data:')
+    ? `url("${current.image}")` : 'url("../profile/assets/profile.svg")';
 }
 
 function showPhoneError(show) {
-    var input = document.getElementById("phone");
-    var icon = document.getElementById("phoneErrorIcon");
-    var msg = document.getElementById("phoneErrorMessage");
-    var badge = document.getElementById("phoneValidationText");
-
-    if (show) {
-        input.classList.add("error-input");
-        icon.style.display = "inline-block";
-        msg.style.display = "block";
-        badge.style.display = "inline";
-    } else {
-        input.classList.remove("error-input");
-        icon.style.display = "none";
-        msg.style.display = "none";
-        badge.style.display = "none";
-    }
+  phone.classList.toggle('error-input', show);
+  document.getElementById('phoneErrorIcon').style.display = show ? 'inline-block' : 'none';
+  document.getElementById('phoneErrorMessage').style.display = show ? 'block' : 'none';
+  document.getElementById('phoneValidationText').style.display = show ? 'inline' : 'none';
 }
 
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  const name = fullName.value.trim();
+  const number = phone.value.trim();
+  fullName.classList.toggle('error-input', !name);
+  const invalidPhone = number.replace(/\D/g, '').length < 7;
+  showPhoneError(invalidPhone);
+  if (!name || invalidPhone) return;
 
-/* =====================================================
-   6. PHOTO UPLOAD (Preview)
-   ===================================================== */
-
-function handlePhotoUpload(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-        alert("Please select a valid image file.");
-        return;
-    }
-
-    var reader = new FileReader();
-
-    reader.onload = function (e) {
-        var dataUrl = e.target.result;
-
-        // نعرض الصورة على الفور
-        document.getElementById("profileImage").style.backgroundImage =
-            "url('" + dataUrl + "')";
-
-        // نخزن الصورة مؤقتاً بمتغير عام (رح تنحفظ لما يضغط Save)
-        window.tempNewImage = dataUrl;
+  const changes = { name, phone: number, ...(newImage ? { image: newImage } : {}) };
+  try {
+    // OLD WAY: localStorage.setItem(`profileEdits_${user.id}`, JSON.stringify(changes));
+    // NEW WAY: PATCH the employee record so a later visit loads these edits.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(user.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(changes)
+    });
+    if (!response.ok) throw new Error('Could not update profile.');
+    const updated = await response.json();
+    const safeUser = {
+      id: updated.id,
+      role: updated.role,
+      name: updated.name,
+      email: updated.email,
+      department: updated.department,
+      position: updated.position,
+      employeeId: updated.employeeId,
+      image: updated.image
     };
-
-    reader.readAsDataURL(file);
-}
-
-
-/* =====================================================
-   7. SAVE (تخزين التعديلات على localStorage)
-   ===================================================== */
-
-function handleSave(event) {
-    event.preventDefault();
-
-    var emp = getCurrentEmployee();
-    if (!emp) return;
-
-    var fullName = document.getElementById("fullName").value.trim();
-    var phone = document.getElementById("phone").value.trim();
-
-    // --- Validation ---
-    var hasError = false;
-
-    if (!fullName) {
-        document.getElementById("fullName").classList.add("error-input");
-        hasError = true;
-    } else {
-        document.getElementById("fullName").classList.remove("error-input");
-    }
-
-    if (!isValidPhone(phone)) {
-        showPhoneError(true);
-        hasError = true;
-    } else {
-        showPhoneError(false);
-    }
-
-    if (hasError) return;
-
-    // --- Build updated object ---
-    var updated = {
-        id: emp.id,
-        name: fullName,
-        phone: phone
-    };
-
-    if (window.tempNewImage) {
-        updated.image = window.tempNewImage;
-    }
-
-    // --- Save ---
-    var ok = updateEmployee(updated);
-
-    if (ok) {
-        // نحدث العنوان
-        document.getElementById("employeeName").textContent = fullName;
-
-        // نمسح الصورة المؤقتة
-        window.tempNewImage = null;
-
-        alert("✅ Profile updated successfully!");
-    } else {
-        alert("❌ Failed to update profile. Please try again.");
-    }
-}
-
-
-/* =====================================================
-   8. CANCEL (إرجاع البيانات الأصلية)
-   ===================================================== */
-
-function handleCancel() {
-    // نمسح الصورة المؤقتة
-    window.tempNewImage = null;
-
-    // نرجع البيانات الأصلية
-    renderEmployeeFromStorage();
-
-    // نمسح رسائل الخطأ
-    showPhoneError(false);
-    document.getElementById("fullName").classList.remove("error-input");
-}
-
-
-/* =====================================================
-   9. INIT - نقطة البداية
-   ===================================================== */
-
-window.addEventListener("load", function () {
-
-    // أول شي: نشغّل الـ seed
-    // (إذا البيانات موجودة، بتعرض مباشرة من localStorage)
-    seedEmployees();
-
-    // --- Events ---
-    document
-        .getElementById("editProfileForm")
-        .addEventListener("submit", handleSave);
-
-    document
-        .getElementById("btnCancel")
-        .addEventListener("click", handleCancel);
-
-    document
-        .getElementById("photoInput")
-        .addEventListener("change", handlePhotoUpload);
-
-    // Live validation للهاتف
-    document
-        .getElementById("phone")
-        .addEventListener("blur", function () {
-            var val = this.value.trim();
-            if (val && !isValidPhone(val)) {
-                showPhoneError(true);
-            } else {
-                showPhoneError(false);
-            }
-        });
+    localStorage.setItem('loggedUser', JSON.stringify(safeUser));
+    localStorage.removeItem('currentUser');
+    newImage = null;
+    await renderProfile();
+    window.dispatchEvent(new Event('teamspace:profile-changed'));
+    alert('Profile updated successfully.');
+  } catch (error) {
+    alert(error.message || 'Could not save the profile. Try a smaller photo.');
+  }
 });
+
+document.getElementById('btnCancel').addEventListener('click', () => {
+  newImage = null;
+  document.getElementById('photoInput').value = '';
+  // Leave the edit screen without saving any pending changes.
+  location.href = '../profile/profile.html';
+});
+
+document.getElementById('photoInput').addEventListener('change', event => {
+  const file = event.target.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  if (file.size > 1024 * 1024) {
+    alert('Choose a photo smaller than 1 MB.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    newImage = String(reader.result);
+    photo.style.backgroundImage = `url("${newImage}")`;
+  };
+  reader.readAsDataURL(file);
+});
+
+phone.addEventListener('input', () => showPhoneError(false));
+if (user) renderProfile();

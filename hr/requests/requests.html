@@ -9,13 +9,23 @@
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="requests.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css">
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
-
+  <main class="operations-layout">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="requests" aria-label="HR workspace"></aside>
+    <section class="operations-content">
+      <header><p class="operations-kicker">PEOPLE OPERATIONS</p><h1>Leave Requests</h1><p>Review company leave and early-departure requests.</p></header>
+      <p id="requestMessage" class="operations-message" role="status" aria-live="polite"></p>
+      <div class="operations-toolbar"><label>Search employee or leave type<input id="requestSearch" type="search" placeholder="Search requests"></label><label>Status<select id="requestStatus"><option value="">All statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></label></div>
+      <div id="requestList" class="operations-list"></div>
+    </section>
+  </main>
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
-  <script src="../../shared/navbar.js"></script>
-  <script src="requests.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/hr-sidebar.js"></script>
+  <script src="requests.js?v=2"></script>
 </body>
 </html>

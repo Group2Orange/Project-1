@@ -3,75 +3,406 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- An immediate intro with a bounded, fail-open timeout. -->
+  <script>
+    (() => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const root = document.documentElement;
+      root.classList.add('intro-pending');
+      window.teamspaceIntroStarted = performance.now();
+      window.teamspaceIntroFallback = setTimeout(() => {
+        root.classList.remove('intro-pending', 'intro-leaving');
+        document.getElementById('siteSplash')?.remove();
+        document.dispatchEvent(new Event('teamspace:intro-ready'));
+      }, 4200);
+    })();
+  </script>
   <title>Home and Services | HR System</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home-motion.css">
 </head>
-<body class="has-footer">
-  <nav class="navbar" data-navbar="hr"></nav>
-
-  <!-- Sample contact details from the design; replace before publishing. -->
-  <footer class="home-footer">
-    <div class="home-footer-inner">
-      <div class="home-footer-grid">
-        <section class="home-footer-contact" aria-labelledby="home-footer-title">
-          <a class="footer-brand" id="home-footer-title" href="home.html"><span class="footer-logo material-symbols-outlined" aria-hidden="true">corporate_fare</span><span>TeamSpace HR<small>Enterprise Human Capital Platform</small></span></a>
-          <div class="home-contact-grid">
-            <a href="tel:+18005558326"><span class="material-symbols-outlined" aria-hidden="true">call</span>+1 (800) 555-TEAM (8326)</a>
-            <a href="mailto:support@teamspacehr.com"><span class="material-symbols-outlined" aria-hidden="true">mail</span>support@teamspacehr.com</a>
-          </div>
-          <address class="home-address">450 Mission Street, San Francisco, CA</address>
-          <p class="home-sample-note">Sample contact and location details</p>
-        </section>
-
-        <section class="home-footer-intro" aria-labelledby="footer-intro-title">
-          <p class="home-footer-label">THE PLATFORM</p>
-          <h2 id="footer-intro-title">People and work, connected.</h2>
-          <p>Keep employee details, requests, and team tasks organized in one shared workspace.</p>
-        </section>
-
-        <nav class="home-footer-links" aria-labelledby="home-footer-links-title">
-          <h2 id="home-footer-links-title">Explore</h2>
-          <p>Find the tools and information your team needs.</p>
-          <ul>
-            <li><a href="../../hr/employees/employees.html">Employees</a></li>
-            <li><a href="../../hr/tasks/tasks.html">Tasks</a></li>
-            <li><a href="../../hr/requests/requests.html">Requests</a></li>
-            <li><a href="../contact/contact.html">Contact</a></li>
-          </ul>
-        </nav>
-
-        <section class="home-map-card" aria-labelledby="map-title">
-          <h2 id="map-title"><span class="material-symbols-outlined" aria-hidden="true">location_on</span>Find us in San Francisco</h2>
-          <a class="home-map-preview" href="https://www.google.com/maps/search/?api=1&amp;query=450%20Mission%20Street%2C%20San%20Francisco" target="_blank" rel="noopener noreferrer" aria-label="Open sample headquarters location in Google Maps">
-            <svg viewBox="0 0 320 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-              <rect width="320" height="130" fill="#e9f1f6"/>
-              <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#fff" stroke-width="18"/>
-              <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#c9d8e4" stroke-width="2"/>
-              <path d="M57-10 86 141M218-10 246 141" stroke="#fff" stroke-width="14"/>
-              <path d="M57-10 86 141M218-10 246 141" stroke="#c9d8e4" stroke-width="2"/>
-              <path d="M280-10 339 20 320 130 278 139Z" fill="#cae8e8" opacity=".85"/>
-              <circle cx="166" cy="67" r="18" fill="#fff" opacity=".85"/>
-              <path d="M166 45a15 15 0 0 0-15 15c0 11 15 26 15 26s15-15 15-26a15 15 0 0 0-15-15Z" fill="#008592"/>
-              <circle cx="166" cy="60" r="5" fill="#fff"/>
-            </svg>
-            <span class="home-map-caption">View location <span aria-hidden="true">↗</span></span>
-          </a>
-        </section>
+<body class="has-footer has-signal-world">
+  <div class="site-splash" id="siteSplash" role="dialog" aria-modal="true" aria-labelledby="splashTitle" aria-describedby="splashDescription">
+    <div class="splash-grid" aria-hidden="true"></div>
+    <div class="splash-corner">TEAMSPACE / CONNECTED WORKPLACE</div>
+    <div class="splash-content">
+      <div class="splash-emblem" aria-hidden="true">
+        <svg viewBox="0 0 200 200" fill="none">
+          <circle cx="100" cy="100" r="84" stroke="currentColor" opacity=".18"/>
+          <circle class="splash-ring" cx="100" cy="100" r="67" stroke="currentColor" stroke-dasharray="58 20 2 20"/>
+          <ellipse cx="100" cy="100" rx="92" ry="34" transform="rotate(-32 100 100)" stroke="currentColor" opacity=".5"/>
+          <path d="M71 91 100 74 129 91V124L100 141 71 124Z M71 91 100 108 129 91M100 108V141" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle class="splash-node" cx="100" cy="16" r="4" fill="currentColor"/>
+          <circle cx="37" cy="139" r="3" fill="#b3a0ff"/>
+        </svg>
       </div>
-      <div class="footer-bottom">
-        <small>© 2026 TeamSpace HR Systems Inc. All rights reserved.</small>
-        <nav class="footer-legal" aria-label="Footer policies"><a href="../policies/policies.html">Privacy Policy</a><a href="../policies/policies.html">Terms of Service</a><a href="../policies/policies.html">Security</a></nav>
-        <!-- Replace this href with the company page when it is available. -->
-        <a class="footer-powered-by" href="../about/about.html">PoweredBy(Company Name)</a>
-      </div>
+      <p class="splash-kicker">A MORE CONNECTED WORLD</p>
+      <h2 id="splashTitle">TeamSpace <span>HR</span></h2>
+      <p id="splashDescription">People. Technology. Possibility.</p>
+      <div class="splash-track" aria-hidden="true"><span></span></div>
+      <p class="splash-caption">WELCOME TO YOUR WORKSPACE</p>
     </div>
-  </footer>
+    <button class="splash-skip" id="skipIntro" type="button">Skip intro <span aria-hidden="true">↗</span></button>
+    <div class="splash-footer" aria-hidden="true"><span class="signal-dot"></span>ONE TEAM. ENDLESS POSSIBILITIES.</div>
+  </div>
 
-  <script src="../../shared/navbar.js"></script>
+  <!-- Fixed to the viewport: the transmission scene continues behind the entire page. -->
+  <div class="signal-world" id="signalWorld" aria-hidden="true">
+    <svg class="signal-world-fallback" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none">
+      <defs>
+        <linearGradient id="signalSky" x2="1440" y2="900" gradientUnits="userSpaceOnUse"><stop stop-color="#03101b"/><stop offset="1" stop-color="#0b303d"/></linearGradient>
+        <g id="signalSat"><path d="M-12-14H12V14H-12Z" fill="#c9dcde"/><path d="M-62-20H-21V20H-62ZM21-20H62V20H21Z" fill="#214866" stroke="#8abfd9"/><path d="M-42-20V20M42-20V20M-62 0H-21M21 0H62M-21 0H-12M12 0H21M0 14V28M-9 29Q0 37 9 29" stroke="#afdce5"/></g>
+      </defs>
+      <path fill="url(#signalSky)" d="M0 0H1440V900H0Z"/>
+      <path d="M440 900Q880 700 1440 810V900Z" fill="#08212e" stroke="#326a78"/>
+      <g stroke="#94bbc9" stroke-width="2"><path d="M1066 555 1038 800H1094L1066 555ZM1044 752 1088 710 1053 674 1080 634 1059 596M1088 752 1044 710 1080 674 1053 634 1074 596M1066 535V570M1035 582H1097"/><path d="M1030 563H1040V601H1030ZM1092 563H1102V601H1092Z" fill="#a3c4ce"/></g>
+      <use href="#signalSat" x="855" y="180" transform="rotate(-18 855 180)"/><use href="#signalSat" x="1300" y="272" transform="rotate(18 1300 272)"/>
+      <path d="M1066 540C1120 400 935 290 855 180" stroke="#64e2ed"/><path d="M855 180C960 78 1190 145 1300 272" stroke="#c3b6ff"/><path d="M1300 272C1410 405 1255 540 1310 760" stroke="#f2c789"/>
+      <g fill="#b9fcf1"><circle cx="1066" cy="540" r="4"/><circle cx="1020" cy="390" r="4"/><circle cx="855" cy="180" r="5"/><circle cx="1150" cy="150" r="4"/><circle cx="1300" cy="272" r="5"/><circle cx="1330" cy="490" r="4"/></g>
+      <path d="M1310 760V795M1291 795H1329M1288 753Q1310 783 1332 753M1290 755 1310 734 1330 755" stroke="#b9d4db" stroke-width="2"/>
+    </svg>
+    <canvas id="signalWorldCanvas"></canvas>
+  </div>
+  <button class="background-motion" id="backgroundMotion" type="button" aria-label="Pause background animation" aria-pressed="false" hidden>
+    <span data-motion-symbol aria-hidden="true">Ⅱ</span><span data-motion-label>Pause background</span>
+  </button>
+
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <nav class="navbar" data-navbar="hr"></nav>
+  <main id="mainContent" tabindex="-1">
+    <!-- HERO -->
+    <section class="hero" id="home" aria-describedby="heroSignalDescription">
+      <p class="motion-sr-only" id="heroSignalDescription">A telecommunications tower on Earth sends luminous data packets into space. The first satellite lights up as it receives the data, relays it to a second satellite, and the data returns to a receiving station on Earth. The animation continues behind the full page.</p>
+      <div class="hero-overlay"></div>
+      <div class="home-container hero-content">
+        <div class="hero-copy">
+          <div class="hero-badge hero-step" style="--d:.3s">
+            <span class="material-symbols-outlined" aria-hidden="true">hub</span>
+            People First. Purpose Driven.
+          </div>
+          <h1 class="hero-title">
+            <i class="w" style="--i:0">Welcome</i> <i class="w" style="--i:1">to</i>
+            <span class="hero-title-brand"><i class="w" style="--i:2">TeamSpace</i> <i class="w" style="--i:3">HR</i></span>
+          </h1>
+          <div class="hero-line" aria-hidden="true"></div>
+          <h2 class="hero-subtitle hero-step" style="--d:1.5s">Empowering Employees, Streamlining HR Operations</h2>
+          <p class="hero-description hero-step" style="--d:1.65s">
+            TeamSpace HR brings people, tasks, employee services, feedback and administrative operations into one modern workplace experience designed for growing teams.
+          </p>
+          <div class="hero-buttons hero-step" style="--d:1.8s">
+            <a href="#modules" class="home-btn home-btn-primary">Explore Our Modules
+              <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+            <a href="#feedback" class="home-btn home-btn-secondary">
+              <span class="material-symbols-outlined" aria-hidden="true">forum</span> Employee Feedback</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat" style="--i:0"><div class="hero-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">groups</span></div>
+              <div><strong data-count="120" data-suffix="+">120+</strong><span>Employees</span></div></div>
+            <div class="hero-stat" style="--i:1"><div class="hero-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">task_alt</span></div>
+              <div><strong data-count="48">48</strong><span>Active Tasks</span></div></div>
+            <div class="hero-stat" style="--i:2"><div class="hero-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">corporate_fare</span></div>
+              <div><strong data-count="8">8</strong><span>Departments</span></div></div>
+            <div class="hero-stat" style="--i:3"><div class="hero-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">monitoring</span></div>
+              <div><strong data-count="94" data-suffix="%">94%</strong><span>Engagement</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-signal-legend" aria-hidden="true">
+        <span class="signal-legend-title">FROM EARTH. THROUGH ORBIT. BACK TO YOU.</span>
+        <div><span><i class="signal-key-up"></i>UPLINK</span><b>→</b><span><i class="signal-key-relay"></i>RELAY</span><b>→</b><span><i class="signal-key-down"></i>DOWNLINK</span></div>
+      </div>
+      <a href="#about-company" class="hero-scroll" aria-label="Scroll to company introduction">
+        <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_down</span>
+      </a>
+    </section>
+    <!-- COMPANY INTRO -->
+    <section class="company-intro-section" id="about-company">
+      <div class="home-container company-intro-container">
+        <div class="company-intro-copy">
+          <div class="company-intro-label reveal reveal-left">
+            <span class="material-symbols-outlined" aria-hidden="true">language</span>
+            Technology That Keeps Business Connected
+          </div>
+          <h2 class="reveal reveal-left" style="--delay:.1s">Connecting People. <span>Powering Digital Infrastructure.</span></h2>
+          <p class="company-intro-description reveal" style="--delay:.2s">
+            We are a technology-driven company delivering modern telecommunications, networking and cloud solutions designed to keep businesses connected, secure and ready to scale.
+          </p>
+          <p class="company-intro-description company-intro-description-secondary reveal" style="--delay:.3s">
+            From reliable network infrastructure and enterprise connectivity to cloud platforms and secure digital services, our focus is to build technology that supports everyday operations and long-term business growth.
+          </p>
+          <div class="company-intro-highlights reveal" style="--delay:.4s">
+            <div class="company-intro-highlight"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span>Secure Infrastructure</div>
+            <div class="company-intro-highlight"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span>Scalable Solutions</div>
+            <div class="company-intro-highlight"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span>Reliable Connectivity</div>
+          </div>
+        </div>
+        <div class="company-capabilities" id="capabilities">
+          <i class="net-line" aria-hidden="true"></i>
+          <article class="capability-card capability-card-network reveal reveal-network" style="--delay:.2s">
+            <div class="capability-icon"><span class="material-symbols-outlined" aria-hidden="true">lan</span></div>
+            <div><span class="capability-number">01</span><h3>Network Infrastructure</h3>
+              <p>Reliable enterprise networks built for performance, availability and secure communication.</p></div>
+          </article>
+          <article class="capability-card capability-card-cloud reveal reveal-right" style="--delay:.7s">
+            <div class="capability-icon"><span class="material-symbols-outlined" aria-hidden="true">cloud</span></div>
+            <div><span class="capability-number">02</span><h3>Cloud Solutions</h3>
+              <p>Flexible cloud environments that help teams deploy, manage and scale digital services efficiently.</p></div>
+          </article>
+          <article class="capability-card capability-card-telecom reveal reveal-left" style="--delay:1.2s">
+            <div class="capability-icon"><span class="material-symbols-outlined" aria-hidden="true">cell_tower</span></div>
+            <div><span class="capability-number">03</span><h3>Telecommunications</h3>
+              <p>Modern communication solutions that connect people, offices and digital systems across the organization.</p></div>
+          </article>
+          <article class="capability-card capability-card-security reveal reveal-right" style="--delay:1.7s">
+            <div class="capability-icon"><span class="material-symbols-outlined" aria-hidden="true">shield_lock</span></div>
+            <div><span class="capability-number">04</span><h3>Secure Operations</h3>
+              <p>Infrastructure designed with security, monitoring and operational reliability at its core.</p></div>
+          </article>
+        </div>
+      </div>
+      <div class="company-intro-bottom">
+        <div class="home-container company-intro-stats" id="introStats">
+          <div style="--i:0"><strong>24/7</strong><span>Connected Operations</span></div>
+          <div style="--i:1"><strong>Cloud</strong><span>Ready Infrastructure</span></div>
+          <div style="--i:2"><strong>Secure</strong><span>By Design</span></div>
+          <div style="--i:3"><strong>Scalable</strong><span>For Growing Teams</span></div>
+        </div>
+      </div>
+    </section>
+    <!-- FEEDBACK -->
+    <section class="home-section feedback-section" id="feedback">
+      <div class="home-container">
+        <div class="home-section-heading">
+          <div>
+            <p class="home-section-label">Employee Voice</p>
+            <h2>Employee & Team Feedback & Voices</h2>
+          </div>
+          <p class="home-section-description">Real perspectives from employees that help shape a stronger, more connected workplace.</p>
+        </div>
+      </div>
+      <div class="feedback-slider" id="feedbackSlider">
+        <div class="feedback-track" id="feedbackTrack">
+          <div class="feedback-group" id="feedbackGroup">
+            <article class="testimonial testimonial-teal" tabindex="0">
+              <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
+              <p>“TeamSpace makes it much easier to understand my tasks and stay connected with the HR team.”</p>
+              <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
+                <div><strong>Sarah Anderson</strong><span>Software Developer</span></div></div>
+            </article>
+            <article class="testimonial testimonial-green" tabindex="0">
+              <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
+              <p>“Having employee services and requests in one place has made our workflow much smoother.”</p>
+              <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
+                <div><strong>David Wilson</strong><span>Project Coordinator</span></div></div>
+            </article>
+            <article class="testimonial testimonial-yellow" tabindex="0">
+              <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
+              <p>“Feedback is now clearer and more accessible. It feels like employees have a stronger voice.”</p>
+              <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
+                <div><strong>Omar Khalil</strong><span>UI/UX Designer</span></div></div>
+            </article>
+            <article class="testimonial testimonial-orange" tabindex="0">
+              <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
+              <p>“The platform gives us a simple way to follow important updates without unnecessary complexity.”</p>
+              <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
+                <div><strong>Emma Carter</strong><span>Quality Assurance</span></div></div>
+            </article>
+            <article class="testimonial testimonial-blue" tabindex="0">
+              <div class="testimonial-icon"><span class="material-symbols-outlined" aria-hidden="true">format_quote</span></div>
+              <p>“The task workflow gives our team much better visibility into deadlines and daily priorities.”</p>
+              <div class="employee"><div class="employee-avatar"><span class="material-symbols-outlined" aria-hidden="true">person</span></div>
+                <div><strong>Michael Brown</strong><span>Team Lead</span></div></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- TECHNOLOGY VISION -->
+    <section class="home-section purpose-section" id="company-purpose">
+      <div class="purpose-bg" aria-hidden="true">
+        <div class="purpose-orb purpose-orb-1"></div>
+        <div class="purpose-orb purpose-orb-2"></div>
+        <div class="purpose-grid"></div>
+      </div>
+      <div class="home-container purpose-container">
+        <div class="purpose-heading">
+          <div class="purpose-eyebrow"><span class="purpose-eyebrow-dot"></span>Our Technology Vision</div>
+          <h2>Building the infrastructure <span>behind a connected world.</span></h2>
+          <p>We bring telecommunications, enterprise networking, cloud technologies and secure digital infrastructure together to help organizations stay connected, operate efficiently and scale with confidence.</p>
+        </div>
+        <div class="purpose-stage">
+          <figure class="orbital-scene reveal reveal-scale" id="orbitalScene" aria-labelledby="orbitalCaption" aria-describedby="orbitalDescription">
+            <span class="motion-sr-only" id="orbitalDescription">An animated Earth with three orbiting satellites. Gold packets carry data from Earth to satellites; mint packets return data to Earth. This is an illustrative network animation.</span>
+            <div class="orbital-topline"><span><i class="signal-dot" aria-hidden="true"></i>GLOBAL CONNECTIVITY</span><span>EARTH ↔ ORBIT</span></div>
+            <div class="orbital-viewport" id="orbitalViewport">
+              <!-- A static fallback keeps the scene visible without JavaScript/canvas. -->
+              <svg class="orbital-fallback" viewBox="0 0 800 660" role="img" aria-label="Earth connected to three orbiting satellites with uplink and downlink paths">
+                <defs>
+                  <radialGradient id="earthFallback"><stop stop-color="#185767"/><stop offset="1" stop-color="#061c2b"/></radialGradient>
+                  <clipPath id="earthClip"><circle cx="400" cy="330" r="152"/></clipPath>
+                  <g id="staticSatellite"><path d="M-11-9H11V9H-11Z" fill="#d1efef"/><path d="M-43-13H-16V13H-43ZM16-13H43V13H16Z" fill="#123b54" stroke="#76dcd9" stroke-width="2"/><path d="M0-9V-23M-7-25Q0-17 7-25" fill="none" stroke="#d1efef" stroke-width="2"/></g>
+                </defs>
+                <g fill="none" stroke="#5edbd2" opacity=".25"><ellipse cx="400" cy="330" rx="282" ry="145" transform="rotate(-28 400 330)"/><ellipse cx="400" cy="330" rx="258" ry="171" transform="rotate(48 400 330)"/></g>
+                <circle cx="400" cy="330" r="163" fill="none" stroke="#55ddd4" opacity=".18" stroke-width="10"/>
+                <circle cx="400" cy="330" r="154" fill="url(#earthFallback)" stroke="#55ddd4"/>
+                <g clip-path="url(#earthClip)" fill="#409b98" stroke="#62c8bb" stroke-width="2">
+                  <path d="M378 255 405 245 435 255 451 273 469 280 479 309 460 345 446 359 440 392 417 418 407 400 393 360 373 338 357 310 363 279Z"/>
+                  <path d="M391 252 380 232 398 204 422 211 437 197 461 222 488 216 537 238 560 291 531 309 506 298 479 273 453 270 437 248 414 257Z"/>
+                  <path d="M280 206 311 212 323 244 306 266 313 293 295 302 280 284 253 269 244 232Z M307 315 339 325 350 350 337 393 323 423 314 394 301 363 295 341Z"/>
+                </g>
+                <g fill="none" stroke="#b9fff2" opacity=".12"><ellipse cx="400" cy="330" rx="76" ry="152"/><ellipse cx="400" cy="330" rx="152" ry="52"/><path d="M248 330H552M400 178V482"/></g>
+                <g fill="none" stroke-width="2"><path d="M395 299Q260 160 190 198M463 368Q610 333 643 414M454 254Q530 148 539 143" stroke="#55ddd4"/><path d="M190 203Q289 197 405 305M643 420Q560 427 458 377M539 148Q511 201 446 264" stroke="#e8b779"/></g>
+                <use href="#staticSatellite" x="185" y="195" transform="rotate(-25 185 195)"/><use href="#staticSatellite" x="649" y="419" transform="rotate(30 649 419)"/><use href="#staticSatellite" x="540" y="141"/>
+              </svg>
+              <canvas id="orbitalCanvas" aria-hidden="true"></canvas>
+              <span class="orbital-coordinate" aria-hidden="true">PLANET EARTH / CONNECTED</span>
+            </div>
+            <figcaption id="orbitalCaption">Distance disappears. <span>Connection stays.</span></figcaption>
+            <div class="orbital-controls" id="orbitalControls" hidden>
+              <div class="orbital-modes" role="group" aria-label="Data direction">
+                <button type="button" data-link-mode="both" aria-pressed="true">All links</button>
+                <button type="button" data-link-mode="uplink" aria-pressed="false"><i class="legend-dot legend-up" aria-hidden="true"></i>Uplink <span aria-hidden="true">↗</span></button>
+                <button type="button" data-link-mode="downlink" aria-pressed="false"><i class="legend-dot legend-down" aria-hidden="true"></i>Downlink <span aria-hidden="true">↙</span></button>
+              </div>
+              <button type="button" class="orbital-pause" id="orbitalPause" aria-pressed="false" aria-label="Pause orbital animation"><span aria-hidden="true">Ⅱ</span></button>
+            </div>
+            <p class="orbital-note">Uplink: Earth to satellite <span aria-hidden="true">·</span> Downlink: satellite to Earth</p>
+          </figure>
+          <div class="purpose-features">
+            <article class="purpose-feature reveal reveal-right" style="--delay:0s">
+              <div class="purpose-feature-number">01</div>
+              <div class="purpose-feature-icon"><span class="material-symbols-outlined" aria-hidden="true">cell_tower</span></div>
+              <div><h3>Telecommunications</h3><p>Reliable communication infrastructure that keeps people, systems and operations connected.</p></div>
+            </article>
+            <article class="purpose-feature reveal reveal-right" style="--delay:0s">
+              <div class="purpose-feature-number">02</div>
+              <div class="purpose-feature-icon"><span class="material-symbols-outlined" aria-hidden="true">account_tree</span></div>
+              <div><h3>Enterprise Networking</h3><p>Secure and scalable network architecture designed for modern digital environments.</p></div>
+            </article>
+            <article class="purpose-feature reveal reveal-right" style="--delay:0s">
+              <div class="purpose-feature-number">03</div>
+              <div class="purpose-feature-icon"><span class="material-symbols-outlined" aria-hidden="true">cloud</span></div>
+              <div><h3>Cloud Infrastructure</h3><p>Flexible cloud platforms that support scalable services, applications and business operations.</p></div>
+            </article>
+            <article class="purpose-feature reveal reveal-right" style="--delay:0s">
+              <div class="purpose-feature-number">04</div>
+              <div class="purpose-feature-icon"><span class="material-symbols-outlined" aria-hidden="true">shield_lock</span></div>
+              <div><h3>Secure Technology</h3><p>Resilient infrastructure built around reliability, visibility and secure digital operations.</p></div>
+            </article>
+          </div>
+        </div>
+        <div class="purpose-footer" id="purposeFooter">
+          <div class="purpose-footer-line" aria-hidden="true"></div>
+          <p>One infrastructure. <span>Multiple technologies.</span> One connected future.</p>
+          <div class="purpose-live"><span aria-hidden="true"></span>Connected by Design</div>
+        </div>
+      </div>
+    </section>
+    <!-- MODULES -->
+    <section class="home-section modules-section" id="modules">
+      <div class="home-container">
+        <div class="home-section-heading">
+          <div>
+            <p class="home-section-label">Administrative Services & Modules</p>
+            <h2>Everything your team needs in one place</h2>
+          </div>
+          <p class="home-section-description">Practical HR modules designed to simplify daily employee and administrative operations.</p>
+        </div>
+        <div class="modules">
+          <article class="module-card reveal reveal-network" style="--delay:0s">
+            <div class="module-icon module-icon-teal"><span class="material-symbols-outlined" aria-hidden="true">badge</span></div>
+            <h3>Employee Space</h3>
+            <p>Quickly access employee profiles, teams, departments and contact details.</p>
+            <a href="../../employee/MyWOrkSpace/MyWOrkSpace.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+          <article class="module-card reveal reveal-network" style="--delay:.25s">
+            <div class="module-icon module-icon-blue"><span class="material-symbols-outlined" aria-hidden="true">task</span></div>
+            <h3>Your Tasks & Workflow</h3>
+            <p>Organize assigned work, priorities, progress and deadlines in one workspace.</p>
+            <a href="/employee/my-tasks/my-tasks.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+          <article class="module-card reveal reveal-network" style="--delay:.5s">
+            <div class="module-icon module-icon-orange"><span class="material-symbols-outlined" aria-hidden="true">event_available</span></div>
+            <h3>Leave & HR Requests</h3>
+            <p>Submit employee requests and follow their status through a clear workflow.</p>
+            <a href="/employee/Leave&TimeOff/Leave&TimeOff.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+          <article class="module-card reveal reveal-network" style="--delay:.75s">
+            <div class="module-icon module-icon-purple"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span></div>
+            <h3>Company Policies</h3>
+            <p>Find internal documents, announcements and useful employee resources.</p>
+            <a href="/employee/policies/EMPpolicies.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+          <article class="module-card reveal reveal-network" style="--delay:1s">
+            <div class="module-icon module-icon-green"><span class="material-symbols-outlined" aria-hidden="true">forum</span></div>
+            <h3>Employee Feedback</h3>
+            <p>Give employees a voice and collect meaningful workplace feedback.</p>
+            <a href="/common/contact/contact.html">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+          <article class="module-card reveal reveal-network" style="--delay:1.25s">
+            <div class="module-icon module-icon-yellow"><span class="material-symbols-outlined" aria-hidden="true">event</span></div>
+            <h3>Set Meeting</h3>
+            <p>Book a meeting with HR to discuss your tasks, requests and questions.</p>
+            <!-- TODO: replace "#modules" with the real Set Meeting page URL -->
+            <a href="#modules">Explore Module <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- COMPANY CAROUSEL -->
+    <section class="home-section company-section" id="company">
+      <div class="home-container">
+        <div class="home-section-heading">
+          <div>
+            <p class="home-section-label">Inside Our Company</p>
+            <h2>Life & Technology at TeamSpace</h2>
+          </div>
+          <p class="home-section-description">A closer look at our workplace, technology, people and the environment behind TeamSpace HR.</p>
+        </div>
+        <div class="company-carousel" id="companyCarousel">
+          <button class="company-control company-control-prev" id="companyPrev" type="button" aria-label="Previous company media">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          </button>
+          <div class="company-track" id="companyTrack">
+            <article class="company-slide">
+              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Our collaborative workspace"><source src="/common/home/company/341476_medium.mp4" type="video/mp4"></video></div>
+              <div class="company-slide-content"><span>Our Workspace</span><h3>Built for collaboration</h3><p>Modern spaces designed for communication, productivity and teamwork.</p></div>
+            </article>
+            <article class="company-slide">
+              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Secure access technology"><source src="/common/home/company/mixkit-close-up-of-a-fingerprint-logging-47323-hd-ready.mp4" type="video/mp4"></video></div>
+              <div class="company-slide-content"><span>Technology</span><h3>Infrastructure behind our platform</h3><p>Reliable technology that keeps our teams and services connected.</p></div>
+            </article>
+            <article class="company-slide">
+              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Engineers working in a data center"><source src="/common/home/company/mixkit-timelapse-of-engineers-working-on-data-center-23374-hd-ready.mp4" type="video/mp4"></video></div>
+              <div class="company-slide-content"><span>Our People</span><h3>Teams working together</h3><p>Collaboration across departments creates better employee experiences.</p></div>
+            </article>
+            <article class="company-slide">
+              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="TeamSpace technology and people"><source src="/common/home/Hero video/teamspace-hero-web.mp4" type="video/mp4"></video></div>
+              <div class="company-slide-content"><span>Innovation</span><h3>Technology meets people</h3><p>Creating smarter HR experiences through thoughtful digital solutions.</p></div>
+            </article>
+            <article class="company-slide">
+              <div class="company-media"><video autoplay muted loop playsinline preload="metadata" aria-label="Teams collaborating"><source src="/common/home/company/wmremove-transformed.mp4" type="video/mp4"></video></div>
+              <div class="company-slide-content"><span>Our People</span><h3>Teams working together</h3><p>Collaboration across departments creates better employee experiences.</p></div>
+            </article>
+          </div><!-- fixed: .company-track now closed -->
+          <button class="company-control company-control-next" id="companyNext" type="button" aria-label="Next company media">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          </button>
+        </div>
+        <div class="company-nav">
+          <div class="company-progress" id="companyProgress" aria-hidden="true"><span></span></div>
+          <div class="company-dots" id="companyDots"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div data-footer></div>
   <script src="home.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/footer.js"></script>
 </body>
 </html>
