@@ -1,5 +1,7 @@
 const loginForm = document.querySelector("#login-form");
 
+const API = "http://127.0.0.1:3000";
+
 const emailInput = document.querySelector("#username");
 const passwordInput = document.querySelector("#password");
 
@@ -51,6 +53,26 @@ const throughputValue = document.querySelector("#throughputValue");
 const authValue = document.querySelector("#authValue");
 const sessionValue = document.querySelector("#sessionValue");
 
+const recoverLink = document.querySelector(".recover-link");
+
+recoverLink?.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    emailMessage.textContent = "Enter your corporate email first.";
+    emailInput.focus();
+    return;
+  }
+
+  sessionStorage.setItem("recoverEmail", email);
+
+  const recoverUrl = new URL(recoverLink.href, window.location.href);
+  recoverUrl.searchParams.set("mode", "recover");
+  window.location.href = recoverUrl.href;
+});
+
 const nodes = {
   client: document.querySelector("#clientNode"),
   edge: document.querySelector("#edgeNode"),
@@ -64,6 +86,7 @@ const reduceMotion = window.matchMedia(
 
 localStorage.removeItem("loggedUser");
 localStorage.removeItem("currentUserId");
+localStorage.removeItem("currentUser");
 
 let packetLock = false;
 let typingTimer = null;
@@ -1176,76 +1199,41 @@ loginForm.addEventListener(
     try {
       await handshake;
 
+      const query = new URLSearchParams({
+        email,
+        password
+      });
+
       const response = await fetch(
-        "../../Data/employee.json",
-        {
-          cache: "no-store"
-        }
+        `${API}/employees?${query}`
       );
 
       if (!response.ok) {
         throw new Error(
-          `Could not load employees: ${response.status}`
+          "Could not check your account."
         );
       }
 
-      const data = await response.json();
-
-      if (!Array.isArray(data.employees)) {
-        throw new Error(
-          "Invalid employee data"
-        );
-      }
-
-      const employee =
-        data.employees.find(
-          (person) =>
-            typeof person.email === "string" &&
-            person.email
-              .trim()
-              .toLowerCase() === email
-        );
+      const matches = await response.json();
+      const employee = matches[0];
 
       if (!employee) {
         showError(
-          "Identity not found",
-          "No TeamSpace account matches this email.",
-          "email",
-          IDENT
-        );
-
-        emailMessage.textContent =
-          "";
-
-        emailInput.focus();
-
-        return;
-      }
-
-      if (
-        employee.password !==
-        password
-      ) {
-
-        showError(
           "Credential rejected",
-          "The password does not match this identity.",
+          "Incorrect email or password.",
           "password",
           IDENT
         );
 
-        passwordMessage.textContent =
-          "";
-
+        passwordMessage.textContent = "";
         passwordInput.focus();
         passwordInput.select();
-
         return;
       }
 
       if (
-        employee.status !==
-        "Active"
+        employee.status !== "Active" &&
+        employee.status !== "Inactive"
       ) {
         showError(
           "Account inactive",
@@ -1271,48 +1259,16 @@ loginForm.addEventListener(
         return;
       }
 
-      let edits = {};
-
-      try {
-        edits =
-          JSON.parse(
-            localStorage.getItem(
-              `profileEdits_${employee.id}`
-            )
-          ) || {};
-      } catch {
-        edits = {};
-      }
-
       const loggedUser = {
-        ...employee
+        id: employee.id,
+        role: employee.role,
+        name: employee.name,
+        email: employee.email,
+        department: employee.department,
+        position: employee.position,
+        employeeId: employee.employeeId,
+        image: employee.image
       };
-
-      if (
-        typeof edits.name ===
-        "string"
-      ) {
-        loggedUser.name =
-          edits.name;
-      }
-
-      if (
-        typeof edits.phone ===
-        "string"
-      ) {
-        loggedUser.phone =
-          edits.phone;
-      }
-
-      if (
-        typeof edits.image ===
-        "string"
-      ) {
-        loggedUser.image =
-          edits.image;
-      }
-
-      delete loggedUser.password;
 
       localStorage.setItem(
         "loggedUser",
@@ -1323,6 +1279,11 @@ loginForm.addEventListener(
         "currentUserId",
         String(employee.id)
       );
+
+      if (employee.firstAttend === true) {
+        window.location.href = "../reset-password/reset-password.html";
+        return;
+      }
 
       shell.classList.remove("error");
       shell.classList.add("success");
@@ -1442,7 +1403,7 @@ loginForm.addEventListener(
 
       window.location.href =
         employee.role === "HR"
-          ? "../home/home.html"
+          ? "../../hr/workspace/workspace.html"
           : "../../employee/MyWOrkSpace/MyWOrkSpace.html";
 
     } catch (error) {
@@ -1453,7 +1414,7 @@ loginForm.addEventListener(
 
       showError(
         "Connection unavailable",
-        "TeamSpace authentication services are temporarily unreachable. Please try again.",
+        error.message || "TeamSpace authentication services are temporarily unreachable. Please try again.",
         "both",
         EDGE
       );
