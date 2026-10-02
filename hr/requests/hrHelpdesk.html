@@ -1,0 +1,1254 @@
+<!DOCTYPE html> <!-- هذا السطر يخبر المتصفح أننا نستخدم HTML5 -->
+
+<html lang="en"> <!-- بداية ملف HTML وتحديد أن لغة الصفحة الأساسية إنجليزية -->
+
+<head> <!-- بداية إعدادات الصفحة التي لا تظهر مباشرة داخل المحتوى -->
+
+    <meta charset="UTF-8"> <!-- يسمح للصفحة بعرض الأحرف الإنجليزية والعربية والرموز بشكل صحيح -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- يجعل عرض الصفحة يتناسب مع شاشة الهاتف والكمبيوتر -->
+
+    <title>HR Tickets & Employee Requests</title> <!-- النص الذي يظهر في Tab المتصفح -->
+
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+    <!-- استدعاء الخطوط المستخدمة في المشروع من Google Fonts -->
+
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+    <!-- استدعاء مكتبة Material Symbols حتى نستطيع استخدام الأيقونات -->
+
+
+    <link rel="stylesheet"
+          href="../../shared/shared.css">
+    <!-- ربط ملف CSS المشترك الموجود في المشروع والذي يحتوي على Navbar وألوان ومتغيرات المشروع -->
+
+
+    <link rel="stylesheet"
+          href="../../shared/footer.css">
+    <!-- ربط CSS الخاص بالـ Footer الموجود أصلًا في المشروع -->
+
+
+    <link rel="stylesheet"
+          href="hrHelpdesk.css">
+    <!-- ربط CSS الخاص بصفحة HR Helpdesk فقط -->
+
+</head> <!-- نهاية إعدادات الصفحة -->
+
+
+<body class="has-footer"> <!-- بداية جسم الصفحة وإضافة class موجود بالمشروع للمساعدة في تنظيم Footer -->
+
+
+    <nav class="navbar" data-navbar="hr"></nav>
+    <!-- هذا العنصر يتم تعبئته تلقائيًا بالـ Navbar الخاص بالـ HR من navbar.js -->
+
+
+    <!-- ========================================================= -->
+    <!-- Page Header -->
+    <!-- ========================================================= -->
+
+    <header class="hr-page-header">
+    <!-- بداية الجزء العلوي الذي يحتوي على عنوان الصفحة والأزرار -->
+
+
+        <div class="hr-page-title">
+        <!-- يحتوي على مسار الصفحة والعنوان والوصف -->
+
+
+            <p class="hr-page-path">
+                Operations › Triage Hub
+            </p>
+            <!-- يعرض للمستخدم موقعه الحالي داخل النظام -->
+
+
+            <h1 class="hr-page-main-title">
+                HR Tickets & Employee Requests
+            </h1>
+            <!-- العنوان الرئيسي للصفحة -->
+
+
+            <p class="hr-page-description">
+                Centralized inbox for employee leave applications,
+                support inquiries and meeting requests.
+            </p>
+            <!-- وصف مختصر لوظيفة الصفحة -->
+
+
+        </div>
+        <!-- نهاية جزء عنوان الصفحة -->
+
+
+        <div class="hr-header-buttons">
+        <!-- يحتوي على الأزرار الموجودة أعلى يمين الصفحة -->
+
+
+            <button class="export-csv-button"
+                    onclick="exportCsvButton()">
+            <!-- زر Export وعند الضغط يشغل Function اسمها نفس معنى الزر -->
+
+
+                <span class="material-symbols-outlined">
+                    download
+                </span>
+                <!-- أيقونة Download -->
+
+
+                Export CSV
+                <!-- النص الظاهر داخل الزر -->
+
+
+            </button>
+            <!-- نهاية زر Export -->
+
+
+            <button class="create-ticket-button"
+                    onclick="createTicketButton()">
+            <!-- زر إنشاء Ticket جديد نيابة عن موظف -->
+
+
+                <span class="material-symbols-outlined">
+                    add
+                </span>
+                <!-- أيقونة + -->
+
+
+                Create Ticket on Behalf
+                <!-- النص داخل الزر -->
+
+
+            </button>
+            <!-- نهاية زر Create Ticket -->
+
+
+        </div>
+        <!-- نهاية مجموعة الأزرار -->
+
+
+    </header>
+    <!-- نهاية Header -->
+
+
+    <!-- ========================================================= -->
+    <!-- Statistics -->
+    <!-- ========================================================= -->
+
+    <section class="hr-statistics-section">
+    <!-- بداية قسم الإحصائيات -->
+
+
+        <div class="total-tickets-card">
+        <!-- كرت عدد جميع Tickets النشطة -->
+
+
+            <div class="statistics-card-title">
+            <!-- الصف الذي يحتوي على اسم الإحصائية والأيقونة -->
+
+
+                <span>
+                    Total Active Tickets
+                </span>
+                <!-- اسم الإحصائية -->
+
+
+                <span class="material-symbols-outlined">
+                    confirmation_number
+                </span>
+                <!-- أيقونة Tickets -->
+
+
+            </div>
+            <!-- نهاية عنوان الكرت -->
+
+
+            <div class="statistics-number-row">
+            <!-- الصف الذي يعرض الرقم وكلمة Open -->
+
+
+                <h2 id="total-active-tickets-number">
+                    0
+                </h2>
+                <!-- JavaScript يغير هذا الرقم تلقائيًا -->
+
+
+                <span>
+                    Open
+                </span>
+                <!-- يوضح أن الرقم يمثل Tickets المفتوحة -->
+
+
+            </div>
+            <!-- نهاية صف الرقم -->
+
+
+            <small>
+                ● Updated just now
+            </small>
+            <!-- نص صغير أسفل الكرت -->
+
+
+        </div>
+        <!-- نهاية Total Tickets Card -->
+
+
+        <div class="leave-requests-card">
+        <!-- كرت طلبات الإجازة -->
+
+
+            <div class="statistics-card-title">
+            <!-- عنوان الكرت -->
+
+
+                <span>
+                    Leave & Time Off
+                </span>
+                <!-- اسم الإحصائية -->
+
+
+                <span class="material-symbols-outlined">
+                    calendar_month
+                </span>
+                <!-- أيقونة Calendar -->
+
+
+            </div>
+            <!-- نهاية عنوان الكرت -->
+
+
+            <div class="statistics-number-row">
+            <!-- صف الرقم -->
+
+
+                <h2 id="pending-leave-number">
+                    0
+                </h2>
+                <!-- JavaScript يضع هنا عدد طلبات الإجازة Pending -->
+
+
+                <span>
+                    Pending
+                </span>
+                <!-- معنى الرقم -->
+
+
+            </div>
+            <!-- نهاية صف الرقم -->
+
+
+            <small class="green-statistics-text">
+                ● Awaiting final approval
+            </small>
+            <!-- نص أخضر يوضح حالة الطلبات -->
+
+
+        </div>
+        <!-- نهاية Leave Card -->
+
+
+        <div class="helpdesk-requests-card">
+        <!-- كرت عدد طلبات Helpdesk -->
+
+
+            <div class="statistics-card-title">
+            <!-- عنوان الكرت -->
+
+
+                <span>
+                    Helpdesk Inquiries
+                </span>
+                <!-- اسم الإحصائية -->
+
+
+                <span class="material-symbols-outlined">
+                    support_agent
+                </span>
+                <!-- أيقونة Helpdesk -->
+
+
+            </div>
+            <!-- نهاية عنوان الكرت -->
+
+
+            <div class="statistics-number-row">
+            <!-- صف الرقم -->
+
+
+                <h2 id="helpdesk-requests-number">
+                    0
+                </h2>
+                <!-- JavaScript يضع عدد Helpdesk Requests -->
+
+
+                <span>
+                    Requests
+                </span>
+                <!-- معنى الرقم -->
+
+
+            </div>
+            <!-- نهاية صف الرقم -->
+
+
+            <small>
+                ● Employee support queue
+            </small>
+            <!-- وصف صغير -->
+
+
+        </div>
+        <!-- نهاية Helpdesk Card -->
+
+
+    </section>
+    <!-- نهاية Statistics -->
+
+
+    <!-- ========================================================= -->
+    <!-- Main Content -->
+    <!-- ========================================================= -->
+
+    <main class="hr-main-content">
+    <!-- بداية المنطقة الرئيسية في الصفحة -->
+
+
+        <section class="requests-section">
+        <!-- الجزء الكبير الذي يحتوي على Filters وTickets -->
+
+
+            <!-- ================================================= -->
+            <!-- Tabs -->
+            <!-- ================================================= -->
+
+            <div class="requests-tabs">
+            <!-- يحتوي على All / Leave / Helpdesk -->
+
+
+                <button class="all-tickets-tab active-tab"
+                        onclick="allTicketsTabButton()">
+                <!-- عند الضغط يعرض جميع Tickets -->
+
+
+                    All Tickets
+                    <!-- اسم Tab -->
+
+
+                    <span id="all-tickets-number">
+                        0
+                    </span>
+                    <!-- عدد جميع Tickets -->
+
+
+                </button>
+                <!-- نهاية All Tickets -->
+
+
+                <button class="leave-tickets-tab"
+                        onclick="leaveTicketsTabButton()">
+                <!-- يعرض Leave Requests فقط -->
+
+
+                    Leave & Time Off
+                    <!-- اسم Tab -->
+
+
+                    <span id="leave-tickets-number">
+                        0
+                    </span>
+                    <!-- عدد Leave Requests -->
+
+
+                </button>
+                <!-- نهاية Leave Tab -->
+
+
+                <button class="helpdesk-tickets-tab"
+                        onclick="helpdeskTicketsTabButton()">
+                <!-- يعرض Helpdesk Requests فقط -->
+
+
+                    Helpdesk Support
+                    <!-- اسم Tab -->
+
+
+                    <span id="helpdesk-tickets-number">
+                        0
+                    </span>
+                    <!-- عدد Helpdesk Requests -->
+
+
+                </button>
+                <!-- نهاية Helpdesk Tab -->
+
+
+                <select id="sort-tickets-select"
+                        class="sort-tickets-select"
+                        onchange="sortTicketsChange()">
+                <!-- Select لترتيب Tickets -->
+
+
+                    <option value="newest">
+                        Newest First
+                    </option>
+                    <!-- الجديد أولًا -->
+
+
+                    <option value="oldest">
+                        Oldest First
+                    </option>
+                    <!-- القديم أولًا -->
+
+
+                </select>
+                <!-- نهاية Sort -->
+
+
+            </div>
+            <!-- نهاية Tabs -->
+
+
+            <!-- ================================================= -->
+            <!-- Filters -->
+            <!-- ================================================= -->
+
+            <div class="requests-filters">
+            <!-- بداية منطقة Search وFilters -->
+
+
+                <div class="search-tickets-box">
+                <!-- صندوق Search -->
+
+
+                    <span class="material-symbols-outlined">
+                        search
+                    </span>
+                    <!-- أيقونة Search -->
+
+
+                    <input id="search-tickets-input"
+                           class="search-tickets-input"
+                           type="text"
+                           placeholder="Search employee, subject or ticket ID..."
+                           oninput="searchTicketsInput()">
+                    <!-- كلما المستخدم يكتب يتم تشغيل Function البحث مباشرة -->
+
+
+                </div>
+                <!-- نهاية Search -->
+
+
+                <select id="ticket-type-filter"
+                        class="ticket-type-filter"
+                        onchange="ticketTypeFilterChange()">
+                <!-- Filter حسب نوع Ticket -->
+
+
+                    <option value="all">
+                        All Ticket Types
+                    </option>
+                    <!-- جميع الأنواع -->
+
+
+                    <option value="leave">
+                        Leave & Time Off
+                    </option>
+                    <!-- Leave فقط -->
+
+
+                    <option value="ticket">
+                        Helpdesk Ticket
+                    </option>
+                    <!-- Helpdesk Ticket فقط -->
+
+
+                    <option value="meeting">
+                        1:1 Meeting
+                    </option>
+                    <!-- Meetings فقط -->
+
+
+                </select>
+                <!-- نهاية Type Filter -->
+
+
+                <select id="ticket-status-filter"
+                        class="ticket-status-filter"
+                        onchange="ticketStatusFilterChange()">
+                <!-- Filter حسب Status -->
+
+
+                    <option value="all">
+                        All Statuses
+                    </option>
+                    <!-- جميع الحالات -->
+
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+                    <!-- Pending -->
+
+
+                    <option value="In Review">
+                        In Review
+                    </option>
+                    <!-- In Review -->
+
+
+                    <option value="Assigned">
+                        Assigned
+                    </option>
+                    <!-- Assigned -->
+
+
+                    <option value="Pending Meeting">
+                        Pending Meeting
+                    </option>
+                    <!-- Meeting ينتظر موافقة HR -->
+
+
+                    <option value="Reschedule Requested">
+                        Reschedule Requested
+                    </option>
+                    <!-- الموظف طلب تغيير الموعد -->
+
+
+                    <option value="Confirmed">
+                        Confirmed
+                    </option>
+                    <!-- Meeting تم تأكيده -->
+
+
+                    <option value="Approved">
+                        Approved
+                    </option>
+                    <!-- Approved -->
+
+
+                    <option value="Rejected">
+                        Rejected
+                    </option>
+                    <!-- Rejected -->
+
+
+                </select>
+                <!-- نهاية Status Filter -->
+
+
+                <button class="reset-filter-button"
+                        onclick="resetFilterButton()">
+                <!-- زر إرجاع جميع Filters للوضع الافتراضي -->
+
+
+                    <span class="material-symbols-outlined">
+                        restart_alt
+                    </span>
+                    <!-- أيقونة Reset -->
+
+
+                    Reset
+                    <!-- النص -->
+
+
+                </button>
+                <!-- نهاية Reset Button -->
+
+
+            </div>
+            <!-- نهاية Filters -->
+
+
+            <!-- ================================================= -->
+            <!-- Bulk Actions -->
+            <!-- ================================================= -->
+
+            <div class="bulk-actions-section">
+            <!-- Actions على أكثر من Ticket -->
+
+
+                <label class="select-all-requests-label">
+                <!-- Label للـCheckbox -->
+
+
+                    <input id="select-all-requests-checkbox"
+                           type="checkbox"
+                           onchange="selectAllRequestsCheckbox()">
+                    <!-- عند التحديد يقوم بتحديد جميع Tickets الظاهرة -->
+
+
+                    Select All Tickets
+                    <!-- النص -->
+
+
+                </label>
+                <!-- نهاية Select All -->
+
+
+                <button class="assign-selected-button"
+                        onclick="assignSelectedButton()">
+                <!-- Assign للتذاكر المحددة -->
+
+
+                    <span class="material-symbols-outlined">
+                        person_add
+                    </span>
+                    <!-- أيقونة -->
+
+
+                    Assign to Officer
+                    <!-- النص -->
+
+
+                </button>
+                <!-- نهاية Assign -->
+
+
+                <button class="batch-status-button"
+                        onclick="batchStatusButton()">
+                <!-- تغيير Status للتذاكر المحددة -->
+
+
+                    <span class="material-symbols-outlined">
+                        checklist
+                    </span>
+                    <!-- أيقونة -->
+
+
+                    Batch Status
+                    <!-- النص -->
+
+
+                </button>
+                <!-- نهاية Batch Status -->
+
+
+                <button class="mark-read-button"
+                        onclick="markReadButton()">
+                <!-- اعتبار Tickets المحددة مقروءة -->
+
+
+                    <span class="material-symbols-outlined">
+                        mark_email_read
+                    </span>
+                    <!-- أيقونة -->
+
+
+                    Mark as Read
+                    <!-- النص -->
+
+
+                </button>
+                <!-- نهاية Mark Read -->
+
+
+            </div>
+            <!-- نهاية Bulk Actions -->
+
+
+            <div id="employee-requests-container"
+                 class="employee-requests-container">
+            </div>
+            <!-- JavaScript ينشئ Cards الخاصة بالطلبات داخل هذا العنصر -->
+
+
+            <!-- ================================================= -->
+            <!-- Pagination -->
+            <!-- ================================================= -->
+
+            <div class="requests-pagination">
+            <!-- منطقة التنقل بين الصفحات -->
+
+
+                <p id="pagination-information">
+                    Showing 0 requests
+                </p>
+                <!-- JavaScript يغير هذا النص حسب عدد النتائج -->
+
+
+                <div class="pagination-buttons">
+                <!-- يحتوي أزرار Previous وNext -->
+
+
+                    <button class="previous-page-button"
+                            onclick="previousPageButton()">
+                        ‹
+                    </button>
+                    <!-- زر الصفحة السابقة -->
+
+
+                    <span id="current-page-number"
+                          class="current-page-number">
+                        1
+                    </span>
+                    <!-- رقم الصفحة الحالية -->
+
+
+                    <button class="next-page-button"
+                            onclick="nextPageButton()">
+                        ›
+                    </button>
+                    <!-- زر الصفحة التالية -->
+
+
+                </div>
+                <!-- نهاية Pagination Buttons -->
+
+
+            </div>
+            <!-- نهاية Pagination -->
+
+
+        </section>
+        <!-- نهاية Requests Section -->
+
+
+        <!-- ===================================================== -->
+        <!-- Right Side -->
+        <!-- ===================================================== -->
+
+        <aside class="hr-wellness-section">
+        <!-- الجزء الموجود يمين الصفحة -->
+
+
+            <div class="daily-zen-card">
+            <!-- Daily Zen Card -->
+
+
+                <div class="daily-zen-title">
+                <!-- عنوان الكرت -->
+
+
+                    <span>
+                        ☯ Daily Zen & Focus
+                    </span>
+                    <!-- النص -->
+
+
+                    <span class="material-symbols-outlined">
+                        spa
+                    </span>
+                    <!-- الأيقونة -->
+
+
+                </div>
+                <!-- نهاية العنوان -->
+
+
+                <h3>
+                    People-First Operations
+                </h3>
+                <!-- عنوان داخلي -->
+
+
+                <p>
+                    Fostering clarity, empathy, and balance
+                    in every interaction.
+                </p>
+                <!-- وصف -->
+
+
+            </div>
+            <!-- نهاية Zen Card -->
+
+
+            <div class="philosophy-card">
+            <!-- Philosophy Card -->
+
+
+                <small>
+                    ❞ PHILOSOPHY OF THE DAY
+                </small>
+                <!-- عنوان صغير -->
+
+
+                <p>
+                    “Great teams aren't built on rigid policies,
+                    but on clear communication, quiet trust,
+                    and timely human support.”
+                </p>
+                <!-- Quote -->
+
+
+                <span>
+                    — TeamSpace People Charter
+                </span>
+                <!-- مصدر Quote -->
+
+
+            </div>
+            <!-- نهاية Philosophy -->
+
+
+        </aside>
+        <!-- نهاية Right Side -->
+
+
+    </main>
+    <!-- نهاية Main -->
+
+
+    <!-- ========================================================= -->
+    <!-- Create Ticket Popup -->
+    <!-- ========================================================= -->
+
+    <div id="create-ticket-popup-background"
+         class="popup-background hide-element">
+    <!-- خلفية Popup ويتم إخفاؤها افتراضيًا -->
+
+
+        <div class="create-ticket-popup">
+        <!-- الصندوق الأبيض داخل Popup -->
+
+
+            <div class="popup-title-row">
+            <!-- عنوان Popup وزر X -->
+
+
+                <h2>
+                    Create Ticket on Behalf
+                </h2>
+                <!-- عنوان Popup -->
+
+
+                <button class="close-create-ticket-button"
+                        onclick="closeCreateTicketButton()">
+                    ×
+                </button>
+                <!-- زر إغلاق Popup -->
+
+
+            </div>
+            <!-- نهاية عنوان Popup -->
+
+
+            <label>
+                Employee
+            </label>
+            <!-- اسم الحقل -->
+
+
+            <select id="create-ticket-employee-select">
+            </select>
+            <!-- JavaScript يضيف الموظفين داخله -->
+
+
+            <label>
+                Ticket Type
+            </label>
+            <!-- اسم الحقل -->
+
+
+            <select id="create-ticket-type-select"
+                    onchange="createTicketTypeChange()">
+            <!-- اختيار Ticket أو Meeting -->
+
+
+                <option value="ticket">
+                    Helpdesk Ticket
+                </option>
+                <!-- Ticket عادي -->
+
+
+                <option value="meeting">
+                    1:1 Meeting
+                </option>
+                <!-- Meeting -->
+
+
+            </select>
+            <!-- نهاية Ticket Type -->
+
+
+            <label>
+                Subject
+            </label>
+            <!-- اسم Subject -->
+
+
+            <input id="create-ticket-subject-input"
+                   type="text"
+                   placeholder="Enter subject">
+            <!-- المستخدم يكتب عنوان Ticket -->
+
+
+            <label>
+                Details
+            </label>
+            <!-- اسم Details -->
+
+
+            <textarea id="create-ticket-details-input"
+                      placeholder="Enter ticket details"></textarea>
+            <!-- المستخدم يكتب التفاصيل -->
+
+
+            <div id="create-meeting-fields"
+                 class="hide-element">
+            <!-- هذه الحقول تظهر فقط إذا اختار HR Meeting -->
+
+
+                <label>
+                    Meeting Date
+                </label>
+                <!-- اسم التاريخ -->
+
+
+                <input id="create-meeting-date-input"
+                       type="date">
+                <!-- تاريخ Meeting -->
+
+
+                <div class="popup-time-row">
+                <!-- Time From وTo بجانب بعض -->
+
+
+                    <div>
+                    <!-- From -->
+
+
+                        <label>
+                            From
+                        </label>
+                        <!-- اسم Start Time -->
+
+
+                        <input id="create-meeting-start-time-input"
+                               type="time">
+                        <!-- وقت بداية Meeting -->
+
+
+                    </div>
+                    <!-- نهاية From -->
+
+
+                    <div>
+                    <!-- To -->
+
+
+                        <label>
+                            To
+                        </label>
+                        <!-- اسم End Time -->
+
+
+                        <input id="create-meeting-end-time-input"
+                               type="time">
+                        <!-- وقت نهاية Meeting -->
+
+
+                    </div>
+                    <!-- نهاية To -->
+
+
+                </div>
+                <!-- نهاية Time Row -->
+
+
+                <label>
+                    Meeting Channel
+                </label>
+                <!-- اسم Channel -->
+
+
+                <select id="create-meeting-channel-select">
+                <!-- اختيار مكان الاجتماع -->
+
+
+                    <option value="Zoom">
+                        Zoom
+                    </option>
+                    <!-- Zoom -->
+
+
+                    <option value="Google Meet">
+                        Google Meet
+                    </option>
+                    <!-- Google Meet -->
+
+
+                    <option value="HR Room">
+                        HR Room
+                    </option>
+                    <!-- غرفة HR -->
+
+
+                    <option value="Phone Call">
+                        Phone Call
+                    </option>
+                    <!-- اتصال هاتفي -->
+
+
+                </select>
+                <!-- نهاية Channel -->
+
+
+            </div>
+            <!-- نهاية Meeting Fields -->
+
+
+            <div class="popup-buttons">
+            <!-- أزرار Popup -->
+
+
+                <button class="cancel-create-ticket-button"
+                        onclick="cancelCreateTicketButton()">
+                    Cancel
+                </button>
+                <!-- يلغي العملية -->
+
+
+                <button class="save-create-ticket-button"
+                        onclick="saveCreateTicketButton()">
+                    Create Ticket
+                </button>
+                <!-- يحفظ Ticket -->
+
+
+            </div>
+            <!-- نهاية Buttons -->
+
+
+        </div>
+        <!-- نهاية Popup -->
+
+
+    </div>
+    <!-- نهاية Popup Background -->
+
+
+    <!-- ========================================================= -->
+    <!-- Reply Popup -->
+    <!-- ========================================================= -->
+
+    <div id="reply-ticket-popup-background"
+         class="popup-background hide-element">
+    <!-- Popup الرد -->
+
+
+        <div class="reply-ticket-popup">
+        <!-- صندوق الرد -->
+
+
+            <div class="popup-title-row">
+            <!-- عنوان -->
+
+
+                <h2>
+                    Reply to Ticket
+                </h2>
+                <!-- عنوان Popup -->
+
+
+                <button class="close-reply-ticket-button"
+                        onclick="closeReplyTicketButton()">
+                    ×
+                </button>
+                <!-- إغلاق -->
+
+
+            </div>
+            <!-- نهاية العنوان -->
+
+
+            <label>
+                Reply
+            </label>
+            <!-- اسم الحقل -->
+
+
+            <textarea id="reply-ticket-textarea"
+                      placeholder="Write your reply..."></textarea>
+            <!-- HR يكتب الرد هنا -->
+
+
+            <div class="popup-buttons">
+            <!-- الأزرار -->
+
+
+                <button class="cancel-reply-ticket-button"
+                        onclick="cancelReplyTicketButton()">
+                    Cancel
+                </button>
+                <!-- إلغاء -->
+
+
+                <button class="save-reply-ticket-button"
+                        onclick="saveReplyTicketButton()">
+                    Send Reply
+                </button>
+                <!-- إرسال الرد -->
+
+
+            </div>
+            <!-- نهاية الأزرار -->
+
+
+        </div>
+        <!-- نهاية Popup -->
+
+
+    </div>
+    <!-- نهاية Popup Background -->
+
+
+    <!-- ========================================================= -->
+    <!-- Reschedule Popup -->
+    <!-- ========================================================= -->
+
+    <div id="reschedule-meeting-popup-background"
+         class="popup-background hide-element">
+    <!-- Popup تغيير موعد Meeting -->
+
+
+        <div class="reschedule-meeting-popup">
+        <!-- صندوق Popup -->
+
+
+            <div class="popup-title-row">
+            <!-- العنوان -->
+
+
+                <h2>
+                    Reschedule Meeting
+                </h2>
+                <!-- عنوان Popup -->
+
+
+                <button class="close-reschedule-meeting-button"
+                        onclick="closeRescheduleMeetingButton()">
+                    ×
+                </button>
+                <!-- إغلاق -->
+
+
+            </div>
+            <!-- نهاية العنوان -->
+
+
+            <label>
+                New Date
+            </label>
+            <!-- التاريخ -->
+
+
+            <input id="reschedule-meeting-date-input"
+                   type="date">
+            <!-- التاريخ الجديد -->
+
+
+            <div class="popup-time-row">
+            <!-- Times -->
+
+
+                <div>
+
+                    <label>
+                        From
+                    </label>
+
+                    <input id="reschedule-meeting-start-time-input"
+                           type="time">
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        To
+                    </label>
+
+                    <input id="reschedule-meeting-end-time-input"
+                           type="time">
+
+                </div>
+
+
+            </div>
+            <!-- نهاية Times -->
+
+
+            <label>
+                Channel
+            </label>
+            <!-- Channel -->
+
+
+            <select id="reschedule-meeting-channel-select">
+
+                <option value="Zoom">
+                    Zoom
+                </option>
+
+                <option value="Google Meet">
+                    Google Meet
+                </option>
+
+                <option value="HR Room">
+                    HR Room
+                </option>
+
+                <option value="Phone Call">
+                    Phone Call
+                </option>
+
+            </select>
+            <!-- اختيار Channel -->
+
+
+            <div class="popup-buttons">
+
+                <button class="cancel-reschedule-meeting-button"
+                        onclick="cancelRescheduleMeetingButton()">
+                    Cancel
+                </button>
+
+                <button class="save-reschedule-meeting-button"
+                        onclick="saveRescheduleMeetingButton()">
+                    Save New Meeting
+                </button>
+
+            </div>
+            <!-- نهاية الأزرار -->
+
+
+        </div>
+        <!-- نهاية Popup -->
+
+
+    </div>
+    <!-- نهاية Popup Background -->
+
+
+    <!-- ========================================================= -->
+    <!-- Page Message -->
+    <!-- ========================================================= -->
+
+    <div id="hr-page-message"
+         class="page-message hide-element">
+    </div>
+    <!-- هذا العنصر يظهر رسالة صغيرة بدل alert -->
+
+
+    <footer class="site-footer" data-footer></footer>
+    <!-- Footer المشترك الموجود بالمشروع -->
+
+
+    <script src="../../shared/footer.js"></script>
+    <!-- JavaScript الخاص بالـ Footer -->
+
+
+    <script src="../../shared/navbar.js"></script>
+    <!-- JavaScript الخاص بالـ Navbar -->
+
+
+    <script src="hrHelpdesk.js"></script>
+    <!-- JavaScript الخاص بالصفحة -->
+
+
+</body>
+<!-- نهاية محتوى الصفحة -->
+
+
+</html>
+<!-- نهاية ملف HTML -->

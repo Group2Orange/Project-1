@@ -1,1109 +1,610 @@
-/* =========================
-   Colors
-========================= */
-
-:root {
-
-    --primary: #0E7C86;
-
-    --secondary: #4B5563;
-
-    --tertiary: #059669;
-
-    --neutral: #14181C;
-
-    --background: #f3f6fb;
-
-    --white: #ffffff;
-
-    --border: #dbe1e8;
-}
-
-
-/* =========================
+/* =========================================================
    General
-========================= */
+========================================================= */
 
 * {
-    box-sizing: border-box;
+    box-sizing: border-box; /* يجعل padding والـborder محسوبين ضمن width وheight بدل زيادة الحجم النهائي */
 }
-
-
-html {
-    scroll-behavior: smooth;
-}
-
-
-body {
-
-    margin: 0;
-
-    font-family: "Public Sans", sans-serif;
-
-    background-color: var(--background);
-
-    color: var(--neutral);
-}
-
-
-h1,
-h2,
-h3,
-h4 {
-
-    font-family: "Space Grotesk", sans-serif;
-}
-
-
-a {
-    text-decoration: none;
-}
-
 
 button,
 input,
 select,
 textarea {
+    font-family: var(--font-text); /* يجعل عناصر Form تستخدم نفس خط المشروع */
+}
 
-    font-family: "Public Sans", sans-serif;
+button {
+    cursor: pointer; /* يظهر شكل اليد عند وضع الماوس فوق Button */
+}
+
+.hide-element {
+    display: none !important; /* يخفي أي عنصر يحمل هذا الـClass بشكل كامل */
 }
 
 
+/* =========================================================
+   Employee Header
+========================================================= */
 
-/* =========================
-   Header
-========================= */
+.employee-helpdesk-header {
+    max-width: 1200px; /* يمنع Header من التمدد أكثر من 1200px */
+    margin: auto; /* يضع Header في منتصف الصفحة */
+    padding: 28px 25px 18px; /* يعطي مسافات داخلية أعلى ويمين ويسار وأسفل */
+    display: flex; /* يجعل عنوان الصفحة وزر My Requests بجانب بعض */
+    justify-content: space-between; /* العنوان يسار والزر يمين */
+    align-items: flex-end; /* يجعل العناصر مصطفة من الأسفل */
+    gap: 20px; /* يترك مسافة بين العنوان والزر */
+}
 
-#pageHeader {
-    width: min(100%, 1500px);
+.employee-helpdesk-path {
+    margin: 0; /* يلغي Margin الافتراضي */
+    color: var(--color-primary-dark); /* يستخدم اللون الرئيسي الداكن */
+    font-size: 9px; /* يجعل Breadcrumb صغير */
+}
 
-    margin: auto;
+.employee-helpdesk-main-title {
+    margin: 5px 0; /* يعطي 5px أعلى وأسفل العنوان */
+    font-size: 25px; /* يحدد حجم عنوان الصفحة */
+}
 
-    padding: 30px 25px 20px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: end;
-
-    gap: 25px;
+.employee-helpdesk-description {
+    margin: 0; /* يلغي Margin */
+    color: var(--color-secondary); /* يجعل الوصف بلون رمادي */
+    font-size: 10px; /* يجعل الوصف أصغر من العنوان */
 }
 
 
-#breadcrumb {
+/* =========================================================
+   My Requests Button
+========================================================= */
 
-    margin: 0;
+.my-requests-button {
+    padding: 8px 12px; /* مساحة داخل الزر */
+    display: flex; /* الأيقونة والنص والعدد بجانب بعض */
+    align-items: center; /* توسيط العناصر عموديًا */
+    gap: 6px; /* مسافة بين العناصر */
+    background-color: white; /* خلفية بيضاء */
+    color: var(--color-secondary); /* لون النص */
+    border: 1px solid var(--color-border); /* Border خفيف */
+    border-radius: 20px; /* يعطي الزر شكل Pill */
+}
 
-    color: var(--secondary);
-
-    font-size: 12px;
+.my-requests-button .material-symbols-outlined {
+    font-size: 16px; /* يصغر أيقونة Inbox */
 }
 
 
-#pageHeader h1 {
+/* =========================================================
+   Statistics
+========================================================= */
 
-    margin: 5px 0;
+.employee-statistics-section {
+    max-width: 1200px; /* نفس عرض الصفحة */
+    margin: auto; /* توسيط */
+    padding: 0 25px 18px; /* مسافات */
+    display: grid; /* استخدام Grid */
+    grid-template-columns: repeat(4, 1fr); /* إنشاء 4 أعمدة بنفس العرض */
+    gap: 12px; /* مسافة بين Cards */
+}
 
-    font-size: 27px;
+.active-tickets-card,
+.scheduled-meetings-card,
+.resolved-tickets-card,
+.assigned-partner-card {
+    padding: 14px; /* مساحة داخل Card */
+    background-color: white; /* خلفية Card */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 8px; /* تدوير الزوايا */
+}
+
+.statistics-title {
+    color: var(--color-secondary); /* لون اسم الإحصائية */
+    font-size: 9px; /* حجم اسم الإحصائية */
+}
+
+.active-tickets-card h2,
+.scheduled-meetings-card h2,
+.resolved-tickets-card h2 {
+    margin: 10px 0 3px; /* مسافات حول الرقم */
+    font-size: 25px; /* حجم الرقم */
+}
+
+.assigned-partner-card h3 {
+    margin: 12px 0 3px; /* مسافات حول اسم HR */
+    font-size: 12px; /* حجم الاسم */
+}
+
+.active-tickets-card small,
+.scheduled-meetings-card small,
+.resolved-tickets-card small,
+.assigned-partner-card small {
+    color: var(--color-secondary); /* لون النص الصغير */
+    font-size: 8px; /* حجم النص الصغير */
 }
 
 
-#subtitle {
+/* =========================================================
+   Main Layout
+========================================================= */
 
-    margin: 0;
-
-    color: var(--secondary);
-
-    font-size: 12px;
+.employee-helpdesk-layout {
+    max-width: 1200px; /* أقصى عرض للمحتوى */
+    margin: auto; /* توسيط المحتوى */
+    padding: 0 25px 60px; /* مسافات داخلية */
+    display: grid; /* استخدام Grid */
+    grid-template-columns: 190px minmax(0, 1fr) 300px; /* Sidebar ثم Form ثم Right Side */
+    gap: 18px; /* مسافة بين الأعمدة */
+    align-items: start; /* تبدأ جميع الأعمدة من الأعلى */
 }
 
 
-#headerRight {
+/* =========================================================
+   Submit Request Section
+========================================================= */
 
-    display: flex;
+.submit-request-section {
+    padding: 20px; /* مساحة داخل Form */
+    background-color: white; /* خلفية */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 8px; /* تدوير */
+}
 
-    gap: 10px;
+.submit-request-title {
+    padding-bottom: 12px; /* مسافة أسفل العنوان */
+    border-bottom: 1px solid var(--color-border); /* خط أسفل العنوان */
+}
+
+.submit-request-title h2 {
+    margin: 0; /* إزالة Margin */
+    font-size: 16px; /* حجم عنوان Form */
+}
+
+.submit-request-title p {
+    margin: 4px 0 0; /* مسافة أعلى */
+    color: var(--color-secondary); /* لون الوصف */
+    font-size: 8px; /* حجم الوصف */
+}
+
+.form-label {
+    display: block; /* يجعل Label يأخذ سطرًا كاملًا */
+    margin: 14px 0 5px; /* مسافات أعلى وأسفل */
+    font-size: 8px; /* حجم Label */
+    font-weight: 600; /* يجعل Label أوضح */
 }
 
 
-.small-pill {
+/* =========================================================
+   Request Type Buttons
+========================================================= */
 
-    background-color: var(--white);
+.request-type-buttons {
+    display: grid; /* استخدام Grid */
+    grid-template-columns: 1fr 1fr; /* زران بنفس العرض */
+    gap: 8px; /* مسافة بين الزرين */
+}
 
-    border: 1px solid var(--border);
+.standard-ticket-button,
+.live-meeting-button {
+    padding: 12px; /* مساحة داخل Button */
+    display: flex; /* Icon والنص بجانب بعض */
+    align-items: center; /* توسيط */
+    gap: 7px; /* مسافة */
+    background-color: white; /* الخلفية */
+    color: var(--color-secondary); /* اللون */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 6px; /* تدوير */
+    font-size: 9px; /* حجم النص */
+}
 
-    border-radius: 25px;
+.standard-ticket-button .material-symbols-outlined,
+.live-meeting-button .material-symbols-outlined {
+    color: var(--color-primary); /* لون أيقونات Ticket وMeeting */
+    font-size: 17px; /* حجم الأيقونة */
+}
 
-    padding: 8px 13px;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-
-    color: var(--neutral);
-
-    font-size: 12px;
+.selected-request-type {
+    color: var(--color-primary-dark); /* يجعل نص الاختيار الحالي Teal */
+    border: 2px solid var(--color-primary); /* يوضح Button المحدد بـBorder */
 }
 
 
-button.small-pill {
+/* =========================================================
+   Meeting Information
+========================================================= */
 
-    cursor: pointer;
+.meeting-information-section {
+    margin-top: 13px; /* مسافة عن Type Buttons */
+    padding: 12px; /* مساحة داخلية */
+    background-color: #f7f9fc; /* خلفية رمادية فاتحة */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 7px; /* تدوير */
+}
+
+.meeting-information-title {
+    display: flex; /* العنوان وHost بجانب بعض */
+    justify-content: space-between; /* كل واحد بطرف */
+    font-size: 8px; /* حجم */
+}
+
+.meeting-information-title small {
+    color: var(--color-secondary); /* لون Host */
+}
+
+.meeting-channel-buttons {
+    display: grid; /* Grid */
+    grid-template-columns: repeat(4, 1fr); /* 4 Channels بنفس العرض */
+    gap: 6px; /* المسافة */
+}
+
+.zoom-channel-button,
+.google-meet-channel-button,
+.hr-room-channel-button,
+.phone-call-channel-button {
+    padding: 7px; /* مساحة داخل Button */
+    background-color: white; /* خلفية */
+    color: var(--color-secondary); /* لون النص */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+    font-size: 7px; /* حجم */
+}
+
+.selected-meeting-channel {
+    background-color: var(--color-primary); /* Channel المختار يصبح Teal */
+    color: white; /* النص أبيض */
+    border-color: var(--color-primary); /* Border Teal */
+}
+
+.meeting-date-input,
+.meeting-start-time-input,
+.meeting-end-time-input,
+.request-category-select,
+.request-subject-input,
+.request-details-input {
+    width: 100%; /* يأخذ العنصر كامل عرض الأب */
+    padding: 8px; /* مساحة داخلية */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+    font-size: 8px; /* حجم النص */
+}
+
+.meeting-time-row {
+    display: grid; /* Grid */
+    grid-template-columns: 1fr 1fr; /* Start وEnd بنفس العرض */
+    gap: 8px; /* المسافة */
+}
+
+.request-details-input {
+    min-height: 90px; /* أقل ارتفاع للـTextarea */
+    resize: vertical; /* يسمح للمستخدم بتكبيرها للأعلى والأسفل فقط */
 }
 
 
-.small-pill div {
+/* =========================================================
+   Attachment
+========================================================= */
 
-    display: flex;
+.attachment-upload-box {
+    padding: 20px; /* مساحة داخل صندوق Upload */
+    display: flex; /* Flex */
+    flex-direction: column; /* العناصر تصبح فوق بعض */
+    align-items: center; /* توسيط أفقي */
+    gap: 4px; /* مسافة */
+    text-align: center; /* توسيط النص */
+    border: 1px dashed var(--color-border); /* Border متقطع */
+    border-radius: 6px; /* تدوير */
+    cursor: pointer; /* شكل اليد */
+}
 
-    flex-direction: column;
+.attachment-upload-box .material-symbols-outlined {
+    color: var(--color-primary); /* لون Upload Icon */
+    font-size: 20px; /* حجم Icon */
+}
+
+.attachment-upload-box small {
+    color: var(--color-secondary); /* لون النص الصغير */
+    font-size: 7px; /* الحجم */
 }
 
 
-.green-dot {
-
-    width: 7px;
-
-    height: 7px;
-
-    background-color: var(--tertiary);
-
-    border-radius: 50%;
-}
-
-
-
-/* =========================
-   Top Cards
-========================= */
-
-#topCards {
-    width: min(100%, 1500px);
-
-    margin: auto;
-
-    padding: 0 25px 20px;
-
-
-    display: grid;
-
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-
-    gap: 13px;
-}
-
-
-.stat-card {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-
-    padding: 15px;
-}
-
-
-.stat-title {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.stat-title i {
-
-    color: var(--primary);
-}
-
-
-.stat-number {
-
-    margin-top: 12px;
-
-    font-family: "Space Grotesk", sans-serif;
-
-    font-size: 27px;
-}
-
-
-.stat-card h3 {
-
-    margin: 15px 0 4px;
-
-    font-size: 13px;
-}
-
-
-.stat-card small {
-
-    font-size: 12px;
-}
-
-
-.green-text {
-
-    color: var(--tertiary);
-}
-
-
-
-/* =========================
-   Main
-========================= */
-
-#main {
-    width: min(100%, 1500px);
-
-    margin: auto;
-
-    padding: 0 25px 70px;
-
-
-    display: grid;
-
-    grid-template-columns: 220px minmax(0, 1fr) minmax(240px, 310px);
-
-    gap: 18px;
-}
-
-
-
-/* =========================
-   Left Side
-========================= */
-
-#leftSide {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
-}
-
-
-#confidentialCard {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-
-    padding: 12px;
-}
-
-
-#confidentialCard h4 {
-
-    margin-top: 0;
-
-    color: var(--primary);
-
-    font-size: 12px;
-}
-
-
-#confidentialCard p {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-
-#confidentialCard small {
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
-   Search
-========================= */
-
-#searchBox {
-
-    margin-bottom: 5px;
-
-    padding: 8px 10px;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-}
-
-
-#searchBox i {
-
-    color: var(--secondary);
-}
-
-
-#searchBox input {
-
-    flex: 1;
-
-    border: none;
-
-    outline: none;
-
-    font-size: 12px;
-}
-
-
-#searchBox button {
-
-    padding: 7px 10px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 4px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-#searchMessage {
-
-    min-height: 15px;
-
-    margin: 3px 0 7px;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
-   Request Card
-========================= */
-
-#requestCard {
-
-    padding: 20px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 8px;
-}
-
-
-#requestHeader {
-
-    padding-bottom: 15px;
-
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: start;
-
-
-    border-bottom: 1px solid var(--border);
-}
-
-
-#requestHeader h2 {
-
-    margin: 0;
-
-    font-size: 17px;
-}
-
-
-#requestHeader p {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-#ticketNew {
-
-    padding: 5px 8px;
-
-    background-color: #e8f4f5;
-
-    color: var(--primary);
-
-    border-radius: 4px;
-
-    font-size: 12px;
-}
-
-
-#requestCard label {
-
-    display: block;
-
-    margin: 15px 0 6px;
-
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-
-
-/* =========================
-   Inquiry Type
-========================= */
-
-#typeOptions {
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-}
-
-
-.type-option {
-
-    padding: 12px;
-
-
-    display: flex;
-
-    gap: 10px;
-
-
-    border: 1px solid var(--border);
-
-    border-radius: 6px;
-
-
-    cursor: pointer;
-}
-
-
-.type-option:hover {
-
-    border-color: var(--primary);
-}
-
-
-.type-option.selected {
-
-    border: 2px solid var(--primary);
-}
-
-
-.type-option i {
-
-    color: var(--primary);
-}
-
-
-.type-option b {
-
-    font-size: 12px;
-}
-
-
-.type-option small {
-
-    display: block;
-
-    margin-top: 4px;
-
-    color: var(--secondary);
-
-    font-size: 12px;
-
-    line-height: 1.4;
-}
-
-
-
-/* =========================
-   Meeting Box
-========================= */
-
-#meetingBox {
-
-    margin-top: 15px;
-
-    padding: 14px;
-
-    background-color: #f7f9fc;
-
-    border: 1px solid var(--border);
-
-    border-radius: 7px;
-}
-
-
-#meetingTitle {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    font-size: 12px;
-}
-
-
-#meetingTitle i {
-
-    color: var(--primary);
-}
-
-
-#channels {
-
-    display: grid;
-
-    grid-template-columns: repeat(4, 1fr);
-
-    gap: 7px;
-}
-
-
-#channels button,
-.time-btn,
-.duration-btn {
-
-    padding: 7px;
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-#timeButtons,
-#durationButtons {
-
-    display: flex;
-
-    gap: 7px;
-}
-
-
-.selected-btn {
-
-    background-color: var(--primary) !important;
-
-    color: var(--white) !important;
-
-    border-color: var(--primary) !important;
-}
-
-
-
-/* =========================
-   Inputs
-========================= */
-
-#requestCard input,
-#requestCard select,
-#requestCard textarea {
-
-    width: 100%;
-
-    padding: 9px;
-
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-
-    font-size: 12px;
-}
-
-
-#requestCard input:focus,
-#requestCard select:focus,
-#requestCard textarea:focus {
-
-    outline: none;
-
-    border-color: var(--primary);
-}
-
-
-#requestCard textarea {
-
-    min-height: 90px;
-
-    resize: vertical;
-}
-
-
-
-/* =========================
-   Upload
-========================= */
-
-#uploadBox {
-
-    padding: 22px;
-
-    text-align: center;
-
-
-    border: 1px dashed #b7c2cf;
-
-    border-radius: 6px;
-
-
-    cursor: pointer;
-}
-
-
-#uploadBox:hover {
-
-    border-color: var(--primary);
-
-    background-color: #f8fbfb;
-}
-
-
-#uploadBox.dragging {
-
-    border-color: var(--tertiary);
-
-    background-color: #edf9f5;
-}
-
-
-#uploadBox i {
-
-    color: var(--primary);
-
-    font-size: 20px;
-}
-
-
-#uploadBox p {
-
-    margin: 5px 0;
-
-    font-size: 12px;
-}
-
-
-#uploadBox small {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
+/* =========================================================
    Form Buttons
-========================= */
+========================================================= */
 
-#formButtons {
+.request-form-buttons {
+    margin-top: 16px; /* مسافة أعلى */
+    display: flex; /* الأزرار بجانب بعض */
+    justify-content: flex-end; /* وضع الأزرار على اليمين */
+    gap: 7px; /* المسافة */
+}
 
-    margin-top: 18px;
+.save-draft-button {
+    padding: 8px 12px; /* حجم Button */
+    background-color: white; /* خلفية */
+    color: var(--color-secondary); /* اللون */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+}
 
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 8px;
+.submit-request-button {
+    padding: 8px 12px; /* حجم Button */
+    background-color: var(--color-primary); /* Teal */
+    color: white; /* النص أبيض */
+    border: none; /* إزالة Border */
+    border-radius: 5px; /* تدوير */
 }
 
 
-#draftBtn,
-#submitBtn {
-
-    padding: 9px 13px;
-
-    border-radius: 5px;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-#draftBtn {
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-}
-
-
-#submitBtn {
-
-    background-color: var(--primary);
-
-    color: var(--white);
-
-    border: none;
-}
-
-
-#submitBtn:hover {
-
-    background-color: var(--tertiary);
-}
-
-
-#message {
-
-    margin-top: 12px;
-
-    min-height: 15px;
-
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-
-
-/* =========================
+/* =========================================================
    Right Side
-========================= */
+========================================================= */
 
-#rightSide {
+.employee-helpdesk-right-side {
+    display: flex; /* استخدام Flex */
+    flex-direction: column; /* Cards فوق بعض */
+    gap: 13px; /* مسافة بين Cards */
+}
 
-    display: flex;
+.upcoming-meeting-card,
+.my-recent-requests-card,
+.common-answers-card {
+    padding: 14px; /* مساحة داخل Card */
+    background-color: white; /* الخلفية */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 8px; /* تدوير */
+}
 
-    flex-direction: column;
-
-    gap: 15px;
+.upcoming-meeting-card h3,
+.my-recent-requests-card h3,
+.common-answers-card h3 {
+    margin: 0 0 10px; /* مسافة أسفل عنوان Card */
+    font-size: 11px; /* حجم العنوان */
 }
 
 
-.right-card {
+/* =========================================================
+   Upcoming Meeting
+========================================================= */
 
-    padding: 15px;
+.employee-meeting-subject {
+    margin: 0 0 6px; /* مسافة أسفل Subject */
+    font-size: 9px; /* حجم Subject */
+    font-weight: 600; /* غامق */
+}
 
-    background-color: var(--white);
+.employee-meeting-information {
+    margin: 4px 0; /* مسافة بين معلومات Meeting */
+    color: var(--color-secondary); /* اللون */
+    font-size: 8px; /* الحجم */
+}
 
-    border: 1px solid var(--border);
+.employee-meeting-status {
+    width: fit-content; /* العرض يكون على قد النص */
+    padding: 3px 7px; /* مساحة حول Status */
+    display: inline-block; /* يجعل العنصر Badge */
+    background-color: #eaf3fc; /* خلفية زرقاء فاتحة */
+    color: #2470a0; /* نص أزرق */
+    border-radius: 10px; /* Pill */
+    font-size: 7px; /* حجم */
+}
 
-    border-radius: 8px;
+.employee-meeting-buttons {
+    margin-top: 10px; /* مسافة أعلى */
+    display: flex; /* الأزرار بجانب بعض */
+    gap: 5px; /* المسافة */
+}
+
+.employee-reschedule-meeting-button,
+.employee-join-meeting-button {
+    flex: 1; /* كل Button يأخذ نفس العرض */
+    padding: 6px; /* مساحة */
+    background-color: white; /* الخلفية */
+    color: var(--color-secondary); /* اللون */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+    font-size: 7px; /* الحجم */
+}
+
+.employee-join-meeting-button {
+    background-color: var(--color-primary); /* Join Meeting يصبح Teal */
+    color: white; /* النص أبيض */
 }
 
 
-.right-title {
+/* =========================================================
+   Recent Requests
+========================================================= */
 
-    display: flex;
+.employee-recent-request {
+    padding: 9px 0; /* مسافة أعلى وأسفل */
+    border-bottom: 1px solid var(--color-border); /* خط بين الطلبات */
+}
 
-    align-items: center;
+.employee-recent-request:last-child {
+    border-bottom: none; /* إزالة الخط من آخر Request */
+}
 
-    justify-content: space-between;
+.employee-recent-request b {
+    display: block; /* Subject بسطر كامل */
+    font-size: 8px; /* الحجم */
+}
 
-    gap: 10px;
+.employee-recent-request span {
+    color: var(--color-secondary); /* لون Ticket Number وStatus */
+    font-size: 7px; /* الحجم */
+}
+
+.employee-recent-request-reply {
+    margin: 5px 0 0; /* مسافة أعلى */
+    padding: 6px; /* مساحة */
+    background-color: var(--color-page); /* خلفية فاتحة */
+    color: var(--color-secondary); /* النص */
+    border-radius: 4px; /* تدوير */
+    font-size: 7px; /* الحجم */
 }
 
 
-.right-card h3 {
+/* =========================================================
+   Common Answers
+========================================================= */
 
-    margin-top: 0;
+.pto-rules-button,
+.life-events-button,
+.remote-work-button {
+    width: 100%; /* كل Button يأخذ كامل Card */
+    padding: 8px 0; /* مساحة أعلى وأسفل */
+    text-align: left; /* النص يبدأ من اليسار */
+    background-color: transparent; /* بدون خلفية */
+    color: var(--color-secondary); /* اللون */
+    border: none; /* إزالة Border */
+    border-bottom: 1px solid var(--color-border); /* خط بين الأسئلة */
+    font-size: 8px; /* الحجم */
+}
 
-    font-size: 12px;
+.common-answer-text {
+    margin: 10px 0 0; /* مسافة أعلى */
+    color: var(--color-primary-dark); /* لون النص */
+    font-size: 8px; /* الحجم */
+    line-height: 1.5; /* تباعد الأسطر */
 }
 
 
-.right-card h3 i {
+/* =========================================================
+   Popup
+========================================================= */
 
-    color: var(--primary);
+.popup-background {
+    position: fixed; /* يثبت Popup فوق الشاشة */
+    inset: 0; /* يجعله يغطي الشاشة كلها */
+    z-index: 1000; /* يجعله فوق محتوى الصفحة */
+    display: grid; /* Grid */
+    place-items: center; /* يضع Popup في المنتصف */
+    padding: 20px; /* مسافة عن أطراف الشاشة */
+    background-color: rgba(20, 24, 28, 0.45); /* خلفية سوداء شفافة */
+}
+
+.employee-reschedule-popup {
+    width: min(430px, 100%); /* أقصى عرض 430px ولا يتجاوز الشاشة */
+    padding: 22px; /* مساحة داخل Popup */
+    background-color: white; /* الخلفية */
+    border-radius: 10px; /* تدوير */
+}
+
+.popup-title-row {
+    display: flex; /* العنوان وX بجانب بعض */
+    justify-content: space-between; /* كل واحد بطرف */
+    align-items: center; /* توسيط */
+}
+
+.popup-title-row h2 {
+    margin: 0; /* إزالة Margin */
+    font-size: 17px; /* حجم العنوان */
+}
+
+.close-employee-reschedule-button {
+    background-color: transparent; /* بدون خلفية */
+    border: none; /* بدون Border */
+    font-size: 24px; /* حجم X */
+}
+
+.employee-reschedule-popup label {
+    display: block; /* Label بسطر */
+    margin: 14px 0 5px; /* مسافات */
+    font-size: 9px; /* الحجم */
+    font-weight: 600; /* غامق */
+}
+
+.employee-reschedule-popup input,
+.employee-reschedule-popup select {
+    width: 100%; /* كامل عرض Popup */
+    padding: 9px; /* مساحة */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+}
+
+.popup-time-row {
+    display: grid; /* Grid */
+    grid-template-columns: 1fr 1fr; /* Start وEnd عمودان */
+    gap: 8px; /* المسافة */
+}
+
+.popup-buttons {
+    margin-top: 18px; /* مسافة أعلى */
+    display: flex; /* الأزرار بجانب بعض */
+    justify-content: flex-end; /* على اليمين */
+    gap: 7px; /* المسافة */
+}
+
+.cancel-employee-reschedule-button {
+    padding: 8px 12px; /* حجم */
+    background-color: white; /* الخلفية */
+    color: var(--color-secondary); /* اللون */
+    border: 1px solid var(--color-border); /* Border */
+    border-radius: 5px; /* تدوير */
+}
+
+.save-employee-reschedule-button {
+    padding: 8px 12px; /* حجم */
+    background-color: var(--color-primary); /* اللون الرئيسي */
+    color: white; /* النص */
+    border: none; /* بدون Border */
+    border-radius: 5px; /* تدوير */
 }
 
 
-.right-card b {
+/* =========================================================
+   Page Message
+========================================================= */
 
-    display: block;
-
-    margin-bottom: 5px;
-
-    font-size: 12px;
+.employee-page-message {
+    position: fixed; /* تثبيت الرسالة */
+    right: 25px; /* 25px من اليمين */
+    bottom: 25px; /* 25px من الأسفل */
+    z-index: 1500; /* فوق المحتوى والPopup */
+    padding: 12px 16px; /* مساحة */
+    background-color: var(--color-primary-dark); /* خلفية Teal */
+    color: white; /* النص أبيض */
+    border-radius: 7px; /* تدوير */
+    font-size: 10px; /* الحجم */
 }
 
 
-.right-card small {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.confirmed {
-
-    color: var(--tertiary);
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
-   Meeting Info
-========================= */
-
-.meeting-info {
-
-    margin-top: 10px;
-
-    padding: 8px;
-
-    background-color: #f5f7fb;
-
-    border-radius: 5px;
-}
-
-
-.meeting-info p {
-
-    margin: 4px 0;
-
-    font-size: 12px;
-}
-
-
-.meeting-info i {
-
-    color: var(--primary);
-}
-
-
-.meeting-buttons {
-
-    display: flex;
-
-    gap: 7px;
-
-    margin-top: 10px;
-}
-
-
-.meeting-buttons button {
-
-    flex: 1;
-
-    padding: 7px;
-
-
-    background-color: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 5px;
-
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-.meeting-buttons .join {
-
-    color: var(--primary);
-}
-
-
-
-/* =========================
-   Tickets
-========================= */
-
-.ticket {
-
-    padding: 10px 0;
-
-    border-bottom: 1px solid var(--border);
-}
-
-
-.ticket span {
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.ticket b {
-
-    margin: 5px 0;
-}
-
-
-.ticket-status {
-
-    color: #b98113 !important;
-}
-
-
-.link-btn {
-
-    background: none;
-
-    color: var(--primary);
-
-    border: none;
-
-    cursor: pointer;
-
-    font-size: 12px;
-}
-
-
-
-/* =========================
-   Answers
-========================= */
-
-.right-card a {
-
-    padding: 9px 0;
-
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-
-    color: var(--secondary);
-
-    font-size: 12px;
-}
-
-
-.right-card a:hover {
-
-    color: var(--primary);
-}
-
-
-.right-card a span {
-
-    margin-left: auto;
-}
-
-
-
-/* =========================
+/* =========================================================
    Responsive
-========================= */
+========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 950px) {
 
-    #topCards {
-
-        grid-template-columns: repeat(2, 1fr);
+    .employee-helpdesk-layout {
+        grid-template-columns: 1fr; /* يجعل الصفحة عمودًا واحدًا عند الشاشة الصغيرة */
     }
 
-
-    #main {
-
-        grid-template-columns: 1fr;
+    .employee-statistics-section {
+        grid-template-columns: 1fr 1fr; /* يجعل الإحصائيات عمودين */
     }
-
-
-    #pageHeader {
-
-        flex-direction: column;
-
-        align-items: flex-start;
-    }
-
 }
 
 
 @media (max-width: 600px) {
 
-    #topCards {
-
-        grid-template-columns: 1fr;
+    .employee-helpdesk-header {
+        flex-direction: column; /* يجعل Header العناصر فوق بعض */
+        align-items: flex-start; /* يبدأ من اليسار */
     }
 
-
-    #typeOptions {
-
-        grid-template-columns: 1fr;
+    .employee-statistics-section {
+        grid-template-columns: 1fr; /* كل Statistics Card بسطر */
     }
 
-
-    #channels {
-
-        grid-template-columns: 1fr 1fr;
+    .request-type-buttons {
+        grid-template-columns: 1fr; /* Ticket وMeeting تحت بعض */
     }
 
-
-    #headerRight {
-
-        flex-direction: column;
+    .meeting-channel-buttons {
+        grid-template-columns: 1fr 1fr; /* Channel Buttons عمودين */
     }
 
-
-    #footerTop,
-    #footerBottom {
-
-        flex-direction: column;
-
-        gap: 15px;
-
-        text-align: center;
+    .meeting-time-row,
+    .popup-time-row {
+        grid-template-columns: 1fr; /* Start وEnd تحت بعض */
     }
-
-
-    #footerBottom div {
-
-        flex-wrap: wrap;
-
-        justify-content: center;
-    }
-
 }
