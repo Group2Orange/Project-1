@@ -1,59 +1,52 @@
 // =========================================================
-// API
+// ملفات البيانات
 // =========================================================
 
-const API =
-    "http://127.0.0.1:3000";
+// ملف موظفين الشركة
+const EMPLOYEES_FILE = "../../Data/employee.json";
 
+// رابط JSON Server
+const API = "http://127.0.0.1:3000";
 
 
 // =========================================================
 // Variables
 // =========================================================
 
+// نخزن جميع موظفين الشركة هنا
 let employees = [];
 
+// نخزن طلبات Helpdesk هنا
 let helpdeskRequests = [];
 
-let currentTab =
-    "all";
+// التبويب الحالي
+let currentTab = "all";
 
-let selectedRequestId =
-    "";
-
+// الطلب الذي اختاره HR
+let selectedRequestId = "";
 
 
 // =========================================================
 // Date
 // =========================================================
 
+// تجيب تاريخ الجهاز الحالي
 function getDeviceDate() {
 
-    let today =
-        new Date();
-
+    let today = new Date();
 
     let year =
         today.getFullYear();
 
-
     let month =
         String(
             today.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
+        ).padStart(2, "0");
 
     let day =
         String(
             today.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
+        ).padStart(2, "0");
 
     return (
         year +
@@ -62,234 +55,288 @@ function getDeviceDate() {
         "-" +
         day
     );
-
 }
-
 
 
 // =========================================================
 // Escape HTML
 // =========================================================
 
+// تمنع النصوص من التأثير على HTML
 function escapeHtml(text) {
 
     let div =
         document.createElement("div");
 
-
     div.textContent =
         text || "";
 
-
     return div.innerHTML;
-
 }
-
 
 
 // =========================================================
 // Start HR Page
 // =========================================================
 
+// تشغيل الصفحة
 async function startHrHelpdeskPage() {
 
-    document
-        .getElementById(
+    // تحديد أقل تاريخ للاجتماع
+    let manageDate =
+        document.getElementById(
             "manage-meeting-date-input"
-        )
-        .min =
-        getDeviceDate();
+        );
+
+    if (manageDate) {
+
+        manageDate.min =
+            getDeviceDate();
+    }
 
 
-    document
-        .getElementById(
+    let createDate =
+        document.getElementById(
             "create-meeting-date-input"
-        )
-        .min =
-        getDeviceDate();
+        );
+
+    if (createDate) {
+
+        createDate.min =
+            getDeviceDate();
+    }
 
 
+    // تحميل البيانات
     await loadHrHelpdeskData();
-
 }
-
 
 
 // =========================================================
 // Load Data
 // =========================================================
 
+// تحميل الموظفين والطلبات
 async function loadHrHelpdeskData() {
 
     try {
 
-        let responses =
-            await Promise.all([
-
-                fetch(
-                    API +
-                    "/employees"
-                ),
-
-                fetch(
-                    API +
-                    "/helpdeskRequests"
-                )
-
-            ]);
-
-
-        if (
-            !responses[0].ok ||
-            !responses[1].ok
-        ) {
-
-            throw new Error(
-                "Could not load data."
+        // نقرأ الموظفين من employee.json
+        let employeesResponse =
+            await fetch(
+                EMPLOYEES_FILE
             );
 
+
+        // نقرأ طلبات Helpdesk من API
+        let requestsResponse =
+            await fetch(
+                API +
+                "/helpdeskRequests"
+            );
+
+
+        // التأكد أن ملف الموظفين اشتغل
+        if (!employeesResponse.ok) {
+
+            throw new Error(
+                "Could not load employee.json"
+            );
         }
 
 
-        employees =
-            await responses[0].json();
+        // التأكد أن API اشتغل
+        if (!requestsResponse.ok) {
+
+            throw new Error(
+                "Could not load Helpdesk requests"
+            );
+        }
 
 
+        // تحويل employee.json إلى JavaScript
+        let employeesData =
+            await employeesResponse.json();
+
+
+        // إذا employee.json بهذا الشكل:
+        // { "employees": [...] }
+        if (
+            Array.isArray(
+                employeesData.employees
+            )
+        ) {
+
+            employees =
+                employeesData.employees;
+        }
+
+        // إذا employee.json عبارة عن Array مباشرة
+        else if (
+            Array.isArray(
+                employeesData
+            )
+        ) {
+
+            employees =
+                employeesData;
+        }
+
+        else {
+
+            employees = [];
+        }
+
+
+        // قراءة طلبات Helpdesk
         helpdeskRequests =
-            await responses[1].json();
+            await requestsResponse.json();
 
 
+        // عرض الموظفين في Console للتأكد
+        console.log(
+            "All Company Employees:",
+            employees
+        );
+
+
+        // عرض الطلبات في Console
+        console.log(
+            "Helpdesk Requests:",
+            helpdeskRequests
+        );
+
+
+        // تعبئة قائمة الموظفين
         fillCreateTicketEmployeeSelect();
 
 
+        // عرض الإحصائيات
         showHrStatistics();
 
 
+        // عرض الطلبات
         showHrRequests();
 
     }
 
     catch (error) {
 
-        console.log(error);
+        console.log(
+            "Error:",
+            error
+        );
 
 
         showHrPageMessage(
             "Could not load Helpdesk data."
         );
-
     }
-
 }
 
 
-
 // =========================================================
-// Employee by ID
+// Employee By ID
 // =========================================================
 
-function getEmployeeById(
-    employeeId
-) {
+// البحث عن موظف باستخدام ID
+function getEmployeeById(employeeId) {
 
     return employees.find(
+
         function (employee) {
 
             return (
                 String(employee.id) ==
                 String(employeeId)
             );
-
         }
+
     );
-
 }
-
 
 
 // =========================================================
 // Fill Employee Select
 // =========================================================
 
+// تعبئة Select بجميع موظفين employee.json
 function fillCreateTicketEmployeeSelect() {
 
+    // نجيب Select
     let employeeSelect =
         document.getElementById(
             "create-ticket-employee-select"
         );
 
 
+    // إذا العنصر غير موجود نوقف
+    if (!employeeSelect) {
+
+        return;
+    }
+
+
+    // نمسح البيانات القديمة
     employeeSelect.innerHTML =
         '<option value="">Select Employee</option>';
 
 
+    // نمر على كل الموظفين
     for (
         let i = 0;
         i < employees.length;
         i++
     ) {
 
+        // الموظف الحالي
         let employee =
             employees[i];
 
 
-        let role =
-            String(
-                employee.role || ""
-            ).toUpperCase();
-
-
-        let status =
-            String(
-                employee.status || ""
-            ).toUpperCase();
-
-
-        if (
-            role == "EMP" &&
-            status == "ACTIVE"
-        ) {
-
-            let option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                employee.id;
-
-
-            option.textContent =
-                employee.name +
-                " - " +
-                (
-                    employee.department ||
-                    employee.position ||
-                    ""
-                );
-
-
-            employeeSelect.appendChild(
-                option
+        // إنشاء option
+        let option =
+            document.createElement(
+                "option"
             );
 
-        }
 
+        // نخزن ID الموظف
+        option.value =
+            employee.id;
+
+
+        // نعرض الاسم كامل من JSON
+        option.textContent =
+            employee.name;
+
+
+        // إضافة الموظف للقائمة
+        employeeSelect.appendChild(
+            option
+        );
     }
 
-}
 
+    // عدد الموظفين للتأكد
+    console.log(
+        "Employees in Select:",
+        employees.length
+    );
+}
 
 
 // =========================================================
 // Statistics
 // =========================================================
 
+// عرض الإحصائيات
 function showHrStatistics() {
 
+    // Active Tickets
     let activeTickets =
         helpdeskRequests.filter(
+
             function (request) {
 
                 return (
@@ -302,13 +349,15 @@ function showHrStatistics() {
                     request.status !=
                     "Rejected"
                 );
-
             }
+
         ).length;
 
 
+    // Pending Meetings
     let pendingMeetings =
         helpdeskRequests.filter(
+
             function (request) {
 
                 return (
@@ -323,13 +372,15 @@ function showHrStatistics() {
                         "Reschedule Requested"
                     )
                 );
-
             }
+
         ).length;
 
 
+    // Confirmed Meetings
     let confirmedMeetings =
         helpdeskRequests.filter(
+
             function (request) {
 
                 return (
@@ -339,104 +390,112 @@ function showHrStatistics() {
                     request.status ==
                     "Confirmed"
                 );
-
             }
+
         ).length;
 
 
-    document
-        .getElementById(
+    // عرض Active Tickets
+    let activeTicketsElement =
+        document.getElementById(
             "hr-active-tickets-number"
-        )
-        .textContent =
-        activeTickets;
+        );
+
+    if (activeTicketsElement) {
+
+        activeTicketsElement.textContent =
+            activeTickets;
+    }
 
 
-    document
-        .getElementById(
+    // عرض Pending Meetings
+    let pendingMeetingsElement =
+        document.getElementById(
             "hr-pending-meetings-number"
-        )
-        .textContent =
-        pendingMeetings;
+        );
+
+    if (pendingMeetingsElement) {
+
+        pendingMeetingsElement.textContent =
+            pendingMeetings;
+    }
 
 
-    document
-        .getElementById(
+    // عرض Confirmed Meetings
+    let confirmedMeetingsElement =
+        document.getElementById(
             "hr-confirmed-meetings-number"
-        )
-        .textContent =
-        confirmedMeetings;
+        );
+
+    if (confirmedMeetingsElement) {
+
+        confirmedMeetingsElement.textContent =
+            confirmedMeetings;
+    }
 
 
-    document
-        .getElementById(
+    // عرض العدد الكلي
+    let totalRequestsElement =
+        document.getElementById(
             "hr-total-requests-number"
-        )
-        .textContent =
-        helpdeskRequests.length;
+        );
 
+    if (totalRequestsElement) {
+
+        totalRequestsElement.textContent =
+            helpdeskRequests.length;
+    }
 }
-
 
 
 // =========================================================
 // Tabs
 // =========================================================
 
+// All
 function allRequestsTabButton() {
 
     currentTab =
         "all";
 
-
     changeActiveTab(
         "all-requests-tab"
     );
 
-
     showHrRequests();
-
 }
 
 
-
+// Tickets
 function ticketsTabButton() {
 
     currentTab =
         "tickets";
 
-
     changeActiveTab(
         "tickets-tab"
     );
 
-
     showHrRequests();
-
 }
 
 
-
+// Meetings
 function meetingsTabButton() {
 
     currentTab =
         "meetings";
 
-
     changeActiveTab(
         "meetings-tab"
     );
 
-
     showHrRequests();
-
 }
 
 
-
-function changeActiveTab(
-    tabId
-) {
+// تغيير التبويب النشط
+function changeActiveTab(tabId) {
 
     let tabs =
         document.querySelectorAll(
@@ -455,214 +514,274 @@ function changeActiveTab(
             .remove(
                 "active-tab"
             );
-
     }
 
 
-    document
-        .getElementById(
+    let activeTab =
+        document.getElementById(
             tabId
-        )
-        .classList
-        .add(
-            "active-tab"
         );
 
-}
 
+    if (activeTab) {
+
+        activeTab
+            .classList
+            .add(
+                "active-tab"
+            );
+    }
+}
 
 
 // =========================================================
 // Filter Requests
 // =========================================================
 
+// فلترة الطلبات
 function getFilteredHrRequests() {
 
+    let searchInput =
+        document.getElementById(
+            "hr-search-input"
+        );
+
+
+    let statusInput =
+        document.getElementById(
+            "hr-status-filter"
+        );
+
+
+    let sortInput =
+        document.getElementById(
+            "hr-sort-select"
+        );
+
+
     let searchText =
-        document
-            .getElementById(
-                "hr-search-input"
-            )
-            .value
-            .toLowerCase()
-            .trim();
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
 
 
     let status =
-        document
-            .getElementById(
-                "hr-status-filter"
-            )
-            .value;
+        statusInput
+            ? statusInput.value
+            : "all";
 
 
     let sort =
-        document
-            .getElementById(
-                "hr-sort-select"
-            )
-            .value;
+        sortInput
+            ? sortInput.value
+            : "newest";
 
 
     let results =
         helpdeskRequests.filter(
+
             function (request) {
 
+                // فلترة Tickets
                 if (
                     currentTab ==
                     "tickets" &&
+
                     request.type !=
                     "ticket"
                 ) {
 
                     return false;
-
                 }
 
 
+                // فلترة Meetings
                 if (
                     currentTab ==
                     "meetings" &&
+
                     request.type !=
                     "meeting"
                 ) {
 
                     return false;
-
                 }
 
 
+                // فلترة Status
                 if (
                     status != "all" &&
+
                     request.status !=
                     status
                 ) {
 
                     return false;
-
                 }
 
 
+                // نجيب الموظف
+                let employee =
+                    getEmployeeById(
+                        request.employeeId
+                    );
+
+
+                // الاسم
+                let employeeName =
+                    request.employeeName ||
+
+                    (
+                        employee
+                            ? employee.name
+                            : ""
+                    );
+
+
+                // النص الذي سنبحث داخله
                 let text =
                     (
-                        (request.employeeName || "") +
+                        employeeName +
                         " " +
-                        (request.subject || "") +
+
+                        (
+                            request.subject ||
+                            ""
+                        ) +
+
                         " " +
-                        (request.ticket || "") +
+
+                        (
+                            request.ticket ||
+                            ""
+                        ) +
+
                         " " +
-                        (request.category || "")
-                    ).toLowerCase();
+
+                        (
+                            request.category ||
+                            ""
+                        )
+                    )
+                        .toLowerCase();
 
 
+                // Search
                 if (
                     searchText != "" &&
+
                     !text.includes(
                         searchText
                     )
                 ) {
 
                     return false;
-
                 }
 
 
                 return true;
-
             }
         );
 
 
+    // ترتيب الطلبات
     results.sort(
-        function (first, second) {
+
+        function (
+            first,
+            second
+        ) {
 
             let firstDate =
                 new Date(
-                    first.createdAt
+                    first.createdAt || 0
                 );
 
 
             let secondDate =
                 new Date(
-                    second.createdAt
+                    second.createdAt || 0
                 );
 
 
+            // الأقدم أولًا
             if (
-                sort == "oldest"
+                sort ==
+                "oldest"
             ) {
 
                 return (
                     firstDate -
                     secondDate
                 );
-
             }
 
 
+            // الأحدث أولًا
             return (
                 secondDate -
                 firstDate
             );
-
         }
+
     );
 
 
     return results;
-
 }
-
 
 
 // =========================================================
 // Status Class
 // =========================================================
 
-function getHrStatusClass(
-    status
-) {
+// لون Status
+function getHrStatusClass(status) {
 
     if (
-        status == "Confirmed" ||
-        status == "Resolved"
+        status ==
+        "Confirmed" ||
+
+        status ==
+        "Resolved"
     ) {
 
         return "status-green";
-
     }
 
 
     if (
-        status == "Pending Meeting" ||
+        status ==
+        "Pending Meeting" ||
+
         status ==
         "Reschedule Requested"
     ) {
 
         return "status-yellow";
-
     }
 
 
     if (
-        status == "Rejected"
+        status ==
+        "Rejected"
     ) {
 
         return "status-red";
-
     }
 
 
     return "status-blue";
-
 }
-
 
 
 // =========================================================
 // Show HR Requests
 // =========================================================
 
+// عرض الطلبات
 function showHrRequests() {
 
     let container =
@@ -671,29 +790,42 @@ function showHrRequests() {
         );
 
 
+    if (!container) {
+
+        return;
+    }
+
+
+    // نجيب الطلبات بعد الفلترة
     let requests =
         getFilteredHrRequests();
 
 
+    // نمسح القديم
     container.innerHTML =
         "";
 
 
+    // إذا لا يوجد طلبات
     if (
         requests.length == 0
     ) {
 
         container.innerHTML = `
+
             <div class="empty-state">
+
                 No requests found.
+
             </div>
+
         `;
 
         return;
-
     }
 
 
+    // عرض كل الطلبات
     for (
         let i = 0;
         i < requests.length;
@@ -704,14 +836,17 @@ function showHrRequests() {
             requests[i];
 
 
+        // نجيب الموظف من employee.json
         let employee =
             getEmployeeById(
                 request.employeeId
             );
 
 
+        // اسم الموظف
         let employeeName =
             request.employeeName ||
+
             (
                 employee
                     ? employee.name
@@ -719,19 +854,24 @@ function showHrRequests() {
             );
 
 
+        // قسم الموظف
         let department =
             request.department ||
+
             (
                 employee
+
                     ? (
                         employee.department ||
                         employee.position ||
                         ""
                     )
+
                     : ""
             );
 
 
+        // معلومات الاجتماع
         let meetingInformation =
             "";
 
@@ -742,35 +882,58 @@ function showHrRequests() {
         ) {
 
             meetingInformation = `
+
                 <div class="request-meta">
 
                     <span>
-                        ${escapeHtml(request.meetingDate)}
+
+                        ${escapeHtml(
+                            request.meetingDate
+                        )}
+
                     </span>
 
+
                     <span>
-                        ${escapeHtml(request.startTime)}
+
+                        ${escapeHtml(
+                            request.startTime
+                        )}
+
                         -
-                        ${escapeHtml(request.endTime)}
+
+                        ${escapeHtml(
+                            request.endTime
+                        )}
+
                     </span>
 
+
                     <span>
-                        ${escapeHtml(request.channel)}
+
+                        ${escapeHtml(
+                            request.channel
+                        )}
+
                     </span>
 
                 </div>
-            `;
 
+            `;
         }
 
 
+        // رد HR
         let reply =
             "";
 
 
-        if (request.hrReply) {
+        if (
+            request.hrReply
+        ) {
 
             reply = `
+
                 <div class="hr-reply">
 
                     <strong>
@@ -778,15 +941,20 @@ function showHrRequests() {
                     </strong>
 
                     <p>
-                        ${escapeHtml(request.hrReply)}
+
+                        ${escapeHtml(
+                            request.hrReply
+                        )}
+
                     </p>
 
                 </div>
-            `;
 
+            `;
         }
 
 
+        // إضافة الكرت
         container.innerHTML += `
 
             <article class="hr-request-card">
@@ -796,20 +964,36 @@ function showHrRequests() {
                     <div>
 
                         <small>
-                            ${escapeHtml(request.ticket)}
+
+                            ${escapeHtml(
+                                request.ticket
+                            )}
+
                         </small>
 
                         <h3>
-                            ${escapeHtml(request.subject)}
+
+                            ${escapeHtml(
+                                request.subject
+                            )}
+
                         </h3>
 
                     </div>
 
 
                     <span
-                        class="status ${getHrStatusClass(request.status)}">
+                        class="
+                            status
+                            ${getHrStatusClass(
+                                request.status
+                            )}
+                        "
+                    >
 
-                        ${escapeHtml(request.status)}
+                        ${escapeHtml(
+                            request.status
+                        )}
 
                     </span>
 
@@ -819,29 +1003,49 @@ function showHrRequests() {
                 <div class="employee-information">
 
                     <strong>
-                        ${escapeHtml(employeeName)}
+
+                        ${escapeHtml(
+                            employeeName
+                        )}
+
                     </strong>
 
                     <span>
-                        ${escapeHtml(department)}
+
+                        ${escapeHtml(
+                            department
+                        )}
+
                     </span>
 
                 </div>
 
 
                 <p>
-                    ${escapeHtml(request.details)}
+
+                    ${escapeHtml(
+                        request.details
+                    )}
+
                 </p>
 
 
                 <div class="request-meta">
 
                     <span>
-                        ${escapeHtml(request.category)}
+
+                        ${escapeHtml(
+                            request.category
+                        )}
+
                     </span>
 
                     <span>
-                        ${escapeHtml(request.date)}
+
+                        ${escapeHtml(
+                            request.date
+                        )}
+
                     </span>
 
                 </div>
@@ -849,24 +1053,31 @@ function showHrRequests() {
 
                 ${meetingInformation}
 
+
                 ${reply}
 
 
                 <div class="request-bottom">
 
                     <span>
+
                         ${
                             request.type ==
                             "meeting"
+
                                 ? "1:1 Meeting"
+
                                 : "Support Ticket"
                         }
+
                     </span>
 
 
                     <button
                         class="primary-button"
-                        onclick="manageRequestButton('${request.id}')">
+                        type="button"
+                        onclick="manageRequestButton('${request.id}')"
+                    >
 
                         Manage Request
 
@@ -875,74 +1086,88 @@ function showHrRequests() {
                 </div>
 
             </article>
+
         `;
-
     }
-
 }
-
 
 
 // =========================================================
 // Reset Filters
 // =========================================================
 
+// إعادة الفلاتر
 function resetHrFiltersButton() {
 
-    document
-        .getElementById(
+    let searchInput =
+        document.getElementById(
             "hr-search-input"
-        )
-        .value = "";
+        );
 
 
-    document
-        .getElementById(
+    let statusInput =
+        document.getElementById(
             "hr-status-filter"
-        )
-        .value =
-        "all";
+        );
 
 
-    document
-        .getElementById(
+    let sortInput =
+        document.getElementById(
             "hr-sort-select"
-        )
-        .value =
-        "newest";
+        );
+
+
+    if (searchInput) {
+
+        searchInput.value =
+            "";
+    }
+
+
+    if (statusInput) {
+
+        statusInput.value =
+            "all";
+    }
+
+
+    if (sortInput) {
+
+        sortInput.value =
+            "newest";
+    }
 
 
     allRequestsTabButton();
-
 }
-
 
 
 // =========================================================
 // Manage Request
 // =========================================================
 
+// فتح Manage Request
 function manageRequestButton(
     requestId
 ) {
 
     let request =
         helpdeskRequests.find(
+
             function (item) {
 
                 return (
                     String(item.id) ==
                     String(requestId)
                 );
-
             }
+
         );
 
 
     if (!request) {
 
         return;
-
     }
 
 
@@ -950,23 +1175,40 @@ function manageRequestButton(
         request.id;
 
 
+    // نجيب الموظف من JSON
+    let employee =
+        getEmployeeById(
+            request.employeeId
+        );
+
+
+    // العنوان
     document
         .getElementById(
             "manage-request-title"
         )
         .textContent =
-        request.subject;
+        request.subject ||
+        "Manage Request";
 
 
+    // اسم الموظف
     document
         .getElementById(
             "manage-request-employee"
         )
         .textContent =
+
         request.employeeName ||
-        "Employee";
+
+        (
+            employee
+                ? employee.name
+                : "Employee"
+        );
 
 
+    // Status
     document
         .getElementById(
             "manage-request-status-select"
@@ -975,6 +1217,7 @@ function manageRequestButton(
         request.status;
 
 
+    // HR Reply
     document
         .getElementById(
             "manage-request-reply-input"
@@ -990,6 +1233,7 @@ function manageRequestButton(
         );
 
 
+    // إذا Meeting
     if (
         request.type ==
         "meeting"
@@ -1036,7 +1280,6 @@ function manageRequestButton(
             .value =
             request.channel ||
             "Zoom";
-
     }
 
     else {
@@ -1046,24 +1289,23 @@ function manageRequestButton(
             .add(
                 "hide-element"
             );
-
     }
 
 
+    // فتح Dialog
     document
         .getElementById(
             "manage-request-dialog"
         )
         .showModal();
-
 }
-
 
 
 // =========================================================
 // Close Manage Dialog
 // =========================================================
 
+// إغلاق Manage Request
 function closeManageRequestDialog() {
 
     document
@@ -1071,19 +1313,19 @@ function closeManageRequestDialog() {
             "manage-request-dialog"
         )
         .close();
-
 }
-
 
 
 // =========================================================
 // Save Managed Request
 // =========================================================
 
+// حفظ تعديل الطلب
 async function saveManagedRequestButton() {
 
     let request =
         helpdeskRequests.find(
+
             function (item) {
 
                 return (
@@ -1092,18 +1334,18 @@ async function saveManagedRequestButton() {
                         selectedRequestId
                     )
                 );
-
             }
+
         );
 
 
     if (!request) {
 
         return;
-
     }
 
 
+    // التغييرات
     let changes = {
 
         status:
@@ -1127,10 +1369,10 @@ async function saveManagedRequestButton() {
         updatedAt:
             new Date()
                 .toISOString()
-
     };
 
 
+    // إذا Meeting
     if (
         request.type ==
         "meeting"
@@ -1160,6 +1402,7 @@ async function saveManagedRequestButton() {
                 .value;
 
 
+        // التأكد من البيانات
         if (
             meetingDate == "" ||
             startTime == "" ||
@@ -1171,10 +1414,10 @@ async function saveManagedRequestButton() {
             );
 
             return;
-
         }
 
 
+        // منع التاريخ القديم
         if (
             meetingDate <
             getDeviceDate()
@@ -1185,12 +1428,13 @@ async function saveManagedRequestButton() {
             );
 
             return;
-
         }
 
 
+        // التأكد من الوقت
         if (
-            endTime <= startTime
+            endTime <=
+            startTime
         ) {
 
             showHrPageMessage(
@@ -1198,7 +1442,6 @@ async function saveManagedRequestButton() {
             );
 
             return;
-
         }
 
 
@@ -1220,19 +1463,20 @@ async function saveManagedRequestButton() {
                     "manage-meeting-channel-select"
                 )
                 .value;
-
     }
 
 
     try {
 
+        // تحديث الطلب في API
         let response =
             await fetch(
+
                 API +
                 "/helpdeskRequests/" +
                 selectedRequestId,
-                {
 
+                {
                     method:
                         "PATCH",
 
@@ -1240,14 +1484,12 @@ async function saveManagedRequestButton() {
 
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify(
                             changes
                         )
-
                 }
             );
 
@@ -1257,13 +1499,14 @@ async function saveManagedRequestButton() {
             throw new Error(
                 "Could not update request."
             );
-
         }
 
 
+        // إغلاق Dialog
         closeManageRequestDialog();
 
 
+        // إعادة تحميل البيانات
         await loadHrHelpdeskData();
 
 
@@ -1281,29 +1524,31 @@ async function saveManagedRequestButton() {
         showHrPageMessage(
             "Could not update request."
         );
-
     }
-
 }
-
 
 
 // =========================================================
 // Create Ticket
 // =========================================================
 
+// فتح Create on Behalf
 function createTicketButton() {
 
+    // تعبئة الموظفين من employee.json
     fillCreateTicketEmployeeSelect();
 
 
+    // إعادة Employee
     document
         .getElementById(
             "create-ticket-employee-select"
         )
-        .value = "";
+        .value =
+        "";
 
 
+    // إعادة Type
     document
         .getElementById(
             "create-ticket-type-select"
@@ -1312,37 +1557,84 @@ function createTicketButton() {
         "ticket";
 
 
+    // إعادة Subject
     document
         .getElementById(
             "create-ticket-subject-input"
         )
-        .value = "";
+        .value =
+        "";
 
 
+    // إعادة Details
     document
         .getElementById(
             "create-ticket-details-input"
         )
-        .value = "";
+        .value =
+        "";
 
 
+    // إعادة تاريخ الاجتماع
+    let meetingDate =
+        document.getElementById(
+            "create-meeting-date-input"
+        );
+
+    if (meetingDate) {
+
+        meetingDate.value =
+            "";
+
+        meetingDate.min =
+            getDeviceDate();
+    }
+
+
+    // إعادة Start Time
+    let startTime =
+        document.getElementById(
+            "create-meeting-start-input"
+        );
+
+    if (startTime) {
+
+        startTime.value =
+            "";
+    }
+
+
+    // إعادة End Time
+    let endTime =
+        document.getElementById(
+            "create-meeting-end-input"
+        );
+
+    if (endTime) {
+
+        endTime.value =
+            "";
+    }
+
+
+    // تحديث نوع الطلب
     createTicketTypeChange();
 
 
+    // فتح Dialog
     document
         .getElementById(
             "create-ticket-dialog"
         )
         .showModal();
-
 }
-
 
 
 // =========================================================
 // Create Ticket Type
 // =========================================================
 
+// تغيير Ticket أو Meeting
 function createTicketTypeChange() {
 
     let type =
@@ -1359,6 +1651,7 @@ function createTicketTypeChange() {
         );
 
 
+    // Meeting
     if (
         type ==
         "meeting"
@@ -1369,9 +1662,9 @@ function createTicketTypeChange() {
             .remove(
                 "hide-element"
             );
-
     }
 
+    // Ticket
     else {
 
         meetingFields
@@ -1379,17 +1672,15 @@ function createTicketTypeChange() {
             .add(
                 "hide-element"
             );
-
     }
-
 }
-
 
 
 // =========================================================
 // Close Create Dialog
 // =========================================================
 
+// إغلاق Create on Behalf
 function closeCreateTicketDialog() {
 
     document
@@ -1397,17 +1688,17 @@ function closeCreateTicketDialog() {
             "create-ticket-dialog"
         )
         .close();
-
 }
-
 
 
 // =========================================================
 // Save Create Ticket
 // =========================================================
 
+// حفظ الطلب الذي أنشأه HR
 async function saveCreateTicketButton() {
 
+    // ID الموظف
     let employeeId =
         document
             .getElementById(
@@ -1416,12 +1707,14 @@ async function saveCreateTicketButton() {
             .value;
 
 
+    // نجيب الموظف كامل من employee.json
     let employee =
         getEmployeeById(
             employeeId
         );
 
 
+    // نوع الطلب
     let type =
         document
             .getElementById(
@@ -1430,6 +1723,7 @@ async function saveCreateTicketButton() {
             .value;
 
 
+    // Subject
     let subject =
         document
             .getElementById(
@@ -1439,6 +1733,7 @@ async function saveCreateTicketButton() {
             .trim();
 
 
+    // Details
     let details =
         document
             .getElementById(
@@ -1448,6 +1743,7 @@ async function saveCreateTicketButton() {
             .trim();
 
 
+    // Validation
     if (
         !employee ||
         subject == "" ||
@@ -1459,12 +1755,13 @@ async function saveCreateTicketButton() {
         );
 
         return;
-
     }
 
 
+    // إنشاء الطلب
     let request = {
 
+        // Ticket Number
         ticket:
             "TKT-" +
             Math.floor(
@@ -1472,20 +1769,25 @@ async function saveCreateTicketButton() {
                 Math.random() * 9000
             ),
 
+        // ID الموظف من employee.json
         employeeId:
             employee.id,
 
+        // الاسم الكامل من employee.json
         employeeName:
             employee.name,
 
+        // القسم من employee.json
         department:
             employee.department ||
             employee.position ||
             "",
 
+        // النوع
         type:
             type,
 
+        // Category
         category:
             document
                 .getElementById(
@@ -1493,28 +1795,34 @@ async function saveCreateTicketButton() {
                 )
                 .value,
 
+        // Subject
         subject:
             subject,
 
+        // Details
         details:
             details,
 
+        // أنشأه HR
         createdBy:
             "HR",
 
+        // تاريخ الإنشاء
         date:
             getDeviceDate(),
 
+        // تاريخ ووقت الإنشاء
         createdAt:
             new Date()
                 .toISOString(),
 
+        // رد HR
         hrReply:
             ""
-
     };
 
 
+    // إذا الطلب Meeting
     if (
         type ==
         "meeting"
@@ -1544,6 +1852,7 @@ async function saveCreateTicketButton() {
                 .value;
 
 
+        // Validation
         if (
             meetingDate == "" ||
             startTime == "" ||
@@ -1555,10 +1864,10 @@ async function saveCreateTicketButton() {
             );
 
             return;
-
         }
 
 
+        // منع تاريخ قديم
         if (
             meetingDate <
             getDeviceDate()
@@ -1569,12 +1878,13 @@ async function saveCreateTicketButton() {
             );
 
             return;
-
         }
 
 
+        // التأكد من الوقت
         if (
-            endTime <= startTime
+            endTime <=
+            startTime
         ) {
 
             showHrPageMessage(
@@ -1582,22 +1892,25 @@ async function saveCreateTicketButton() {
             );
 
             return;
-
         }
 
 
+        // Meeting Date
         request.meetingDate =
             meetingDate;
 
 
+        // Start Time
         request.startTime =
             startTime;
 
 
+        // End Time
         request.endTime =
             endTime;
 
 
+        // Zoom أو Google Meet
         request.channel =
             document
                 .getElementById(
@@ -1606,28 +1919,29 @@ async function saveCreateTicketButton() {
                 .value;
 
 
-        // HR أنشأ الاجتماع.
+        // HR أنشأ الاجتماع
         request.status =
             "Confirmed";
-
     }
 
     else {
 
+        // Ticket عادي
         request.status =
             "In Review";
-
     }
 
 
     try {
 
+        // حفظ الطلب في JSON Server
         let response =
             await fetch(
+
                 API +
                 "/helpdeskRequests",
-                {
 
+                {
                     method:
                         "POST",
 
@@ -1635,33 +1949,34 @@ async function saveCreateTicketButton() {
 
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify(
                             request
                         )
-
                 }
             );
 
 
+        // إذا حدث خطأ
         if (!response.ok) {
 
             throw new Error(
                 "Could not create request."
             );
-
         }
 
 
+        // إغلاق Dialog
         closeCreateTicketDialog();
 
 
+        // إعادة تحميل البيانات
         await loadHrHelpdeskData();
 
 
+        // رسالة نجاح
         showHrPageMessage(
             "Request created successfully."
         );
@@ -1676,17 +1991,15 @@ async function saveCreateTicketButton() {
         showHrPageMessage(
             "Could not create request."
         );
-
     }
-
 }
-
 
 
 // =========================================================
 // HR Message
 // =========================================================
 
+// رسالة صغيرة للمستخدم
 function showHrPageMessage(
     message
 ) {
@@ -1697,10 +2010,20 @@ function showHrPageMessage(
         );
 
 
+    if (!messageBox) {
+
+        console.log(message);
+
+        return;
+    }
+
+
+    // وضع الرسالة
     messageBox.textContent =
         message;
 
 
+    // إظهار الرسالة
     messageBox
         .classList
         .add(
@@ -1708,13 +2031,16 @@ function showHrPageMessage(
         );
 
 
+    // إلغاء Timer القديم
     clearTimeout(
         showHrPageMessage.timer
     );
 
 
+    // إخفاء الرسالة بعد فترة
     showHrPageMessage.timer =
         setTimeout(
+
             function () {
 
                 messageBox
@@ -1724,15 +2050,67 @@ function showHrPageMessage(
                     );
 
             },
+
             2800
         );
-
 }
 
+
+// =========================================================
+// Search Events
+// =========================================================
+
+// Search
+let searchInput =
+    document.getElementById(
+        "hr-search-input"
+    );
+
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        showHrRequests
+    );
+}
+
+
+// Status Filter
+let statusFilter =
+    document.getElementById(
+        "hr-status-filter"
+    );
+
+
+if (statusFilter) {
+
+    statusFilter.addEventListener(
+        "change",
+        showHrRequests
+    );
+}
+
+
+// Sort
+let sortSelect =
+    document.getElementById(
+        "hr-sort-select"
+    );
+
+
+if (sortSelect) {
+
+    sortSelect.addEventListener(
+        "change",
+        showHrRequests
+    );
+}
 
 
 // =========================================================
 // Start
 // =========================================================
 
+// تشغيل صفحة HR Helpdesk
 startHrHelpdeskPage();
