@@ -19,14 +19,17 @@
 
   <!-- Middle: the links, in order -->
   <div class="navbar-links" id="navbar-links-hr">
-    <a href="../../hr/policies/policies.html">Policies</a>
+    <a href="../../hr/workspace/workspace.html">Workspace</a>
+    <a href="../../employee/policies/EMPpolicies.html">Policies</a>
     <a href="../../common/about/about.html">About US</a>
     <a href="../../common/contact/contact.html">Contact US</a>
   </div>
 
   <!-- Right: user, logout -->
   <div class="navbar-right" id="navbar-actions-hr">
-    <a class="navbar-user" href="../../common/profile/profile.html" title="My profile">
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme"><span class="material-symbols-outlined" aria-hidden="true">dark_mode</span></button>
+    <a class="navbar-login" href="../../common/login/login.html"><span class="material-symbols-outlined" aria-hidden="true">login</span> Login</a>
+    <a class="navbar-user" href="../../common/profile/profile.html" title="My profile" hidden>
       <!-- Initials for now. For a photo, put it in shared/images/ and write:
            <span class="navbar-avatar"><img src="../../shared/images/sarah.jpg" alt=""></span> -->
       <span class="navbar-avatar">SJ</span>
@@ -36,7 +39,7 @@
       </span>
     </a>
 
-    <a class="navbar-logout" href="../../common/login/login.html" title="Logout" aria-label="Logout">
+    <a class="navbar-logout" href="../../common/login/login.html" title="Logout" aria-label="Logout" hidden>
       <span class="material-symbols-outlined" aria-hidden="true">logout</span>
       <span class="navbar-logout-text">Logout</span>
     </a>

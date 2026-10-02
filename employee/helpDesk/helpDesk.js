@@ -1,833 +1,1740 @@
 // =========================================================
-// Logged Employee
+// بيانات المستخدم
 // =========================================================
 
-let loggedEmployee = JSON.parse(localStorage.getItem("loggedUser")) || {}; // نقرأ بيانات الموظف الذي سجل دخوله من localStorage وإذا لم نجد بيانات نستخدم Object فارغ.
-
-let helpdeskRequests = JSON.parse(localStorage.getItem("helpdeskRequests")) || []; // نقرأ جميع Helpdesk Requests المشتركة بين HR وEmployee وإذا لم توجد نستخدم Array فارغة.
-
-let selectedRequestType = "ticket"; // نحدد أن نوع الطلب الافتراضي عند فتح الصفحة هو Standard Ticket.
-
-let selectedMeetingChannel = "Zoom"; // نحدد أن Zoom هو Meeting Channel الافتراضي.
-
-let selectedAttachmentName = ""; // نخزن هنا اسم الملف الذي يختاره الموظف.
-
-let selectedMeetingId = null; // نخزن هنا ID الخاص بالMeeting الذي يريد الموظف تغيير موعده.
+// نقرأ بيانات الموظف الذي سجل دخوله.
+let loggedEmployee =
+    JSON.parse(
+        localStorage.getItem("loggedUser")
+    ) || {};
 
 
-// =========================================================
-// Save Helpdesk Requests
-// =========================================================
-
-function saveHelpdeskRequests() { // هذه الدالة تحفظ Helpdesk Requests داخل localStorage حتى يستطيع HR وEmployee قراءتها.
-
-    localStorage.setItem("helpdeskRequests", JSON.stringify(helpdeskRequests)); // نحول Array إلى JSON Text ثم نحفظها باستخدام المفتاح helpdeskRequests.
-
-} // نهاية saveHelpdeskRequests.
+// نقرأ جميع طلبات المساعدة والاجتماعات المحفوظة.
+let helpdeskRequests =
+    JSON.parse(
+        localStorage.getItem("helpdeskRequests")
+    ) || [];
 
 
-// =========================================================
-// Get Employee Requests
-// =========================================================
+// نحدد نوع الطلب الافتراضي.
+let selectedRequestType =
+    "ticket";
 
-function getEmployeeRequests() { // هذه الدالة ترجع طلبات الموظف الحالي فقط بدل عرض طلبات جميع الموظفين.
 
-    return helpdeskRequests.filter(function (request) { // نستخدم filter لإنشاء Array جديدة تحتوي على طلبات الموظف الحالي فقط.
+// نحدد طريقة الاجتماع الافتراضية.
+let selectedMeetingChannel =
+    "Zoom";
 
-        return String(request.employeeId) == String(loggedEmployee.id); // نقارن employeeId داخل الطلب مع ID الموظف المسجل دخوله.
 
-    }); // نهاية filter.
+// نخزن اسم الملف الذي يختاره الموظف.
+let selectedAttachmentName =
+    "";
 
-} // نهاية getEmployeeRequests.
+
+// نخزن رقم الاجتماع عند طلب تغيير موعده.
+let selectedMeetingId =
+    null;
+
 
 
 // =========================================================
-// Standard Ticket Button
+// حفظ الطلبات
 // =========================================================
 
-function standardTicketButton() { // تعمل هذه الدالة عندما يضغط المستخدم على Standard Ticket.
+// نحفظ جميع الطلبات داخل التخزين المحلي.
+function saveHelpdeskRequests() {
 
-    selectedRequestType = "ticket"; // نغير نوع الطلب الحالي إلى ticket.
+    // نحول المصفوفة إلى نص ونحفظها.
+    localStorage.setItem(
+        "helpdeskRequests",
+        JSON.stringify(helpdeskRequests)
+    );
+}
 
-    document.getElementById("standard-ticket-button").classList.add("selected-request-type"); // نضيف التصميم Active لزر Standard Ticket.
-
-    document.getElementById("live-meeting-button").classList.remove("selected-request-type"); // نزيل Active من Meeting Button.
-
-    document.getElementById("meeting-information-section").classList.add("hide-element"); // نخفي Meeting Information لأنها غير مطلوبة في Standard Ticket.
-
-    document.querySelector(".submit-request-button").innerHTML = "Submit Request"; // نغير نص زر Submit إلى Submit Request.
-
-} // نهاية standardTicketButton.
 
 
 // =========================================================
-// Live Meeting Button
+// الحصول على طلبات الموظف
 // =========================================================
 
-function liveMeetingButton() { // تعمل عند الضغط على 1:1 Live Meeting.
+// تعيد هذه الدالة طلبات الموظف الحالي فقط.
+function getEmployeeRequests() {
 
-    selectedRequestType = "meeting"; // نغير نوع الطلب الحالي إلى meeting.
+    // نفلتر جميع الطلبات حسب رقم الموظف.
+    return helpdeskRequests.filter(
+        function (request) {
 
-    document.getElementById("live-meeting-button").classList.add("selected-request-type"); // نضيف Active لزر Meeting.
+            // نقارن رقم صاحب الطلب برقم الموظف الحالي.
+            return String(request.employeeId) ==
+                   String(loggedEmployee.id);
+        }
+    );
+}
 
-    document.getElementById("standard-ticket-button").classList.remove("selected-request-type"); // نزيل Active من Standard Ticket.
-
-    document.getElementById("meeting-information-section").classList.remove("hide-element"); // نظهر Meeting Date وTime وChannel.
-
-    document.querySelector(".submit-request-button").innerHTML = "Request Meeting"; // نغير نص Submit حتى يكون واضحًا أنه سيرسل Meeting Request.
-
-} // نهاية liveMeetingButton.
-
-
-// =========================================================
-// Zoom Channel Button
-// =========================================================
-
-function zoomChannelButton() { // تعمل عند الضغط على Zoom.
-
-    selectMeetingChannel("Zoom", "zoom-channel-button"); // نرسل اسم Channel وID الزر إلى Function مساعدة.
-
-} // نهاية zoomChannelButton.
 
 
 // =========================================================
-// Google Meet Channel Button
+// زر الطلب العادي
 // =========================================================
 
-function googleMeetChannelButton() { // تعمل عند الضغط على Google Meet.
+// تعمل عند الضغط على زر الطلب العادي.
+function standardTicketButton() {
 
-    selectMeetingChannel("Google Meet", "google-meet-channel-button"); // نحدد Google Meet كـChannel.
-
-} // نهاية googleMeetChannelButton.
-
-
-// =========================================================
-// HR Room Channel Button
-// =========================================================
-
-function hrRoomChannelButton() { // تعمل عند الضغط على HR Room.
-
-    selectMeetingChannel("HR Room", "hr-room-channel-button"); // نحدد HR Room كـChannel.
-
-} // نهاية hrRoomChannelButton.
+    // نحدد أن نوع الطلب عادي.
+    selectedRequestType =
+        "ticket";
 
 
-// =========================================================
-// Phone Call Channel Button
-// =========================================================
-
-function phoneCallChannelButton() { // تعمل عند الضغط على Phone Call.
-
-    selectMeetingChannel("Phone Call", "phone-call-channel-button"); // نحدد Phone Call كـChannel.
-
-} // نهاية phoneCallChannelButton.
+    // نضيف شكل التحديد للزر.
+    document
+        .getElementById("standard-ticket-button")
+        .classList
+        .add("selected-request-type");
 
 
-// =========================================================
-// Select Meeting Channel
-// =========================================================
+    // نزيل شكل التحديد عن زر الاجتماع.
+    document
+        .getElementById("live-meeting-button")
+        .classList
+        .remove("selected-request-type");
 
-function selectMeetingChannel(channelName, buttonId) { // Function مساعدة تستقبل اسم Channel وID الزر المحدد.
 
-    selectedMeetingChannel = channelName; // نحفظ Channel الذي اختاره الموظف داخل المتغير العام.
+    // نخفي معلومات الاجتماع.
+    document
+        .getElementById("meeting-information-section")
+        .classList
+        .add("hide-element");
 
-    let meetingChannelButtons = document.querySelectorAll(".zoom-channel-button, .google-meet-channel-button, .hr-room-channel-button, .phone-call-channel-button"); // نحصل على جميع Channel Buttons.
 
-    for (let i = 0; i < meetingChannelButtons.length; i++) { // نمر على كل Buttons.
+    // نغير نص زر الإرسال.
+    document
+        .querySelector(".submit-request-button")
+        .innerHTML =
+        "Submit Request";
+}
 
-        meetingChannelButtons[i].classList.remove("selected-meeting-channel"); // نزيل التصميم Active من جميع Buttons.
-
-    } // نهاية Loop.
-
-    document.getElementById(buttonId).classList.add("selected-meeting-channel"); // نضيف Active فقط للزر الذي اختاره الموظف.
-
-} // نهاية selectMeetingChannel.
 
 
 // =========================================================
-// Attachment Input Change
+// زر الاجتماع
 // =========================================================
 
-function attachmentFileInputChange() { // تعمل عند اختيار ملف.
+// تعمل عند الضغط على زر الاجتماع.
+function liveMeetingButton() {
 
-    let attachmentInput = document.getElementById("attachment-file-input"); // نحصل على File Input.
-
-    if (attachmentInput.files.length > 0) { // نتحقق أن المستخدم اختار ملفًا فعلًا.
-
-        selectedAttachmentName = attachmentInput.files[0].name; // نأخذ اسم أول ملف ونخزنه.
-
-        document.getElementById("attachment-file-name").innerHTML = selectedAttachmentName; // نعرض اسم الملف داخل Upload Box.
-
-    } // نهاية if.
-
-} // نهاية attachmentFileInputChange.
+    // نحدد أن نوع الطلب اجتماع.
+    selectedRequestType =
+        "meeting";
 
 
-// =========================================================
-// Save Draft Button
-// =========================================================
+    // نضيف شكل التحديد لزر الاجتماع.
+    document
+        .getElementById("live-meeting-button")
+        .classList
+        .add("selected-request-type");
 
-function saveDraftButton() { // تعمل عند الضغط على Save Draft.
 
-    let requestDraft = { // ننشئ Object يحتوي على القيم الحالية الموجودة داخل Form.
+    // نزيل شكل التحديد عن زر الطلب العادي.
+    document
+        .getElementById("standard-ticket-button")
+        .classList
+        .remove("selected-request-type");
 
-        type: selectedRequestType, // نحفظ Ticket أو Meeting.
 
-        category: document.getElementById("request-category-select").value, // نحفظ Category.
+    // نظهر معلومات الاجتماع.
+    document
+        .getElementById("meeting-information-section")
+        .classList
+        .remove("hide-element");
 
-        subject: document.getElementById("request-subject-input").value, // نحفظ Subject حتى لو لم يكتمل.
 
-        details: document.getElementById("request-details-input").value, // نحفظ Details.
+    // نغير نص زر الإرسال.
+    document
+        .querySelector(".submit-request-button")
+        .innerHTML =
+        "Request Meeting";
+}
 
-        meetingDate: document.getElementById("meeting-date-input").value, // نحفظ Meeting Date.
-
-        startTime: document.getElementById("meeting-start-time-input").value, // نحفظ Start Time.
-
-        endTime: document.getElementById("meeting-end-time-input").value, // نحفظ End Time.
-
-        channel: selectedMeetingChannel, // نحفظ Channel المختار.
-
-        attachment: selectedAttachmentName // نحفظ اسم Attachment.
-
-    }; // نهاية Object.
-
-    localStorage.setItem("helpdeskDraft_" + loggedEmployee.id, JSON.stringify(requestDraft)); // نحفظ Draft بمفتاح يحتوي ID الموظف حتى يكون لكل موظف Draft خاص به.
-
-    showEmployeePageMessage("Draft saved successfully."); // نظهر Toast بدل Alert.
-
-} // نهاية saveDraftButton.
 
 
 // =========================================================
-// Load Employee Draft
+// زر زوم
 // =========================================================
 
-function loadEmployeeDraft() { // تستعيد Draft عندما يفتح الموظف الصفحة مرة أخرى.
+// تعمل عند اختيار زوم.
+function zoomChannelButton() {
 
-    let savedDraft = localStorage.getItem("helpdeskDraft_" + loggedEmployee.id); // نبحث عن Draft خاص بالموظف الحالي.
+    // نحدد طريقة الاجتماع.
+    selectMeetingChannel(
+        "Zoom",
+        "zoom-channel-button"
+    );
+}
 
-    if (!savedDraft) { // إذا لا يوجد Draft.
-
-        return; // نخرج من Function بدون تنفيذ باقي الكود.
-    }
-
-    let requestDraft = JSON.parse(savedDraft); // نحول Draft المحفوظ من JSON Text إلى Object.
-
-    document.getElementById("request-category-select").value = requestDraft.category || "Payroll, Bonus & Compensation"; // نعيد Category المحفوظة.
-
-    document.getElementById("request-subject-input").value = requestDraft.subject || ""; // نعيد Subject.
-
-    document.getElementById("request-details-input").value = requestDraft.details || ""; // نعيد Details.
-
-    document.getElementById("meeting-date-input").value = requestDraft.meetingDate || ""; // نعيد Meeting Date.
-
-    document.getElementById("meeting-start-time-input").value = requestDraft.startTime || ""; // نعيد Start Time.
-
-    document.getElementById("meeting-end-time-input").value = requestDraft.endTime || ""; // نعيد End Time.
-
-    selectedAttachmentName = requestDraft.attachment || ""; // نعيد اسم Attachment.
-
-    if (selectedAttachmentName != "") { // إذا كان Draft يحتوي Attachment.
-
-        document.getElementById("attachment-file-name").innerHTML = selectedAttachmentName; // نعرض اسم الملف.
-    }
-
-    selectedMeetingChannel = requestDraft.channel || "Zoom"; // نعيد Channel أو Zoom كقيمة افتراضية.
-
-    if (requestDraft.type == "meeting") { // إذا كان Draft Meeting.
-
-        liveMeetingButton(); // نفعل Meeting Mode.
-
-    } else { // إذا كان Ticket.
-
-        standardTicketButton(); // نفعل Standard Ticket Mode.
-    }
-
-} // نهاية loadEmployeeDraft.
 
 
 // =========================================================
-// Submit Request Button
+// زر جوجل
 // =========================================================
 
-function submitRequestButton() { // هذه أهم Function وتعمل عند إرسال Ticket أو Meeting.
+// تعمل عند اختيار جوجل للاجتماعات.
+function googleMeetChannelButton() {
 
-    let requestSubject = document.getElementById("request-subject-input").value.trim(); // نقرأ Subject ونزيل المسافات من بدايته ونهايته.
+    // نحدد طريقة الاجتماع.
+    selectMeetingChannel(
+        "Google Meet",
+        "google-meet-channel-button"
+    );
+}
 
-    let requestDetails = document.getElementById("request-details-input").value.trim(); // نقرأ Details ونزيل المسافات الزائدة.
 
 
-    if (requestSubject == "" || requestDetails == "") { // نتحقق أن Subject وDetails ليسا فارغين.
+// =========================================================
+// زر غرفة الموارد البشرية
+// =========================================================
 
-        showEmployeePageMessage("Enter the subject and request details."); // نعرض Validation Message.
+// تعمل عند اختيار غرفة الموارد البشرية.
+function hrRoomChannelButton() {
 
-        return; // نوقف Function ولا نرسل الطلب.
+    // نحدد طريقة الاجتماع.
+    selectMeetingChannel(
+        "HR Room",
+        "hr-room-channel-button"
+    );
+}
+
+
+
+// =========================================================
+// زر الاتصال الهاتفي
+// =========================================================
+
+// تعمل عند اختيار الاتصال الهاتفي.
+function phoneCallChannelButton() {
+
+    // نحدد طريقة الاجتماع.
+    selectMeetingChannel(
+        "Phone Call",
+        "phone-call-channel-button"
+    );
+}
+
+
+
+// =========================================================
+// اختيار طريقة الاجتماع
+// =========================================================
+
+// دالة مساعدة لتحديد طريقة الاجتماع.
+function selectMeetingChannel(
+    channelName,
+    buttonId
+) {
+
+    // نحفظ الطريقة التي اختارها المستخدم.
+    selectedMeetingChannel =
+        channelName;
+
+
+    // نحصل على جميع أزرار طرق الاجتماع.
+    let meetingChannelButtons =
+        document.querySelectorAll(
+            ".zoom-channel-button, .google-meet-channel-button, .hr-room-channel-button, .phone-call-channel-button"
+        );
+
+
+    // نمر على جميع الأزرار.
+    for (
+        let i = 0;
+        i < meetingChannelButtons.length;
+        i++
+    ) {
+
+        // نزيل شكل التحديد من الزر الحالي.
+        meetingChannelButtons[i]
+            .classList
+            .remove(
+                "selected-meeting-channel"
+            );
     }
 
 
-    let newRequest = { // ننشئ Object جديد يمثل الطلب.
-
-        id: Date.now(), // نعطي الطلب ID فريد باستخدام الوقت الحالي.
-
-        createdAt: Date.now(), // نحفظ وقت الإنشاء أيضًا للSorting.
-
-        ticket: "TKT-" + Math.floor(1000 + Math.random() * 9000), // ننشئ رقم Ticket عشوائي من 4 أرقام.
-
-        employeeId: loggedEmployee.id, // نحفظ ID الموظف الحالي حتى يعرف HR صاحب الطلب.
-
-        employeeName: loggedEmployee.name || "Employee", // نحفظ اسم الموظف.
-
-        department: loggedEmployee.department || loggedEmployee.position || "Employee", // نحفظ القسم أو الوظيفة.
-
-        category: document.getElementById("request-category-select").value, // نحفظ Category.
-
-        subject: requestSubject, // نحفظ Subject.
-
-        details: requestDetails, // نحفظ Details.
-
-        attachment: selectedAttachmentName, // نحفظ اسم الملف المرفق.
-
-        type: selectedRequestType, // نحفظ ticket أو meeting.
-
-        createdBy: "EMP", // نحدد أن الطلب أرسله Employee.
-
-        date: new Date().toISOString().slice(0, 10) // نحفظ تاريخ اليوم بصيغة YYYY-MM-DD.
-
-    }; // نهاية Object.
+    // نضيف شكل التحديد للزر الذي اختاره المستخدم.
+    document
+        .getElementById(buttonId)
+        .classList
+        .add(
+            "selected-meeting-channel"
+        );
+}
 
 
-    if (selectedRequestType == "meeting") { // هذا الجزء يعمل فقط إذا الموظف اختار Meeting.
 
-        let meetingDate = document.getElementById("meeting-date-input").value; // نقرأ Meeting Date.
+// =========================================================
+// اختيار الملف
+// =========================================================
 
-        let meetingStartTime = document.getElementById("meeting-start-time-input").value; // نقرأ Start Time.
+// تعمل بعد اختيار ملف.
+function attachmentFileInputChange() {
 
-        let meetingEndTime = document.getElementById("meeting-end-time-input").value; // نقرأ End Time.
+    // نحصل على حقل الملف.
+    let attachmentInput =
+        document.getElementById(
+            "attachment-file-input"
+        );
 
 
-        if (meetingDate == "" || meetingStartTime == "" || meetingEndTime == "") { // نتحقق أن الموظف أكمل معلومات Meeting.
+    // نتحقق أن المستخدم اختار ملفًا.
+    if (
+        attachmentInput.files.length > 0
+    ) {
 
-            showEmployeePageMessage("Choose meeting date and time."); // نعرض رسالة Validation.
+        // نحفظ اسم الملف.
+        selectedAttachmentName =
+            attachmentInput.files[0].name;
 
-            return; // لا نرسل Meeting.
+
+        // نعرض اسم الملف داخل الصفحة.
+        document
+            .getElementById(
+                "attachment-file-name"
+            )
+            .innerHTML =
+            selectedAttachmentName;
+    }
+}
+
+
+
+// =========================================================
+// زر حفظ المسودة
+// =========================================================
+
+// تعمل عند الضغط على زر حفظ المسودة.
+function saveDraftButton() {
+
+    // ننشئ كائنًا يحتوي على بيانات النموذج.
+    let requestDraft = {
+
+        // نحفظ نوع الطلب.
+        type:
+            selectedRequestType,
+
+        // نحفظ التصنيف.
+        category:
+            document
+                .getElementById(
+                    "request-category-select"
+                )
+                .value,
+
+        // نحفظ عنوان الطلب.
+        subject:
+            document
+                .getElementById(
+                    "request-subject-input"
+                )
+                .value,
+
+        // نحفظ تفاصيل الطلب.
+        details:
+            document
+                .getElementById(
+                    "request-details-input"
+                )
+                .value,
+
+        // نحفظ تاريخ الاجتماع.
+        meetingDate:
+            document
+                .getElementById(
+                    "meeting-date-input"
+                )
+                .value,
+
+        // نحفظ وقت البداية.
+        startTime:
+            document
+                .getElementById(
+                    "meeting-start-time-input"
+                )
+                .value,
+
+        // نحفظ وقت النهاية.
+        endTime:
+            document
+                .getElementById(
+                    "meeting-end-time-input"
+                )
+                .value,
+
+        // نحفظ طريقة الاجتماع.
+        channel:
+            selectedMeetingChannel,
+
+        // نحفظ اسم الملف.
+        attachment:
+            selectedAttachmentName
+    };
+
+
+    // نحفظ المسودة باسم خاص بالموظف.
+    localStorage.setItem(
+        "helpdeskDraft_" +
+        loggedEmployee.id,
+
+        JSON.stringify(
+            requestDraft
+        )
+    );
+
+
+    // نعرض رسالة نجاح.
+    showEmployeePageMessage(
+        "Draft saved successfully."
+    );
+}
+
+
+
+// =========================================================
+// تحميل المسودة
+// =========================================================
+
+// تسترجع المسودة عند فتح الصفحة.
+function loadEmployeeDraft() {
+
+    // نبحث عن مسودة الموظف.
+    let savedDraft =
+        localStorage.getItem(
+            "helpdeskDraft_" +
+            loggedEmployee.id
+        );
+
+
+    // إذا لم توجد مسودة نوقف الدالة.
+    if (
+        !savedDraft
+    ) {
+
+        return;
+    }
+
+
+    // نحول المسودة إلى كائن.
+    let requestDraft =
+        JSON.parse(
+            savedDraft
+        );
+
+
+    // نعيد التصنيف.
+    document
+        .getElementById(
+            "request-category-select"
+        )
+        .value =
+        requestDraft.category ||
+        "Payroll, Bonus & Compensation";
+
+
+    // نعيد عنوان الطلب.
+    document
+        .getElementById(
+            "request-subject-input"
+        )
+        .value =
+        requestDraft.subject || "";
+
+
+    // نعيد التفاصيل.
+    document
+        .getElementById(
+            "request-details-input"
+        )
+        .value =
+        requestDraft.details || "";
+
+
+    // نعيد تاريخ الاجتماع.
+    document
+        .getElementById(
+            "meeting-date-input"
+        )
+        .value =
+        requestDraft.meetingDate || "";
+
+
+    // نعيد وقت البداية.
+    document
+        .getElementById(
+            "meeting-start-time-input"
+        )
+        .value =
+        requestDraft.startTime || "";
+
+
+    // نعيد وقت النهاية.
+    document
+        .getElementById(
+            "meeting-end-time-input"
+        )
+        .value =
+        requestDraft.endTime || "";
+
+
+    // نعيد اسم الملف.
+    selectedAttachmentName =
+        requestDraft.attachment || "";
+
+
+    // نتحقق إذا كان هناك ملف محفوظ.
+    if (
+        selectedAttachmentName != ""
+    ) {
+
+        // نعرض اسم الملف.
+        document
+            .getElementById(
+                "attachment-file-name"
+            )
+            .innerHTML =
+            selectedAttachmentName;
+    }
+
+
+    // نعيد طريقة الاجتماع.
+    selectedMeetingChannel =
+        requestDraft.channel || "Zoom";
+
+
+    // نتحقق من نوع الطلب.
+    if (
+        requestDraft.type == "meeting"
+    ) {
+
+        // نفعل وضع الاجتماع.
+        liveMeetingButton();
+
+    } else {
+
+        // نفعل وضع الطلب العادي.
+        standardTicketButton();
+    }
+}
+
+
+
+// =========================================================
+// زر إرسال الطلب
+// =========================================================
+
+// تعمل عند الضغط على زر إرسال الطلب.
+function submitRequestButton() {
+
+    // نقرأ عنوان الطلب.
+    let requestSubject =
+        document
+            .getElementById(
+                "request-subject-input"
+            )
+            .value
+            .trim();
+
+
+    // نقرأ تفاصيل الطلب.
+    let requestDetails =
+        document
+            .getElementById(
+                "request-details-input"
+            )
+            .value
+            .trim();
+
+
+    // نتحقق أن الحقول الأساسية ممتلئة.
+    if (
+        requestSubject == "" ||
+        requestDetails == ""
+    ) {
+
+        // نعرض رسالة للمستخدم.
+        showEmployeePageMessage(
+            "Enter the subject and request details."
+        );
+
+
+        // نوقف الدالة.
+        return;
+    }
+
+
+    // ننشئ الطلب الجديد.
+    let newRequest = {
+
+        // ننشئ رقمًا فريدًا.
+        id:
+            Date.now(),
+
+        // نحفظ وقت إنشاء الطلب.
+        createdAt:
+            Date.now(),
+
+        // ننشئ رقم التذكرة.
+        ticket:
+            "TKT-" +
+            Math.floor(
+                1000 +
+                Math.random() *
+                9000
+            ),
+
+        // نحفظ رقم الموظف.
+        employeeId:
+            loggedEmployee.id,
+
+        // نحفظ اسم الموظف.
+        employeeName:
+            loggedEmployee.name ||
+            "Employee",
+
+        // نحفظ قسم الموظف.
+        department:
+            loggedEmployee.department ||
+            loggedEmployee.position ||
+            "Employee",
+
+        // نحفظ التصنيف.
+        category:
+            document
+                .getElementById(
+                    "request-category-select"
+                )
+                .value,
+
+        // نحفظ عنوان الطلب.
+        subject:
+            requestSubject,
+
+        // نحفظ التفاصيل.
+        details:
+            requestDetails,
+
+        // نحفظ اسم الملف.
+        attachment:
+            selectedAttachmentName,
+
+        // نحفظ نوع الطلب.
+        type:
+            selectedRequestType,
+
+        // نحدد أن الموظف أنشأ الطلب.
+        createdBy:
+            "EMP",
+
+        // نحفظ تاريخ اليوم.
+        date:
+            new Date()
+                .toISOString()
+                .slice(
+                    0,
+                    10
+                )
+    };
+
+
+    // نتحقق إذا كان الطلب اجتماعًا.
+    if (
+        selectedRequestType ==
+        "meeting"
+    ) {
+
+        // نقرأ تاريخ الاجتماع.
+        let meetingDate =
+            document
+                .getElementById(
+                    "meeting-date-input"
+                )
+                .value;
+
+
+        // نقرأ وقت البداية.
+        let meetingStartTime =
+            document
+                .getElementById(
+                    "meeting-start-time-input"
+                )
+                .value;
+
+
+        // نقرأ وقت النهاية.
+        let meetingEndTime =
+            document
+                .getElementById(
+                    "meeting-end-time-input"
+                )
+                .value;
+
+
+        // نتحقق من تعبئة معلومات الاجتماع.
+        if (
+            meetingDate == "" ||
+            meetingStartTime == "" ||
+            meetingEndTime == ""
+        ) {
+
+            // نعرض رسالة.
+            showEmployeePageMessage(
+                "Choose meeting date and time."
+            );
+
+
+            // نوقف الدالة.
+            return;
         }
 
 
-        newRequest.meetingDate = meetingDate; // نضيف Meeting Date للـObject.
+        // نحفظ تاريخ الاجتماع.
+        newRequest.meetingDate =
+            meetingDate;
 
-        newRequest.date = meetingDate; // نستخدم Meeting Date كتاريخ الطلب المعروض أيضًا.
 
-        newRequest.startTime = meetingStartTime; // نحفظ Start Time.
+        // نحفظ التاريخ أيضًا في الحقل العام.
+        newRequest.date =
+            meetingDate;
 
-        newRequest.endTime = meetingEndTime; // نحفظ End Time.
 
-        newRequest.channel = selectedMeetingChannel; // نحفظ Zoom أو Google Meet أو غيره.
+        // نحفظ وقت البداية.
+        newRequest.startTime =
+            meetingStartTime;
 
-        newRequest.status = "Pending Meeting"; // نحدد أن Meeting تنتظر موافقة HR.
 
-    } else { // إذا كان Standard Ticket.
+        // نحفظ وقت النهاية.
+        newRequest.endTime =
+            meetingEndTime;
 
-        newRequest.status = "In Review"; // يبدأ Ticket بحالة In Review.
+
+        // نحفظ طريقة الاجتماع.
+        newRequest.channel =
+            selectedMeetingChannel;
+
+
+        // نحدد أن الاجتماع ينتظر موافقة الموارد البشرية.
+        newRequest.status =
+            "Pending Meeting";
+
+    } else {
+
+        // نحدد حالة الطلب العادي.
+        newRequest.status =
+            "In Review";
     }
 
 
-    helpdeskRequests.unshift(newRequest); // نضيف الطلب في بداية Array حتى يكون أحدث طلب.
+    // نضيف الطلب في بداية المصفوفة.
+    helpdeskRequests.unshift(
+        newRequest
+    );
 
-    saveHelpdeskRequests(); // نحفظ جميع الطلبات في localStorage ليستطيع HR رؤيتها.
 
-    localStorage.removeItem("helpdeskDraft_" + loggedEmployee.id); // نحذف Draft بعد إرسال الطلب بنجاح.
+    // نحفظ الطلبات.
+    saveHelpdeskRequests();
 
-    clearRequestForm(); // نفرغ Form بعد الإرسال.
 
-    showEmployeeHelpdeskPage(); // نحدث Statistics وRecent Requests وMeeting.
+    // نحذف المسودة بعد الإرسال.
+    localStorage.removeItem(
+        "helpdeskDraft_" +
+        loggedEmployee.id
+    );
 
-    if (selectedRequestType == "meeting") { // إذا كان الذي أرسله المستخدم Meeting.
 
-        showEmployeePageMessage("Meeting request sent to HR."); // نوضح أنه ينتظر HR.
+    // نفرغ النموذج.
+    clearRequestForm();
 
-    } else { // إذا كان Standard Ticket.
 
-        showEmployeePageMessage("Request submitted successfully."); // نعرض رسالة نجاح.
+    // نحدث الصفحة.
+    showEmployeeHelpdeskPage();
+
+
+    // نتحقق إذا كان الطلب اجتماعًا.
+    if (
+        selectedRequestType ==
+        "meeting"
+    ) {
+
+        // نعرض رسالة الاجتماع.
+        showEmployeePageMessage(
+            "Meeting request sent to HR."
+        );
+
+    } else {
+
+        // نعرض رسالة نجاح الطلب العادي.
+        showEmployeePageMessage(
+            "Request submitted successfully."
+        );
+    }
+}
+
+
+
+// =========================================================
+// تنظيف النموذج
+// =========================================================
+
+// تنظف الحقول بعد إرسال الطلب.
+function clearRequestForm() {
+
+    // نمسح عنوان الطلب.
+    document
+        .getElementById(
+            "request-subject-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح التفاصيل.
+    document
+        .getElementById(
+            "request-details-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح تاريخ الاجتماع.
+    document
+        .getElementById(
+            "meeting-date-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح وقت البداية.
+    document
+        .getElementById(
+            "meeting-start-time-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح وقت النهاية.
+    document
+        .getElementById(
+            "meeting-end-time-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح الملف.
+    document
+        .getElementById(
+            "attachment-file-input"
+        )
+        .value =
+        "";
+
+
+    // نمسح اسم الملف من المتغير.
+    selectedAttachmentName =
+        "";
+
+
+    // نعيد نص رفع الملف.
+    document
+        .getElementById(
+            "attachment-file-name"
+        )
+        .innerHTML =
+        "Click to upload a file";
+}
+
+
+
+// =========================================================
+// عرض الإحصائيات
+// =========================================================
+
+// تحسب الإحصائيات الخاصة بالموظف.
+function showEmployeeStatistics() {
+
+    // نحصل على طلبات الموظف.
+    let employeeRequests =
+        getEmployeeRequests();
+
+
+    // عداد الطلبات النشطة.
+    let activeTicketsNumber =
+        0;
+
+
+    // عداد الاجتماعات المؤكدة.
+    let confirmedMeetingsNumber =
+        0;
+
+
+    // عداد الطلبات المنتهية.
+    let resolvedTicketsNumber =
+        0;
+
+
+    // نمر على الطلبات.
+    for (
+        let i = 0;
+        i < employeeRequests.length;
+        i++
+    ) {
+
+        // نحفظ الطلب الحالي.
+        let request =
+            employeeRequests[i];
+
+
+        // نتحقق إذا كان الطلب نشطًا.
+        if (
+            request.status != "Resolved" &&
+            request.status != "Rejected"
+        ) {
+
+            // نزيد العدد.
+            activeTicketsNumber++;
+        }
+
+
+        // نتحقق إذا كان الاجتماع مؤكدًا.
+        if (
+            request.type == "meeting" &&
+            request.status == "Confirmed"
+        ) {
+
+            // نزيد عدد الاجتماعات.
+            confirmedMeetingsNumber++;
+        }
+
+
+        // نتحقق إذا كان الطلب منتهيًا.
+        if (
+            request.status == "Resolved"
+        ) {
+
+            // نزيد العدد.
+            resolvedTicketsNumber++;
+        }
     }
 
-} // نهاية submitRequestButton.
+
+    // نعرض عدد الطلبات النشطة.
+    document
+        .getElementById(
+            "employee-active-tickets-number"
+        )
+        .innerHTML =
+        activeTicketsNumber;
 
 
-// =========================================================
-// Clear Request Form
-// =========================================================
-
-function clearRequestForm() { // تنظف Form بعد الإرسال.
-
-    document.getElementById("request-subject-input").value = ""; // نمسح Subject.
-
-    document.getElementById("request-details-input").value = ""; // نمسح Details.
-
-    document.getElementById("meeting-date-input").value = ""; // نمسح Date.
-
-    document.getElementById("meeting-start-time-input").value = ""; // نمسح Start Time.
-
-    document.getElementById("meeting-end-time-input").value = ""; // نمسح End Time.
-
-    document.getElementById("attachment-file-input").value = ""; // نمسح File Input.
-
-    selectedAttachmentName = ""; // نمسح اسم الملف المحفوظ في JavaScript.
-
-    document.getElementById("attachment-file-name").innerHTML = "Click to upload a file"; // نعيد Upload Text للوضع الأصلي.
-
-} // نهاية clearRequestForm.
+    // نعرض عدد الاجتماعات.
+    document
+        .getElementById(
+            "employee-meetings-number"
+        )
+        .innerHTML =
+        confirmedMeetingsNumber;
 
 
-// =========================================================
-// Show Employee Statistics
-// =========================================================
-
-function showEmployeeStatistics() { // تحسب الأرقام الموجودة أعلى الصفحة.
-
-    let employeeRequests = getEmployeeRequests(); // نحصل فقط على طلبات الموظف الحالي.
-
-    let activeTicketsNumber = 0; // عداد Active Tickets يبدأ من صفر.
-
-    let confirmedMeetingsNumber = 0; // عداد Meetings المؤكدة يبدأ من صفر.
-
-    let resolvedTicketsNumber = 0; // عداد Resolved يبدأ من صفر.
+    // نعرض عدد الطلبات المنتهية.
+    document
+        .getElementById(
+            "employee-resolved-number"
+        )
+        .innerHTML =
+        resolvedTicketsNumber;
 
 
-    for (let i = 0; i < employeeRequests.length; i++) { // نمر على جميع طلبات الموظف.
+    // نعرض العدد الكلي للطلبات.
+    document
+        .getElementById(
+            "my-requests-number"
+        )
+        .innerHTML =
+        employeeRequests.length;
+}
 
-        let request = employeeRequests[i]; // الطلب الحالي.
-
-
-        if (request.status != "Resolved" && request.status != "Rejected") { // إذا الطلب ليس Resolved ولا Rejected.
-
-            activeTicketsNumber++; // نعتبره Active ونزيد العداد.
-        }
-
-
-        if (request.type == "meeting" && request.status == "Confirmed") { // إذا الطلب Meeting ومؤكد من HR.
-
-            confirmedMeetingsNumber++; // نزيد عداد Meetings.
-        }
-
-
-        if (request.status == "Resolved") { // إذا Status هي Resolved.
-
-            resolvedTicketsNumber++; // نزيد العداد.
-        }
-
-    } // نهاية Loop.
-
-
-    document.getElementById("employee-active-tickets-number").innerHTML = activeTicketsNumber; // نعرض Active Tickets.
-
-    document.getElementById("employee-meetings-number").innerHTML = confirmedMeetingsNumber; // نعرض Meetings.
-
-    document.getElementById("employee-resolved-number").innerHTML = resolvedTicketsNumber; // نعرض Resolved.
-
-    document.getElementById("my-requests-number").innerHTML = employeeRequests.length; // نعرض العدد الكلي بجانب My Requests.
-
-} // نهاية showEmployeeStatistics.
 
 
 // =========================================================
-// Show Recent Requests
+// عرض الطلبات الأخيرة
 // =========================================================
 
-function showRecentRequests() { // تعرض آخر طلبات الموظف في Right Side.
+// تعرض آخر أربعة طلبات.
+function showRecentRequests() {
 
-    let employeeRequests = getEmployeeRequests(); // نحصل على طلبات الموظف الحالي.
-
-    let recentRequestsContainer = document.getElementById("recent-requests-container"); // نمسك Container.
-
-    recentRequestsContainer.innerHTML = ""; // نمسح العرض القديم قبل إعادة بناء القائمة.
+    // نحصل على طلبات الموظف.
+    let employeeRequests =
+        getEmployeeRequests();
 
 
-    if (employeeRequests.length == 0) { // إذا لم يقدم الموظف أي طلب.
+    // نحصل على مكان عرض الطلبات.
+    let recentRequestsContainer =
+        document.getElementById(
+            "recent-requests-container"
+        );
 
-        recentRequestsContainer.innerHTML = "<p>No requests yet.</p>"; // نعرض رسالة.
 
-        return; // نخرج من Function.
+    // نمسح المحتوى القديم.
+    recentRequestsContainer.innerHTML =
+        "";
+
+
+    // نتحقق إذا لم توجد طلبات.
+    if (
+        employeeRequests.length == 0
+    ) {
+
+        // نعرض رسالة.
+        recentRequestsContainer.innerHTML =
+            "<p>No requests yet.</p>";
+
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    let recentRequests = employeeRequests.slice(0, 4); // نأخذ أحدث 4 Requests فقط.
+    // نأخذ أحدث أربعة طلبات.
+    let recentRequests =
+        employeeRequests.slice(
+            0,
+            4
+        );
 
 
-    for (let i = 0; i < recentRequests.length; i++) { // نمر على أحدث 4 Requests.
+    // نمر على الطلبات.
+    for (
+        let i = 0;
+        i < recentRequests.length;
+        i++
+    ) {
 
-        let request = recentRequests[i]; // الطلب الحالي.
+        // نحفظ الطلب الحالي.
+        let request =
+            recentRequests[i];
 
-        let hrReplyHtml = ""; // نبدأ بدون HR Reply.
+
+        // ننشئ مكانًا لرد الموارد البشرية.
+        let hrReplyHtml =
+            "";
 
 
-        if (request.hrReply) { // إذا HR أرسل Reply للطلب.
+        // نتحقق إذا كان هناك رد.
+        if (
+            request.hrReply
+        ) {
 
+            // ننشئ شكل الرد.
             hrReplyHtml = `
                 <p class="employee-recent-request-reply">
                     <b>HR Reply:</b>
                     ${request.hrReply}
                 </p>
-            `; // ننشئ HTML يحتوي الرد.
+            `;
         }
 
 
+        // نضيف الطلب إلى الصفحة.
         recentRequestsContainer.innerHTML += `
             <div class="employee-recent-request">
-                <b>${request.subject}</b>
-                <span>${request.ticket} · ${request.status}</span>
+
+                <b>
+                    ${request.subject}
+                </b>
+
+                <span>
+                    ${request.ticket} · ${request.status}
+                </span>
+
                 ${hrReplyHtml}
+
             </div>
-        `; // نضيف الطلب داخل Container.
+        `;
+    }
+}
 
-    } // نهاية Loop.
-
-} // نهاية showRecentRequests.
 
 
 // =========================================================
-// Show Upcoming Meeting
+// عرض الاجتماع القادم
 // =========================================================
 
-function showUpcomingMeeting() { // تعرض أحدث Meeting للموظف.
+// تعرض أحدث اجتماع للموظف.
+function showUpcomingMeeting() {
 
-    let employeeRequests = getEmployeeRequests(); // نحصل على Requests الخاصة بالموظف.
-
-    let employeeMeetings = employeeRequests.filter(function (request) { // نأخذ Meetings فقط.
-
-        return request.type == "meeting" && request.status != "Rejected"; // نستبعد Meetings المرفوضة.
-
-    }); // نهاية Filter.
+    // نحصل على طلبات الموظف.
+    let employeeRequests =
+        getEmployeeRequests();
 
 
-    let upcomingMeetingContainer = document.getElementById("upcoming-meeting-content"); // نمسك Container الخاص بالMeeting.
+    // نأخذ الاجتماعات فقط.
+    let employeeMeetings =
+        employeeRequests.filter(
+            function (request) {
+
+                // نستبعد الاجتماعات المرفوضة.
+                return request.type == "meeting" &&
+                       request.status != "Rejected";
+            }
+        );
 
 
-    if (employeeMeetings.length == 0) { // إذا لا توجد Meetings.
+    // نحصل على مكان عرض الاجتماع.
+    let upcomingMeetingContainer =
+        document.getElementById(
+            "upcoming-meeting-content"
+        );
 
-        upcomingMeetingContainer.innerHTML = "<p>No meeting scheduled.</p>"; // نعرض رسالة.
 
-        return; // نخرج من Function.
+    // نتحقق إذا لم توجد اجتماعات.
+    if (
+        employeeMeetings.length == 0
+    ) {
+
+        // نعرض رسالة.
+        upcomingMeetingContainer.innerHTML =
+            "<p>No meeting scheduled.</p>";
+
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    let upcomingMeeting = employeeMeetings[0]; // نأخذ أحدث Meeting لأن الطلبات محفوظة من الأحدث للأقدم.
+    // نأخذ أحدث اجتماع.
+    let upcomingMeeting =
+        employeeMeetings[0];
 
-    let joinMeetingButtonHtml = ""; // افتراضيًا لا نعرض Join Button.
+
+    // ننشئ متغيرًا لزر الدخول.
+    let joinMeetingButtonHtml =
+        "";
 
 
-    if (upcomingMeeting.status == "Confirmed") { // Join يظهر فقط إذا HR أكد Meeting.
+    // نتحقق إذا تم تأكيد الاجتماع.
+    if (
+        upcomingMeeting.status ==
+        "Confirmed"
+    ) {
 
+        // ننشئ زر الدخول.
         joinMeetingButtonHtml = `
-            <button class="employee-join-meeting-button"
-                    onclick="employeeJoinMeetingButton(${upcomingMeeting.id})">
+            <button
+                class="employee-join-meeting-button"
+                onclick="employeeJoinMeetingButton(${upcomingMeeting.id})">
+
                 Join Meeting
+
             </button>
-        `; // ننشئ Join Button.
+        `;
     }
 
 
+    // نعرض معلومات الاجتماع.
     upcomingMeetingContainer.innerHTML = `
+
         <p class="employee-meeting-subject">
+
             ${upcomingMeeting.subject}
+
         </p>
 
+
         <p class="employee-meeting-information">
+
             📅 ${upcomingMeeting.meetingDate || upcomingMeeting.date}
+
         </p>
 
+
         <p class="employee-meeting-information">
+
             🕒 ${upcomingMeeting.startTime} - ${upcomingMeeting.endTime}
+
         </p>
 
+
         <p class="employee-meeting-information">
+
             ${upcomingMeeting.channel}
+
         </p>
+
 
         <span class="employee-meeting-status">
+
             ${upcomingMeeting.status}
+
         </span>
+
 
         <div class="employee-meeting-buttons">
 
-            <button class="employee-reschedule-meeting-button"
-                    onclick="employeeRescheduleMeetingButton(${upcomingMeeting.id})">
+
+            <button
+                class="employee-reschedule-meeting-button"
+                onclick="employeeRescheduleMeetingButton(${upcomingMeeting.id})">
+
                 Reschedule
+
             </button>
+
 
             ${joinMeetingButtonHtml}
 
+
         </div>
-    `; // نعرض معلومات Meeting وأزرارها.
+    `;
+}
 
-} // نهاية showUpcomingMeeting.
 
 
 // =========================================================
-// Employee Reschedule Meeting Button
+// زر تغيير موعد الاجتماع
 // =========================================================
 
-function employeeRescheduleMeetingButton(meetingId) { // تعمل عندما يضغط Employee على Reschedule.
+// تعمل عند الضغط على زر تغيير الموعد.
+function employeeRescheduleMeetingButton(
+    meetingId
+) {
 
-    selectedMeetingId = meetingId; // نحفظ ID الاجتماع الذي سيتم تعديله.
-
-    let meeting = helpdeskRequests.find(function (request) { // نبحث عن Meeting داخل جميع Requests.
-
-        return request.id == meetingId; // نرجع Request الذي ID الخاص به مطابق.
-
-    }); // نهاية Find.
+    // نحفظ رقم الاجتماع.
+    selectedMeetingId =
+        meetingId;
 
 
-    if (!meeting) { // إذا لم نجد Meeting.
+    // نبحث عن الاجتماع.
+    let meeting =
+        helpdeskRequests.find(
+            function (request) {
 
-        return; // نوقف Function.
+                // نعيد الاجتماع المطلوب.
+                return request.id ==
+                       meetingId;
+            }
+        );
+
+
+    // نتحقق أن الاجتماع موجود.
+    if (
+        !meeting
+    ) {
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    document.getElementById("employee-reschedule-date-input").value = meeting.meetingDate || meeting.date || ""; // نضع التاريخ الحالي داخل Popup.
+    // نضع التاريخ الحالي داخل النافذة.
+    document
+        .getElementById(
+            "employee-reschedule-date-input"
+        )
+        .value =
+        meeting.meetingDate ||
+        meeting.date ||
+        "";
 
-    document.getElementById("employee-reschedule-start-time-input").value = meeting.startTime || ""; // نضع Start Time الحالي.
 
-    document.getElementById("employee-reschedule-end-time-input").value = meeting.endTime || ""; // نضع End Time الحالي.
+    // نضع وقت البداية الحالي.
+    document
+        .getElementById(
+            "employee-reschedule-start-time-input"
+        )
+        .value =
+        meeting.startTime || "";
 
-    document.getElementById("employee-reschedule-channel-select").value = meeting.channel || "Zoom"; // نضع Channel الحالي.
 
-    document.getElementById("employee-reschedule-popup-background").classList.remove("hide-element"); // نظهر Popup.
+    // نضع وقت النهاية الحالي.
+    document
+        .getElementById(
+            "employee-reschedule-end-time-input"
+        )
+        .value =
+        meeting.endTime || "";
 
-} // نهاية employeeRescheduleMeetingButton.
+
+    // نضع طريقة الاجتماع الحالية.
+    document
+        .getElementById(
+            "employee-reschedule-channel-select"
+        )
+        .value =
+        meeting.channel ||
+        "Zoom";
+
+
+    // نظهر النافذة.
+    document
+        .getElementById(
+            "employee-reschedule-popup-background"
+        )
+        .classList
+        .remove(
+            "hide-element"
+        );
+}
+
 
 
 // =========================================================
-// Save Employee Reschedule Button
+// زر حفظ تغيير الموعد
 // =========================================================
 
-function saveEmployeeRescheduleButton() { // تعمل عند الضغط على Request Reschedule داخل Popup.
+// تعمل عند إرسال طلب الموعد الجديد.
+function saveEmployeeRescheduleButton() {
 
-    let meeting = helpdeskRequests.find(function (request) { // نبحث عن Meeting الذي خزنا ID الخاص به.
+    // نبحث عن الاجتماع.
+    let meeting =
+        helpdeskRequests.find(
+            function (request) {
 
-        return request.id == selectedMeetingId; // نرجع Meeting المطلوب.
+                // نعيد الاجتماع المطلوب.
+                return request.id ==
+                       selectedMeetingId;
+            }
+        );
 
-    }); // نهاية Find.
 
+    // نتحقق أن الاجتماع موجود.
+    if (
+        !meeting
+    ) {
 
-    if (!meeting) { // إذا لم نجده.
-
-        return; // نوقف Function.
+        // نوقف الدالة.
+        return;
     }
 
 
-    let newMeetingDate = document.getElementById("employee-reschedule-date-input").value; // نقرأ التاريخ الجديد.
+    // نقرأ التاريخ الجديد.
+    let newMeetingDate =
+        document
+            .getElementById(
+                "employee-reschedule-date-input"
+            )
+            .value;
 
-    let newStartTime = document.getElementById("employee-reschedule-start-time-input").value; // نقرأ Start Time الجديد.
 
-    let newEndTime = document.getElementById("employee-reschedule-end-time-input").value; // نقرأ End Time الجديد.
+    // نقرأ وقت البداية الجديد.
+    let newStartTime =
+        document
+            .getElementById(
+                "employee-reschedule-start-time-input"
+            )
+            .value;
 
-    let newMeetingChannel = document.getElementById("employee-reschedule-channel-select").value; // نقرأ Channel الجديد.
+
+    // نقرأ وقت النهاية الجديد.
+    let newEndTime =
+        document
+            .getElementById(
+                "employee-reschedule-end-time-input"
+            )
+            .value;
 
 
-    if (newMeetingDate == "" || newStartTime == "" || newEndTime == "") { // نتحقق أن الموظف أكمل Date وTimes.
+    // نقرأ طريقة الاجتماع.
+    let newMeetingChannel =
+        document
+            .getElementById(
+                "employee-reschedule-channel-select"
+            )
+            .value;
 
-        showEmployeePageMessage("Complete the new meeting date and time."); // نظهر رسالة.
 
-        return; // نوقف الحفظ.
+    // نتحقق من الحقول.
+    if (
+        newMeetingDate == "" ||
+        newStartTime == "" ||
+        newEndTime == ""
+    ) {
+
+        // نعرض رسالة.
+        showEmployeePageMessage(
+            "Complete the new meeting date and time."
+        );
+
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    meeting.meetingDate = newMeetingDate; // نحفظ التاريخ الجديد.
+    // نحفظ التاريخ الجديد.
+    meeting.meetingDate =
+        newMeetingDate;
 
-    meeting.date = newMeetingDate; // نحدث Date أيضًا.
 
-    meeting.startTime = newStartTime; // نحفظ Start Time.
+    // نحدث التاريخ العام أيضًا.
+    meeting.date =
+        newMeetingDate;
 
-    meeting.endTime = newEndTime; // نحفظ End Time.
 
-    meeting.channel = newMeetingChannel; // نحفظ Channel.
+    // نحفظ وقت البداية.
+    meeting.startTime =
+        newStartTime;
 
-    meeting.status = "Reschedule Requested"; // نغير Status حتى يعرف HR أن الموظف يريد تغيير الموعد.
 
-    meeting.lastUpdateBy = "EMP"; // نسجل أن آخر تعديل جاء من الموظف.
+    // نحفظ وقت النهاية.
+    meeting.endTime =
+        newEndTime;
 
-    saveHelpdeskRequests(); // نحفظ التعديلات في localStorage.
 
-    closeEmployeeRescheduleButton(); // نغلق Popup.
+    // نحفظ طريقة الاجتماع.
+    meeting.channel =
+        newMeetingChannel;
 
-    showEmployeeHelpdeskPage(); // نحدث الصفحة.
 
-    showEmployeePageMessage("Reschedule request sent to HR."); // نظهر رسالة نجاح.
+    // نغير الحالة حتى يعرف مسؤول الموارد البشرية أن هناك طلب تغيير.
+    meeting.status =
+        "Reschedule Requested";
 
-} // نهاية saveEmployeeRescheduleButton.
+
+    // نسجل أن آخر تعديل جاء من الموظف.
+    meeting.lastUpdateBy =
+        "EMP";
+
+
+    // نحفظ البيانات.
+    saveHelpdeskRequests();
+
+
+    // نغلق النافذة.
+    closeEmployeeRescheduleButton();
+
+
+    // نحدث الصفحة.
+    showEmployeeHelpdeskPage();
+
+
+    // نعرض رسالة نجاح.
+    showEmployeePageMessage(
+        "Reschedule request sent to HR."
+    );
+}
+
 
 
 // =========================================================
-// Close Employee Reschedule Button
+// زر إغلاق نافذة تغيير الموعد
 // =========================================================
 
-function closeEmployeeRescheduleButton() { // تعمل عند الضغط على X.
+// تعمل عند الضغط على زر الإغلاق.
+function closeEmployeeRescheduleButton() {
 
-    document.getElementById("employee-reschedule-popup-background").classList.add("hide-element"); // نخفي Popup.
+    // نخفي النافذة.
+    document
+        .getElementById(
+            "employee-reschedule-popup-background"
+        )
+        .classList
+        .add(
+            "hide-element"
+        );
+}
 
-} // نهاية Function.
-
-
-// =========================================================
-// Cancel Employee Reschedule Button
-// =========================================================
-
-function cancelEmployeeRescheduleButton() { // تعمل عند الضغط على Cancel.
-
-    closeEmployeeRescheduleButton(); // نستخدم نفس Function الخاصة بالإغلاق حتى لا نكرر الكود.
-
-} // نهاية Function.
 
 
 // =========================================================
-// Employee Join Meeting Button
+// زر إلغاء تغيير الموعد
 // =========================================================
 
-function employeeJoinMeetingButton(meetingId) { // تعمل عند الضغط على Join Meeting.
+// تعمل عند الضغط على زر الإلغاء.
+function cancelEmployeeRescheduleButton() {
 
-    let meeting = helpdeskRequests.find(function (request) { // نبحث عن Meeting حسب ID.
-
-        return request.id == meetingId; // نرجع Meeting المطلوب.
-
-    }); // نهاية Find.
+    // نغلق النافذة.
+    closeEmployeeRescheduleButton();
+}
 
 
-    if (!meeting) { // إذا لم نجد Meeting.
 
-        return; // نوقف Function.
+// =========================================================
+// زر الدخول إلى الاجتماع
+// =========================================================
+
+// تعمل عند الضغط على زر الدخول.
+function employeeJoinMeetingButton(
+    meetingId
+) {
+
+    // نبحث عن الاجتماع.
+    let meeting =
+        helpdeskRequests.find(
+            function (request) {
+
+                // نعيد الاجتماع المطلوب.
+                return request.id ==
+                       meetingId;
+            }
+        );
+
+
+    // نتحقق أن الاجتماع موجود.
+    if (
+        !meeting
+    ) {
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    if (meeting.status != "Confirmed") { // إذا HR لم يؤكد Meeting بعد.
+    // نتحقق أن الموارد البشرية أكدت الاجتماع.
+    if (
+        meeting.status !=
+        "Confirmed"
+    ) {
 
-        showEmployeePageMessage("HR has not confirmed this meeting yet."); // نظهر رسالة.
+        // نعرض رسالة.
+        showEmployeePageMessage(
+            "HR has not confirmed this meeting yet."
+        );
 
-        return; // لا نفتح Meeting.
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    if (meeting.channel == "Zoom") { // إذا Channel هي Zoom.
+    // نتحقق إذا كانت الطريقة زوم.
+    if (
+        meeting.channel ==
+        "Zoom"
+    ) {
 
-        window.open("https://zoom.us/", "_blank"); // نفتح Zoom في Tab جديد.
+        // نفتح موقع زوم.
+        window.open(
+            "https://zoom.us/",
+            "_blank"
+        );
 
-        return; // نوقف Function بعد فتح Zoom.
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    if (meeting.channel == "Google Meet") { // إذا Channel هي Google Meet.
+    // نتحقق إذا كانت الطريقة جوجل.
+    if (
+        meeting.channel ==
+        "Google Meet"
+    ) {
 
-        window.open("https://meet.google.com/", "_blank"); // نفتح Google Meet.
+        // نفتح موقع جوجل للاجتماعات.
+        window.open(
+            "https://meet.google.com/",
+            "_blank"
+        );
 
-        return; // نوقف Function.
+
+        // نوقف الدالة.
+        return;
     }
 
 
-    showEmployeePageMessage("Meeting channel: " + meeting.channel); // إذا HR Room أو Phone Call نعرض اسم Channel داخل Toast.
+    // نعرض طريقة الاجتماع إذا كانت مختلفة.
+    showEmployeePageMessage(
+        "Meeting channel: " +
+        meeting.channel
+    );
+}
 
-} // نهاية employeeJoinMeetingButton.
-
-
-// =========================================================
-// My Requests Button
-// =========================================================
-
-function myRequestsButton() { // تعمل عند الضغط على My Requests.
-
-    document.getElementById("my-recent-requests-card").scrollIntoView({ behavior: "smooth" }); // تنزل الصفحة بسلاسة إلى Recent Requests Card.
-
-} // نهاية myRequestsButton.
 
 
 // =========================================================
-// PTO Rules Button
+// زر طلباتي
 // =========================================================
 
-function ptoRulesButton() { // تعمل عند الضغط على PTO Rollover Rules.
+// تعمل عند الضغط على زر طلباتي.
+function myRequestsButton() {
 
-    document.getElementById("common-answer-text").innerHTML = "PTO rollover rules are available in the company Leave & Time Off policy."; // نعرض الإجابة داخل Card بدل alert.
+    // ننزل إلى قسم الطلبات بسلاسة.
+    document
+        .getElementById(
+            "my-recent-requests-card"
+        )
+        .scrollIntoView({
 
-} // نهاية ptoRulesButton.
+            behavior:
+                "smooth"
+        });
+}
 
-
-// =========================================================
-// Life Events Button
-// =========================================================
-
-function lifeEventsButton() { // تعمل عند الضغط على Qualifying Life Events.
-
-    document.getElementById("common-answer-text").innerHTML = "Qualifying life events should be submitted with the required supporting documents."; // نعرض الإجابة.
-
-} // نهاية lifeEventsButton.
-
-
-// =========================================================
-// Remote Work Button
-// =========================================================
-
-function remoteWorkButton() { // تعمل عند الضغط على Remote Work Policy.
-
-    document.getElementById("common-answer-text").innerHTML = "Remote work requests require approval from your manager and HR."; // نعرض الإجابة داخل الصفحة.
-
-} // نهاية remoteWorkButton.
 
 
 // =========================================================
-// Employee Page Message
+// زر قواعد الإجازات
 // =========================================================
 
-function showEmployeePageMessage(message) { // Function عامة لعرض رسالة صغيرة بدل alert.
+// تعرض إجابة قواعد الإجازات.
+function ptoRulesButton() {
 
-    let messageBox = document.getElementById("employee-page-message"); // نحصل على عنصر الرسالة.
+    // نعرض الإجابة داخل الصفحة.
+    document
+        .getElementById(
+            "common-answer-text"
+        )
+        .innerHTML =
+        "PTO rollover rules are available in the company Leave & Time Off policy.";
+}
 
-    messageBox.innerHTML = message; // نضع الرسالة المطلوبة داخله.
-
-    messageBox.classList.remove("hide-element"); // نظهر الرسالة.
-
-    setTimeout(function () { // نستخدم Timer حتى تختفي الرسالة تلقائيًا.
-
-        messageBox.classList.add("hide-element"); // نعيد إخفاء الرسالة.
-
-    }, 2500); // يتم الإخفاء بعد 2.5 ثانية.
-
-} // نهاية showEmployeePageMessage.
 
 
 // =========================================================
-// Show Employee Helpdesk Page
+// زر أحداث الحياة
 // =========================================================
 
-function showEmployeeHelpdeskPage() { // Function واحدة مسؤولة عن تحديث معلومات الصفحة.
+// تعرض الإجابة الخاصة بالأحداث المهمة.
+function lifeEventsButton() {
 
-    helpdeskRequests = JSON.parse(localStorage.getItem("helpdeskRequests")) || []; // نقرأ أحدث نسخة من Requests لأن HR ربما عدلها.
+    // نعرض الإجابة داخل الصفحة.
+    document
+        .getElementById(
+            "common-answer-text"
+        )
+        .innerHTML =
+        "Qualifying life events should be submitted with the required supporting documents.";
+}
 
-    showEmployeeStatistics(); // نحدث Statistics.
-
-    showRecentRequests(); // نحدث Recent Requests.
-
-    showUpcomingMeeting(); // نحدث Upcoming Meeting.
-
-} // نهاية showEmployeeHelpdeskPage.
-
-
-// =========================================================
-// Sync HR And Employee
-// =========================================================
-
-window.addEventListener("storage", function (event) { // هذا Event يعمل عندما يتغير localStorage من Tab آخر.
-
-    if (event.key == "helpdeskRequests") { // نتحقق أن الذي تغير هو Helpdesk Requests.
-
-        showEmployeeHelpdeskPage(); // نقرأ التعديل الجديد ونحدث الصفحة فورًا.
-
-    } // نهاية if.
-
-}); // نهاية Storage Event.
 
 
 // =========================================================
-// Start Page
+// زر العمل عن بعد
 // =========================================================
 
-loadEmployeeDraft(); // أولًا نحاول استرجاع Draft قديم للموظف.
+// تعرض سياسة العمل عن بعد.
+function remoteWorkButton() {
 
-showEmployeeHelpdeskPage(); // ثم نعرض Statistics وRequests وMeeting الحالية.
+    // نعرض الإجابة داخل الصفحة.
+    document
+        .getElementById(
+            "common-answer-text"
+        )
+        .innerHTML =
+        "Remote work requests require approval from your manager and HR.";
+}
+
+
+
+// =========================================================
+// رسالة الصفحة
+// =========================================================
+
+// تعرض رسالة صغيرة بدل التنبيهات.
+function showEmployeePageMessage(
+    message
+) {
+
+    // نحصل على صندوق الرسالة.
+    let messageBox =
+        document.getElementById(
+            "employee-page-message"
+        );
+
+
+    // نضع النص داخل الصندوق.
+    messageBox.innerHTML =
+        message;
+
+
+    // نظهر الرسالة.
+    messageBox
+        .classList
+        .remove(
+            "hide-element"
+        );
+
+
+    // ننتظر مدة محددة.
+    setTimeout(
+        function () {
+
+            // نخفي الرسالة.
+            messageBox
+                .classList
+                .add(
+                    "hide-element"
+                );
+        },
+
+        // نحدد المدة بالمللي ثانية.
+        2500
+    );
+}
+
+
+
+// =========================================================
+// تحديث صفحة الموظف
+// =========================================================
+
+// تحدث جميع المعلومات الموجودة في الصفحة.
+function showEmployeeHelpdeskPage() {
+
+    // نقرأ أحدث نسخة من الطلبات.
+    helpdeskRequests =
+        JSON.parse(
+            localStorage.getItem(
+                "helpdeskRequests"
+            )
+        ) || [];
+
+
+    // نحدث الإحصائيات.
+    showEmployeeStatistics();
+
+
+    // نحدث الطلبات الأخيرة.
+    showRecentRequests();
+
+
+    // نحدث الاجتماع القادم.
+    showUpcomingMeeting();
+}
+
+
+
+// =========================================================
+// مزامنة الموظف مع الموارد البشرية
+// =========================================================
+
+// نراقب التعديلات القادمة من صفحة أخرى.
+window.addEventListener(
+    "storage",
+
+    function (event) {
+
+        // نتحقق أن التعديل يخص طلبات المساعدة.
+        if (
+            event.key ==
+            "helpdeskRequests"
+        ) {
+
+            // نحدث الصفحة.
+            showEmployeeHelpdeskPage();
+        }
+    }
+);
+
+
+
+// =========================================================
+// تشغيل الصفحة
+// =========================================================
+
+// نسترجع المسودة عند فتح الصفحة.
+loadEmployeeDraft();
+
+
+// نعرض بيانات الصفحة.
+showEmployeeHelpdeskPage();

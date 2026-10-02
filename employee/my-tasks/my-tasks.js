@@ -1,9 +1,9 @@
-const STORAGE_KEY = "employeeTasks";
+const API = "http://127.0.0.1:3000";
 const MAX_PDF_SIZE = 1024 * 1024;
 
-
-
-let tasks = loadTasks();
+let tasks = [];
+let persistedTasks = new Map();
+let taskSaveQueue = Promise.resolve();
 let selectedTaskId = null;
 let draggedTaskId = null;
 let activeCategory = "all";
@@ -21,29 +21,19 @@ function clone(data) {
   return JSON.parse(JSON.stringify(data));
 }
 
-function loadTasks() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
-}
-
 async function initializeTasks() {
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    try {
-      const response = await fetch('default-tasks.json');
-      if (!response.ok) throw new Error(`Task data: ${response.status}`);
-      const defaults = await response.json();
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
-      }
-    } catch (error) {
-      console.error('Could not load the default tasks:', error);
-    }
+  const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+  if (!user?.id || user.role !== 'EMP') return;
+  try {
+    const response = await fetch(`${API}/tasks?employeeId=${encodeURIComponent(user.id)}`);
+    if (!response.ok) throw new Error('Could not load tasks. Start the API with npm run api.');
+    tasks = await response.json();
+    persistedTasks = new Map(tasks.map(task => [String(task.id), JSON.stringify(task)]));
+  } catch (error) {
+    console.error(error);
+    document.getElementById('taskApiMessage').textContent = error.message;
+    return;
   }
-  tasks = loadTasks();
   renderTasks();
   const requestedTaskId = new URLSearchParams(window.location.search).get('task');
   if (requestedTaskId) openTask(requestedTaskId);
@@ -51,8 +41,23 @@ async function initializeTasks() {
 }
 
 function saveTasks() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-  window.dispatchEvent(new Event('teamspace:tasks-changed'));
+  const changed = tasks.filter(task => persistedTasks.get(String(task.id)) !== JSON.stringify(task)).map(clone);
+  taskSaveQueue = taskSaveQueue.then(async () => {
+    for (const task of changed) {
+      const response = await fetch(`${API}/tasks/${encodeURIComponent(task.id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(task)
+      });
+      if (!response.ok) throw new Error('Could not save task changes.');
+      persistedTasks.set(String(task.id), JSON.stringify(task));
+    }
+    window.dispatchEvent(new Event('teamspace:tasks-changed'));
+  }).catch(error => {
+    console.error(error);
+    document.getElementById('taskApiMessage').textContent = error.message;
+  });
+  return taskSaveQueue;
 }
 
 function getTask(id) {

@@ -1,206 +1,40 @@
-/* =========================
-   Elements
-========================= */
-
-let container =
-    document.getElementById("policiesContainer");
-
-
-let policyLinks =
-    document.getElementById("policyLinks");
-
-
-let policies = [];
-
-
-
-/* =========================
-   Load Policies
-========================= */
+const policiesContainer = document.getElementById('policiesContainer');
+const policyLinks = document.getElementById('policyLinks');
+const API = 'http://127.0.0.1:3000';
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 
 async function loadPolicies() {
-
-    try {
-
-
-        /*
-            Check if HR already
-            edited the policies
-        */
-
-        let savedPolicies =
-            localStorage.getItem("teamspacePolicies");
-
-
-
-        if (savedPolicies) {
-
-
-            policies =
-                JSON.parse(savedPolicies);
-
-        }
-
-
-        else {
-
-
-            /*
-                If HR did not edit them,
-                read from file.json
-            */
-
-            let response =
-                await fetch("../../Data/file.json");
-
-
-            let data =
-                await response.json();
-
-
-            policies =
-                data.policies;
-
-        }
-
-
-
-        displayPolicies();
-
+  try {
+    const response = await fetch(`${API}/policies`);
+    if (!response.ok) throw new Error('Could not load policies.');
+    const policies = await response.json();
+    if (!Array.isArray(policies)) throw new Error('Policy data is invalid.');
+    policiesContainer.replaceChildren();
+    policyLinks.replaceChildren();
+    if (!policies.length) {
+      policiesContainer.innerHTML = '<div class="policy"><p>No company policies have been added yet.</p></div>';
+      return;
     }
-
-
-    catch (error) {
-
-
-        console.log(
-            "Error loading policies:",
-            error
-        );
-
-
-        container.innerHTML = `
-
-            <div class="policy">
-
-                <h3>
-                    Unable to load policies
-                </h3>
-
-                <p>
-                    Please check file.json path.
-                </p>
-
-            </div>
-
-        `;
-
+    for (const policy of policies) {
+      const id = encodeURIComponent(policy.id);
+      const card = document.createElement('article');
+      card.className = 'policy';
+      card.id = `policy-${id}`;
+      card.innerHTML = `<p class="policy-category">${escapeHtml(policy.category)}</p><h3 class="policy-title">${escapeHtml(policy.title)}</h3><p class="policy-description">${escapeHtml(policy.description)}</p>`;
+      policiesContainer.append(card);
+      const link = document.createElement('a');
+      link.className = 'policy-link';
+      link.href = `#policy-${id}`;
+      link.innerHTML = `<span>${escapeHtml(policy.id)}</span>${escapeHtml(policy.title)}`;
+      policyLinks.append(link);
     }
-
+  } catch (error) {
+    policiesContainer.replaceChildren();
+    const notice = document.createElement('div');
+    notice.className = 'policy';
+    notice.textContent = `${error.message} Make sure the API is running.`;
+    policiesContainer.append(notice);
+  }
 }
-
-
-
-/* =========================
-   Display Policies
-========================= */
-
-function displayPolicies() {
-
-
-    container.innerHTML = "";
-
-
-    policyLinks.innerHTML = "";
-
-
-
-    for (
-        let i = 0;
-        i < policies.length;
-        i++
-    ) {
-
-
-        let policy =
-            policies[i];
-
-
-
-        /* =========================
-           Policy Card
-        ========================= */
-
-        container.innerHTML += `
-
-            <div
-                class="policy"
-                id="policy-${policy.id}"
-            >
-
-
-                <p class="policy-category">
-
-                    ${policy.category}
-
-                </p>
-
-
-                <h3 class="policy-title">
-
-                    ${policy.id}.
-                    ${policy.title}
-
-                </h3>
-
-
-                <p class="policy-description">
-
-                    ${policy.description}
-
-                </p>
-
-
-            </div>
-
-        `;
-
-
-
-        /* =========================
-           Right Side Link
-        ========================= */
-
-        policyLinks.innerHTML += `
-
-            <a
-                href="#policy-${policy.id}"
-                class="policy-link"
-            >
-
-
-                <span>
-
-                    ${policy.id}
-
-                </span>
-
-
-                ${policy.title}
-
-
-            </a>
-
-        `;
-
-    }
-
-}
-
-
-
-/* =========================
-   Start
-========================= */
 
 loadPolicies();

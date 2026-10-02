@@ -1,7 +1,7 @@
 /* =====================================================
    LEAVE & TIME OFF - EMPLOYEE
    -----------------------------------------------------
-   - Seed من JSON → localStorage
+   - Read current employee, balances, and requests from the local API
    - عرض بيانات الموظف + الرصيد
    - Upcoming cards + History table
    - Submit Request (Full Day OR Early Departure)
@@ -13,13 +13,13 @@
 /* =====================================================
    1. CONSTANTS
    ===================================================== */
-var storageKeyEmployees = "hr_employees";
-var storageKeyBalances = "hr_leaveBalances";
-var storageKeyRequests = "hr_leaveRequests";
-var jsonFilePath = "employee.json";
+var API = "http://127.0.0.1:3000";
+var employeeRecord = null;
+var leaveBalances = [];
+var leaveRequests = [];
 
-// مؤقتاً لحين ما يصير Login
-var currentEmployeeId = 2;
+var loggedUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+var currentEmployeeId = loggedUser ? Number(loggedUser.id) : null;
 
 var currentSearchQuery = "";
 
@@ -27,31 +27,30 @@ var currentSearchQuery = "";
 /* =====================================================
    2. SEED
    ===================================================== */
-function seedData(callback) {
-    var existing = localStorage.getItem(storageKeyEmployees);
-
-    if (existing) {
-        console.log("✅ Data already in localStorage");
-        callback();
+async function seedData(callback) {
+    if (!loggedUser || loggedUser.role !== "EMP") {
+        alert("Please sign in with an employee account to view leave information.");
+        window.location.href = "../../common/login/login.html";
         return;
     }
 
-    fetch(jsonFilePath)
-        .then(function (response) {
-            if (!response.ok) throw new Error("HTTP Error: " + response.status);
-            return response.json();
-        })
-        .then(function (data) {
-            localStorage.setItem(storageKeyEmployees, JSON.stringify(data.employees));
-            localStorage.setItem(storageKeyBalances, JSON.stringify(data.leaveBalances));
-            localStorage.setItem(storageKeyRequests, JSON.stringify(data.leaveRequests));
-            console.log("✅ Seeded data from JSON");
-            callback();
-        })
-        .catch(function (error) {
-            console.error("❌ Failed to load JSON:", error);
-            alert("Could not load data. Make sure you run via local server.");
-        });
+    try {
+        var urls = [
+            API + "/employees/" + encodeURIComponent(currentEmployeeId),
+            API + "/leaveBalances?employeeId=" + encodeURIComponent(currentEmployeeId),
+            API + "/leaveRequests?employeeId=" + encodeURIComponent(currentEmployeeId)
+        ];
+        var responses = await Promise.all(urls.map(function (url) { return fetch(url); }));
+        if (responses.some(function (response) { return !response.ok; })) throw new Error("Could not load leave data.");
+        var data = await Promise.all(responses.map(function (response) { return response.json(); }));
+        employeeRecord = data[0];
+        leaveBalances = data[1];
+        leaveRequests = data[2];
+        callback();
+    } catch (error) {
+        console.error(error);
+        alert("Could not load leave data. Start the API with npm run api.");
+    }
 }
 
 
@@ -59,22 +58,25 @@ function seedData(callback) {
    3. STORAGE HELPERS
    ===================================================== */
 function getEmployees() {
-    var raw = localStorage.getItem(storageKeyEmployees);
-    return raw ? JSON.parse(raw) : [];
+    return employeeRecord ? [employeeRecord] : [];
 }
 
 function getBalances() {
-    var raw = localStorage.getItem(storageKeyBalances);
-    return raw ? JSON.parse(raw) : [];
+    return leaveBalances;
 }
 
 function getRequests() {
-    var raw = localStorage.getItem(storageKeyRequests);
-    return raw ? JSON.parse(raw) : [];
+    return leaveRequests;
 }
 
-function saveRequests(list) {
-    localStorage.setItem(storageKeyRequests, JSON.stringify(list));
+async function createRequest(request) {
+    var response = await fetch(API + "/leaveRequests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request)
+    });
+    if (!response.ok) throw new Error("Could not submit leave request.");
+    leaveRequests.push(await response.json());
 }
 
 function getCurrentEmployee() {
@@ -563,19 +565,19 @@ function toggleRequestKind() {
 /* =====================================================
    12. SUBMIT REQUEST (with Validation)
    ===================================================== */
-function handleSubmitRequest() {
+async function handleSubmitRequest() {
     clearAllErrors();
 
     var kind = document.querySelector('input[name="requestKind"]:checked').value;
 
     if (kind === "fullDay") {
-        submitFullDayRequest();
+        await submitFullDayRequest();
     } else {
-        submitEarlyDepartureRequest();
+        await submitEarlyDepartureRequest();
     }
 }
 
-function submitFullDayRequest() {
+async function submitFullDayRequest() {
     var type = document.getElementById("leaveType").value;
     var startDate = document.getElementById("startDate").value;
     var endDate = document.getElementById("endDate").value;
@@ -615,14 +617,7 @@ function submitFullDayRequest() {
     var days = daysBetween(startDate, endDate);
     
 
-    var all = getRequests();
-    var newId = 1;
-    for (var i = 0; i < all.length; i++) {
-        if (all[i].id >= newId) newId = all[i].id + 1;
-    }
-
     var newRequest = {
-        id: newId,
         employeeId: currentEmployeeId,
         type: type,
         startDate: startDate,
@@ -635,8 +630,12 @@ function submitFullDayRequest() {
         submittedAt: getTodayString()
     };
 
-    all.push(newRequest);
-    saveRequests(all);
+    try {
+        await createRequest(newRequest);
+    } catch (error) {
+        alert(error.message + " Start the API with npm run api.");
+        return;
+    }
 
     console.log("✅ Full Day Request submitted:", newRequest);
 
@@ -645,7 +644,7 @@ function submitFullDayRequest() {
     alert("✅ Request submitted successfully!");
 }
 
-function submitEarlyDepartureRequest() {
+async function submitEarlyDepartureRequest() {
     var departureDate = document.getElementById("departureDate").value;
     var fromTime = document.getElementById("fromTime").value;
     var toTime = document.getElementById("toTime").value;
@@ -687,14 +686,7 @@ function submitEarlyDepartureRequest() {
         return;
     }
 
-    var all = getRequests();
-    var newId = 1;
-    for (var i = 0; i < all.length; i++) {
-        if (all[i].id >= newId) newId = all[i].id + 1;
-    }
-
     var newRequest = {
-        id: newId,
         employeeId: currentEmployeeId,
         type: "Early Departure",
         startDate: departureDate,
@@ -709,8 +701,12 @@ function submitEarlyDepartureRequest() {
         submittedAt: getTodayString()
     };
 
-    all.push(newRequest);
-    saveRequests(all);
+    try {
+        await createRequest(newRequest);
+    } catch (error) {
+        alert(error.message + " Start the API with npm run api.");
+        return;
+    }
 
     console.log("✅ Early Departure Request submitted:", newRequest);
 
@@ -723,19 +719,18 @@ function submitEarlyDepartureRequest() {
 /* =====================================================
    13. WITHDRAW REQUEST
    ===================================================== */
-function withdrawRequest(id) {
+async function withdrawRequest(id) {
     if (!confirm("Are you sure you want to withdraw this request?")) return;
-
-    var all = getRequests();
-    var updated = [];
-
-    for (var i = 0; i < all.length; i++) {
-        if (all[i].id !== id) {
-            updated.push(all[i]);
-        }
+    var request = leaveRequests.find(function (item) { return String(item.id) === String(id); });
+    if (!request || Number(request.employeeId) !== currentEmployeeId) return;
+    try {
+        var response = await fetch(API + "/leaveRequests/" + encodeURIComponent(id), { method: "DELETE" });
+        if (!response.ok) throw new Error("Could not withdraw request.");
+        leaveRequests = leaveRequests.filter(function (item) { return String(item.id) !== String(id); });
+    } catch (error) {
+        alert(error.message + " Start the API with npm run api.");
+        return;
     }
-
-    saveRequests(updated);
     console.log("✅ Request withdrawn:", id);
     refreshAll();
 }
