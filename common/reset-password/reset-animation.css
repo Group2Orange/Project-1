@@ -1,0 +1,674 @@
+/* =========================================================
+   RESET PASSWORD — TELECOM AUTHENTICATION PIPELINE
+   Enhancement layer only. Never touches original files.
+   ========================================================= */
+
+:root {
+    --tm-bg-0: #03141a;
+    --tm-bg-1: #04202a;
+    --tm-bg-2: #03212a;
+
+    --tm-cyan: #25e6df;
+    --tm-mint: #42dc91;
+    --tm-blue: #5ac8fa;
+    --tm-indigo: #8498ff;
+    --tm-aqua: #7bf2e9;
+
+    --tm-error: #ff4b5c;
+    --tm-warn: #ffb547;
+
+    --tm-rack-bg: rgba(3, 22, 30, 0.9);
+    --tm-rack-border: rgba(37, 230, 223, 0.22);
+    --tm-rack-inner: rgba(5, 32, 40, 0.95);
+}
+
+/* =========================================================
+   1. STAGE — full-screen telecom server room
+   ========================================================= */
+.tm-stage {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 85% 30%, rgba(37, 230, 223, 0.10), transparent 50%),
+        radial-gradient(circle at 15% 75%, rgba(66, 220, 145, 0.08), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(132, 152, 255, 0.05), transparent 60%),
+        linear-gradient(180deg, var(--tm-bg-0) 0%, var(--tm-bg-2) 100%);
+}
+
+/* Ambient floor glow */
+.tm-stage::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(0deg,
+        rgba(37, 230, 223, 0.10) 0%,
+        transparent 100%);
+    mask-image: linear-gradient(0deg, #000 0%, transparent 80%);
+    -webkit-mask-image: linear-gradient(0deg, #000 0%, transparent 80%);
+}
+
+/* =========================================================
+   2. SERVER RACKS — 5 racks around the card
+   ========================================================= */
+.tm-rack {
+    position: absolute;
+    width: 128px;
+    background: var(--tm-rack-bg);
+    border: 1px solid var(--tm-rack-border);
+    border-radius: 10px;
+    padding: 8px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transform-origin: center;
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.85),
+        0 0 30px rgba(37, 230, 223, 0.08),
+        inset 0 1px 0 rgba(123, 242, 233, 0.15);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tm-rack__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 4px;
+    border-bottom: 1px solid rgba(37, 230, 223, 0.14);
+    margin-bottom: 2px;
+}
+
+.tm-rack__name {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--tm-aqua);
+}
+
+.tm-rack__state {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(123, 242, 233, 0.5);
+    transition: color 0.3s ease;
+}
+
+.tm-rack__unit {
+    height: 20px;
+    background: var(--tm-rack-inner);
+    border: 1px solid rgba(37, 230, 223, 0.12);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.tm-rack__unit::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(37, 230, 223, 0.08) 50%,
+        transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+}
+.tm-stage.is-typing .tm-rack__unit::before,
+.tm-stage.is-verifying .tm-rack__unit::before,
+.tm-stage.is-success .tm-rack__unit::before {
+    animation: unitScan 2.4s linear infinite;
+}
+
+.tm-unit__label {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 6px;
+    letter-spacing: 1px;
+    color: rgba(123, 242, 233, 0.55);
+}
+
+.tm-unit__leds {
+    display: flex;
+    gap: 3px;
+}
+
+.tm-led {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #0a2830;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tm-stage.is-typing .tm-led {
+    animation: ledPulse 0.55s infinite alternate;
+}
+.tm-stage.is-typing .tm-led:nth-child(2) { animation-delay: 0.15s; }
+.tm-stage.is-typing .tm-led:nth-child(3) { animation-delay: 0.3s; }
+
+.tm-stage.is-verifying .tm-led {
+    background: var(--tm-mint);
+    box-shadow: 0 0 6px var(--tm-mint);
+    animation: ledFast 0.25s infinite alternate;
+}
+
+.tm-stage.is-success .tm-led {
+    background: var(--tm-mint);
+    box-shadow: 0 0 8px var(--tm-mint);
+    animation: none;
+}
+
+.tm-stage.is-error .tm-led {
+    background: var(--tm-error);
+    box-shadow: 0 0 8px var(--tm-error);
+    animation: ledGlitch 0.15s 4;
+}
+
+.tm-stage.is-typing .tm-rack__state { color: var(--tm-cyan); }
+.tm-stage.is-verifying .tm-rack__state { color: var(--tm-mint); }
+.tm-stage.is-success .tm-rack__state { color: var(--tm-mint); }
+.tm-stage.is-error .tm-rack__state { color: var(--tm-error); }
+
+.tm-stage.is-typing .tm-rack {
+    border-color: rgba(37, 230, 223, 0.55);
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.85),
+        0 0 40px rgba(37, 230, 223, 0.28),
+        inset 0 1px 0 rgba(123, 242, 233, 0.25);
+}
+.tm-stage.is-verifying .tm-rack {
+    border-color: rgba(66, 220, 145, 0.6);
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.85),
+        0 0 40px rgba(66, 220, 145, 0.32),
+        inset 0 1px 0 rgba(123, 242, 233, 0.25);
+}
+.tm-stage.is-success .tm-rack {
+    border-color: var(--tm-mint);
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.85),
+        0 0 55px rgba(66, 220, 145, 0.55),
+        inset 0 1px 0 rgba(123, 242, 233, 0.35);
+    animation: rackReboot 0.7s ease;
+}
+.tm-stage.is-error .tm-rack {
+    border-color: var(--tm-error);
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.85),
+        0 0 45px rgba(255, 75, 92, 0.45),
+        inset 0 1px 0 rgba(255, 75, 92, 0.3);
+    animation: rackShake 0.4s ease;
+}
+
+/* =========================================================
+   3. FIBER OPTIC CABLES — thin, clean, elegant
+   ========================================================= */
+.tm-fiber-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.tm-fiber {
+    fill: none;
+    stroke: rgba(37, 230, 223, 0.06);
+    stroke-width: 0.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.5s ease, filter 0.5s ease, stroke-width 0.5s ease;
+}
+
+.tm-fiber.is-active {
+    stroke: rgba(37, 230, 223, 0.38);
+    stroke-width: 0.75;
+    filter: drop-shadow(0 0 2.5px rgba(37, 230, 223, 0.4));
+    stroke-dasharray: 2 8;
+    animation: fiberFlow 2.2s linear infinite;
+}
+
+.tm-fiber.is-verifying {
+    stroke: rgba(66, 220, 145, 0.6);
+    stroke-width: 0.85;
+    filter: drop-shadow(0 0 3px rgba(66, 220, 145, 0.5));
+    stroke-dasharray: 2 6;
+    animation: fiberFlow 1.4s linear infinite;
+}
+
+.tm-fiber.is-success {
+    stroke: var(--tm-mint);
+    filter: drop-shadow(0 0 5px var(--tm-mint));
+    stroke-dasharray: none;
+    stroke-width: 1;
+}
+
+.tm-fiber.is-error {
+    stroke: var(--tm-error);
+    stroke-width: 0.85;
+    filter: drop-shadow(0 0 4px var(--tm-error));
+    stroke-dasharray: 2 5;
+    animation: fiberFlow 1s linear infinite;
+}
+
+/* =========================================================
+   4. DYNAMIC PACKETS — tiny, numerous, elegant
+   ========================================================= */
+.tm-packet {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--tm-cyan);
+    box-shadow:
+        0 0 4px var(--tm-cyan),
+        0 0 8px rgba(37, 230, 223, 0.35);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    will-change: transform, opacity;
+}
+
+.tm-packet::after {
+    content: "";
+    position: absolute;
+    inset: 0.8px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.75;
+}
+
+.tm-packet.is-verify {
+    background: var(--tm-mint);
+    box-shadow: 0 0 4px var(--tm-mint), 0 0 8px rgba(66, 220, 145, 0.35);
+}
+
+.tm-packet.is-error {
+    background: var(--tm-error);
+    box-shadow: 0 0 4px var(--tm-error), 0 0 8px rgba(255, 75, 92, 0.35);
+}
+
+/* =========================================================
+   5. AUTH CORE — attaches to the existing card
+   ========================================================= */
+.tm-core-badge {
+    position: absolute;
+    top: -14px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: linear-gradient(180deg, rgba(4, 32, 42, 0.98), rgba(3, 20, 26, 0.98));
+    border: 1px solid rgba(37, 230, 223, 0.55);
+    border-radius: 999px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    color: var(--tm-aqua);
+    box-shadow: 0 0 20px rgba(37, 230, 223, 0.4);
+    z-index: 5;
+    transition: all 0.4s ease;
+}
+
+.tm-core-badge__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--tm-cyan);
+    box-shadow: 0 0 8px var(--tm-cyan);
+    animation: badgePulse 1.6s ease-in-out infinite;
+}
+
+body.tm-on-typing .tm-core-badge {
+    border-color: var(--tm-cyan);
+    box-shadow: 0 0 28px rgba(37, 230, 223, 0.6);
+}
+body.tm-on-verifying .tm-core-badge {
+    border-color: var(--tm-mint);
+    color: var(--tm-mint);
+    box-shadow: 0 0 28px rgba(66, 220, 145, 0.65);
+}
+body.tm-on-success .tm-core-badge {
+    border-color: var(--tm-mint);
+    color: var(--tm-mint);
+    background: linear-gradient(180deg, rgba(66, 220, 145, 0.15), rgba(3, 20, 26, 0.98));
+    box-shadow: 0 0 40px rgba(66, 220, 145, 0.8);
+}
+body.tm-on-error .tm-core-badge {
+    border-color: var(--tm-error);
+    color: var(--tm-error);
+    box-shadow: 0 0 28px rgba(255, 75, 92, 0.7);
+    animation: badgeShake 0.4s ease;
+}
+
+/* =========================================================
+   6. TELEMETRY HUD — bottom status bar
+   ========================================================= */
+.tm-hud {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 22px;
+    padding: 8px 22px;
+    background: rgba(3, 18, 24, 0.9);
+    border: 1px solid rgba(37, 230, 223, 0.25);
+    border-radius: 40px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.6px;
+    color: #7bf2e9;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 230, 223, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    white-space: nowrap;
+}
+
+.tm-hud__item { display: flex; align-items: center; gap: 6px; }
+.tm-hud__key { color: rgba(123, 242, 233, 0.55); }
+.tm-hud__val {
+    color: var(--tm-cyan);
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+body.tm-on-verifying .tm-hud__val,
+body.tm-on-success .tm-hud__val { color: var(--tm-mint); }
+body.tm-on-error .tm-hud__val { color: var(--tm-error); }
+
+/* =========================================================
+   7. CARD VISUAL DEFINITION
+   ========================================================= */
+.reset-container,
+.reset-card,
+.card,
+main .card,
+main > .container {
+    position: relative;
+    isolation: isolate;
+    background:
+        linear-gradient(180deg,
+            rgba(4, 32, 42, 0.94) 0%,
+            rgba(3, 20, 26, 0.97) 100%) !important;
+    border: 1px solid rgba(37, 230, 223, 0.35) !important;
+    border-radius: 20px !important;
+    box-shadow:
+        0 30px 60px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(37, 230, 223, 0.08),
+        0 0 80px -10px rgba(37, 230, 223, 0.32),
+        inset 0 1px 0 rgba(123, 242, 233, 0.15) !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+body.tm-on-typing .reset-container,
+body.tm-on-typing .reset-card,
+body.tm-on-typing .card,
+body.tm-on-typing main > .container {
+    border-color: rgba(37, 230, 223, 0.7) !important;
+    box-shadow:
+        0 30px 60px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(37, 230, 223, 0.15),
+        0 0 100px -10px rgba(37, 230, 223, 0.55),
+        inset 0 1px 0 rgba(123, 242, 233, 0.25) !important;
+}
+
+body.tm-on-verifying .reset-container,
+body.tm-on-verifying .reset-card,
+body.tm-on-verifying .card,
+body.tm-on-verifying main > .container {
+    border-color: rgba(66, 220, 145, 0.7) !important;
+    box-shadow:
+        0 30px 60px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(66, 220, 145, 0.15),
+        0 0 100px -10px rgba(66, 220, 145, 0.55),
+        inset 0 1px 0 rgba(123, 242, 233, 0.25) !important;
+}
+
+body.tm-on-success .reset-container,
+body.tm-on-success .reset-card,
+body.tm-on-success .card,
+body.tm-on-success main > .container {
+    border-color: var(--tm-mint) !important;
+    box-shadow:
+        0 30px 60px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 2px rgba(66, 220, 145, 0.3),
+        0 0 120px -10px rgba(66, 220, 145, 0.8),
+        inset 0 1px 0 rgba(123, 242, 233, 0.4) !important;
+    animation: cardSuccess 0.7s ease;
+}
+
+body.tm-on-error .reset-container,
+body.tm-on-error .reset-card,
+body.tm-on-error .card,
+body.tm-on-error main > .container {
+    border-color: var(--tm-error) !important;
+    box-shadow:
+        0 30px 60px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 2px rgba(255, 75, 92, 0.3),
+        0 0 100px -10px rgba(255, 75, 92, 0.7),
+        inset 0 1px 0 rgba(255, 75, 92, 0.35) !important;
+    animation: cardShake 0.45s ease;
+}
+
+.reset-container::before,
+.reset-card::before,
+.card::before,
+main .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 6%;
+    right: 6%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(37, 230, 223, 0.9),
+        rgba(66, 220, 145, 0.7),
+        transparent);
+    filter: drop-shadow(0 0 6px rgba(37, 230, 223, 0.8));
+    pointer-events: none;
+    z-index: 3;
+}
+
+.reset-container::after,
+.reset-card::after,
+.card::after,
+main .card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(37, 230, 223, 0.16), transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(66, 220, 145, 0.12), transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.reset-container > *,
+.reset-card > *,
+.card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+   8. HUD CORNERS on the card
+   ========================================================= */
+.tm-corners {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.tm-corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid rgba(37, 230, 223, 0.8);
+    filter: drop-shadow(0 0 5px rgba(37, 230, 223, 0.75));
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+.tm-corner--tl { top: 10px;    left: 10px;  border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+.tm-corner--tr { top: 10px;    right: 10px; border-left: none;  border-bottom: none; border-top-right-radius: 8px; }
+.tm-corner--bl { bottom: 10px; left: 10px;  border-right: none; border-top: none;    border-bottom-left-radius: 8px; }
+.tm-corner--br { bottom: 10px; right: 10px; border-left: none;  border-top: none;    border-bottom-right-radius: 8px; }
+
+body.tm-on-typing .tm-corner { border-color: var(--tm-cyan); filter: drop-shadow(0 0 6px var(--tm-cyan)); }
+body.tm-on-verifying .tm-corner,
+body.tm-on-success .tm-corner { border-color: var(--tm-mint); filter: drop-shadow(0 0 7px var(--tm-mint)); }
+body.tm-on-error .tm-corner { border-color: var(--tm-error); filter: drop-shadow(0 0 7px var(--tm-error)); }
+
+/* =========================================================
+   9. KEYFRAMES
+   ========================================================= */
+@keyframes unitScan {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+}
+
+@keyframes ledPulse {
+    from { background: #0a2830; box-shadow: none; }
+    to   { background: var(--tm-cyan); box-shadow: 0 0 6px var(--tm-cyan); }
+}
+
+@keyframes ledFast {
+    from { background: #0a2830; box-shadow: none; }
+    to   { background: var(--tm-mint); box-shadow: 0 0 7px var(--tm-mint); }
+}
+
+@keyframes ledGlitch {
+    0%   { background: #0a2830; }
+    50%  { background: var(--tm-error); box-shadow: 0 0 8px var(--tm-error); }
+    100% { background: #0a2830; }
+}
+
+@keyframes fiberFlow {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -20; }
+}
+
+@keyframes badgePulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.2); }
+}
+
+@keyframes badgeShake {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-3px); }
+    75%      { transform: translateX(3px); }
+}
+
+@keyframes rackShake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-3px); }
+    80%      { transform: translateX(3px); }
+}
+
+@keyframes rackReboot {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+@keyframes cardSuccess {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.012); }
+    100% { transform: scale(1); }
+}
+
+@keyframes cardShake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+}
+
+/* =========================================================
+   10. RESPONSIVE + ACCESSIBILITY
+   ========================================================= */
+@media (max-width: 1200px) {
+    .tm-rack { width: 108px; }
+    .tm-rack--far { display: none; }
+}
+
+@media (max-width: 900px) {
+    .tm-rack { width: 92px; padding: 6px 5px; }
+    .tm-rack__unit { height: 16px; }
+    .tm-rack__name { font-size: 7px; }
+    .tm-hud { font-size: 8px; padding: 6px 14px; gap: 14px; }
+}
+
+@media (max-width: 720px) {
+    .tm-rack { display: none; }
+    .tm-fiber-svg { opacity: 0.35; }
+    .tm-hud { display: none; }
+    .tm-core-badge { font-size: 7px; padding: 4px 10px; top: -12px; right: 10px; }
+    .tm-corner { width: 14px; height: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tm-stage *,
+    .tm-packet,
+    .tm-corner,
+    .tm-core-badge {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* =========================================================
+   11. LEFT POSITIONING
+   ========================================================= */
+@media (min-width: 901px) {
+    .reset-container,
+    .reset-card,
+    .card,
+    main .card,
+    main > .container {
+        margin-left: -22vw !important;
+        margin-right: auto !important;
+        max-width: 420px !important;
+    }
+}
+
+/* =========================================================
+   12. TEXT COLORS — فقط للعناوين والحقول المحددة
+   لا نغيّر باقي الألوان الأصلية
+   ========================================================= */
+
+/* العنوان الرئيسي: "Set Your Password" */
+.reset-container h1,
+.reset-card h1,
+.card h1,
+main .card h1,
+main > .container h1 {
+    color: #eaf6ff !important;
+}
+
+/* ليبل "New Password" و "Confirm New Password" */
+.reset-container label,
+.reset-card label,
+.card label,
+main .card label,
+main > .container label {
+    color: #d7f3f0 !important;
+}
