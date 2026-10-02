@@ -1,0 +1,43 @@
+/* Shared color palette for screens using the shared navbar. */
+:root {
+  --color-primary: #0e7c86;
+  --color-primary-dark: #00626a;
+  --color-primary-light: #d4eced;
+  --color-secondary: #4c6079;
+  --color-tertiary: #059669;
+  --color-danger: #ba1a1a;
+  --color-text: #14181c;
+  --color-text-muted: #4c6079;
+  --color-page: #f6f9fe;
+  --color-card: #ffffff;
+  --color-surface: #e8eef9;
+  --color-border: #dde3ed;
+  --color-on-primary: #ffffff;
+  --color-warning: #9b6100;
+  --color-warning-soft: #fff5e5;
+  --color-danger-soft: #fff0ef;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-primary: #43c4ca;
+  --color-primary-dark: #66d9de;
+  --color-primary-light: #173f45;
+  --color-secondary: #b4c5d4;
+  --color-tertiary: #45c99a;
+  --color-danger: #ff8087;
+  --color-text: #eef5f8;
+  --color-text-muted: #a8bccb;
+  --color-page: #101c25;
+  --color-card: #192a35;
+  --color-surface: #253947;
+  --color-border: #36505d;
+  --color-on-primary: #10292f;
+  --color-warning: #ffd083;
+  --color-warning-soft: #4b351d;
+  --color-danger-soft: #4b262b;
+}
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+.theme-toggle { display: inline-grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; padding: 0; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-card); color: var(--color-secondary); cursor: pointer; }
+.theme-toggle:hover { background: var(--color-surface); color: var(--color-primary-dark); }
+.theme-toggle .material-symbols-outlined { font-size: 19px; }

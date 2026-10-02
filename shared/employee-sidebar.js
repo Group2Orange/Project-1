@@ -2,7 +2,6 @@
   const placeholder = document.querySelector('[data-employee-sidebar]');
 
   if (placeholder) {
-    const sidebarScriptUrl = document.currentScript.src;
     const activePage = placeholder.dataset.sidebarActive;
     const file = new URL('employee-sidebar.html', document.currentScript.src);
 
@@ -42,13 +41,17 @@
           toggle.querySelector('span').textContent = open ? 'close' : 'menu';
         });
 
-        function updateTaskSummary() {
+        async function updateTaskSummary() {
           let tasks = [];
           try {
-            const saved = JSON.parse(localStorage.getItem('employeeTasks'));
-            if (Array.isArray(saved)) tasks = saved;
+            const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+            if (user?.id) {
+              const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);
+              if (!response.ok) throw new Error('Could not load task progress.');
+              tasks = await response.json();
+            }
           } catch (error) {
-            console.warn('Could not read saved tasks for the sidebar:', error);
+            console.warn(error);
           }
 
           const activeCount = tasks.filter(task => task.status !== 'completed').length;
@@ -62,25 +65,8 @@
         }
 
         updateTaskSummary();
-        if (localStorage.getItem('employeeTasks') === null) {
-          fetch(new URL('../employee/my-tasks/default-tasks.json', sidebarScriptUrl))
-            .then(response => {
-              if (!response.ok) throw new Error(`Task data: ${response.status}`);
-              return response.json();
-            })
-            .then(tasks => {
-              if (localStorage.getItem('employeeTasks') === null) {
-                localStorage.setItem('employeeTasks', JSON.stringify(tasks));
-                updateTaskSummary();
-                window.dispatchEvent(new Event('teamspace:tasks-changed'));
-              }
-            })
-            .catch(error => console.error('Could not load default task progress:', error));
-        }
-        window.addEventListener('storage', event => {
-          if (event.key === 'employeeTasks') updateTaskSummary();
-        });
         window.addEventListener('teamspace:tasks-changed', updateTaskSummary);
+        window.addEventListener('pageshow', updateTaskSummary);
       })
       .catch(error => {
         console.error('Could not load the employee sidebar. Open this page through Live Server.', error);

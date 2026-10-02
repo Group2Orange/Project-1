@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Details | HR System</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Details | TeamSpace HR</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-  <link rel="stylesheet" href="../../shared/shared.css">
-  <link rel="stylesheet" href="../../shared/footer.css">
-  <link rel="stylesheet" href="employee-details.css">
+  <link rel="stylesheet" href="../../shared/shared.css"><link rel="stylesheet" href="../../shared/footer.css"><link rel="stylesheet" href="../../shared/hr-sidebar.css"><link rel="stylesheet" href="../../shared/hr-layout.css"><link rel="stylesheet" href="employee-details.css">
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
-
+  <main class="hr-page-shell">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="employees" aria-label="HR workspace"></aside>
+    <div class="hr-page-content employee-detail-page">
+      <a class="back-link" href="../employees/employees.html"><span class="material-symbols-outlined">arrow_back</span>Back to Employees</a>
+      <div class="detail-heading"><div><p class="eyebrow">EMPLOYEE RECORD</p><h1>Employee Details</h1><p>View this employee's profile and account information.</p></div><a class="detail-edit" id="editLink" href="../employees/employees.html"><span class="material-symbols-outlined">edit</span>Edit Employee</a></div>
+      <p id="detailMessage" class="detail-message" role="status">Loading employee…</p>
+      <section id="detailContent" hidden>
+        <div class="detail-hero"><span class="detail-avatar" id="detailAvatar"></span><div><h2 id="detailName"></h2><p id="detailPosition"></p><span id="detailStatus" class="detail-status"></span></div></div>
+        <section class="detail-card"><h3><span class="material-symbols-outlined">badge</span>Employment Information</h3><dl class="detail-grid"><div><dt>Employee ID</dt><dd id="detailId"></dd></div><div><dt>Department</dt><dd id="detailDepartment"></dd></div><div><dt>Role</dt><dd id="detailRole"></dd></div><div><dt>Join Date</dt><dd id="detailDate"></dd></div><div><dt>Office Location</dt><dd id="detailOffice"></dd></div><div><dt>First Login</dt><dd id="detailFirstLogin"></dd></div></dl></section>
+        <section class="detail-card"><h3><span class="material-symbols-outlined">contact_mail</span>Contact &amp; Compensation</h3><dl class="detail-grid"><div><dt>Work Email</dt><dd id="detailEmail"></dd></div><div><dt>Phone</dt><dd id="detailPhone"></dd></div><div><dt>Monthly Salary</dt><dd id="detailSalary"></dd></div></dl></section>
+      </section>
+    </div>
+  </main>
   <footer class="site-footer" data-footer></footer>
-  <script src="../../shared/footer.js"></script>
-  <script src="../../shared/navbar.js"></script>
-  <script src="employee-details.js"></script>
+  <script src="../../shared/footer.js"></script><script src="../../shared/navbar.js?v=2"></script><script src="../../shared/hr-sidebar.js"></script><script src="employee-details.js"></script>
 </body>
 </html>

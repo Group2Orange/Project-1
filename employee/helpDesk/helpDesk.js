@@ -2,6 +2,33 @@
    HTML Elements
 ========================= */
 
+const API = "http://127.0.0.1:3000";
+const helpdeskUser = JSON.parse(localStorage.getItem("loggedUser") || "null");
+const helpdeskEmployeeId = Number(helpdeskUser?.id);
+let helpdeskRequests = [];
+let helpdeskDraft = null;
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+
+async function loadHelpdeskData() {
+    if (!helpdeskEmployeeId || helpdeskUser.role !== "EMP") return;
+    try {
+        const [requestsResponse, draftsResponse] = await Promise.all([
+            fetch(`${API}/helpdeskRequests?employeeId=${helpdeskEmployeeId}`),
+            fetch(`${API}/helpdeskDrafts?employeeId=${helpdeskEmployeeId}`)
+        ]);
+        if (!requestsResponse.ok || !draftsResponse.ok) throw new Error("Could not load helpdesk data.");
+        helpdeskRequests = await requestsResponse.json();
+        helpdeskRequests.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+        helpdeskDraft = (await draftsResponse.json())[0] || null;
+        loadDraft();
+        showTickets();
+        showMeeting();
+        updateStats();
+    } catch (error) {
+        message.textContent = `${error.message} Start the API with npm run api.`;
+    }
+}
+
 let typeOptions =
     document.querySelectorAll(".type-option");
 
@@ -303,7 +330,7 @@ uploadBox.ondrop = function (event) {
    Save Draft
 ========================= */
 
-draftBtn.onclick = function () {
+draftBtn.onclick = async function () {
 
 
     let draft = {
@@ -329,10 +356,19 @@ draftBtn.onclick = function () {
     };
 
 
-    localStorage.setItem(
-        "helpdeskDraft",
-        JSON.stringify(draft)
-    );
+    draft.employeeId = helpdeskEmployeeId;
+    try {
+        const response = await fetch(helpdeskDraft ? `${API}/helpdeskDrafts/${encodeURIComponent(helpdeskDraft.id)}` : `${API}/helpdeskDrafts`, {
+            method: helpdeskDraft ? "PATCH" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(draft)
+        });
+        if (!response.ok) throw new Error("Could not save draft.");
+        helpdeskDraft = await response.json();
+    } catch (error) {
+        message.textContent = error.message;
+        return;
+    }
 
 
     message.innerHTML =
@@ -351,21 +387,14 @@ draftBtn.onclick = function () {
 ========================= */
 
 function loadDraft() {
-
-
-    let savedDraft =
-        localStorage.getItem("helpdeskDraft");
-
-
-    if (!savedDraft) {
+    if (!helpdeskDraft) {
 
         return;
 
     }
 
 
-    let draft =
-        JSON.parse(savedDraft);
+    let draft = helpdeskDraft;
 
 
     category.value =
@@ -403,7 +432,7 @@ function loadDraft() {
    Submit
 ========================= */
 
-submitBtn.onclick = function () {
+submitBtn.onclick = async function () {
 
 
     if (
@@ -444,16 +473,9 @@ submitBtn.onclick = function () {
 
 
 
-    let requests =
-        JSON.parse(
-            localStorage.getItem("helpdeskRequests")
-        ) || [];
-
-
-
     let request = {
-
-        id: Date.now(),
+        employeeId: helpdeskEmployeeId,
+        createdAt: new Date().toISOString(),
 
         ticket:
             "TKT-" +
@@ -488,31 +510,22 @@ submitBtn.onclick = function () {
 
 
 
-    requests.unshift(request);
-
-
-
-    localStorage.setItem(
-        "helpdeskRequests",
-        JSON.stringify(requests)
-    );
-
-
-
-    if (requestType == "meeting") {
-
-        localStorage.setItem(
-            "helpdeskMeeting",
-            JSON.stringify(request)
-        );
-
+    try {
+        const response = await fetch(`${API}/helpdeskRequests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request)
+        });
+        if (!response.ok) throw new Error("Could not submit helpdesk request.");
+        helpdeskRequests.unshift(await response.json());
+        if (helpdeskDraft) {
+            await fetch(`${API}/helpdeskDrafts/${encodeURIComponent(helpdeskDraft.id)}`, { method: "DELETE" });
+            helpdeskDraft = null;
+        }
+    } catch (error) {
+        message.textContent = error.message;
+        return;
     }
-
-
-
-    localStorage.removeItem(
-        "helpdeskDraft"
-    );
 
 
 
@@ -567,12 +580,7 @@ function clearForm() {
 ========================= */
 
 function showTickets() {
-
-
-    let requests =
-        JSON.parse(
-            localStorage.getItem("helpdeskRequests")
-        ) || [];
+    let requests = helpdeskRequests;
 
 
     recentTickets.innerHTML = "";
@@ -606,16 +614,16 @@ function showTickets() {
             <div class="ticket">
 
                 <span>
-                    #${requests[i].ticket}
+                    #${escapeHtml(requests[i].ticket)}
                 </span>
 
                 <b>
-                    ${requests[i].subject}
+                    ${escapeHtml(requests[i].subject)}
                 </b>
 
                 <small class="ticket-status">
 
-                    ● ${requests[i].status}
+                    ● ${escapeHtml(requests[i].status)}
 
                 </small>
 
@@ -634,12 +642,7 @@ function showTickets() {
 ========================= */
 
 function updateStats() {
-
-
-    let requests =
-        JSON.parse(
-            localStorage.getItem("helpdeskRequests")
-        ) || [];
+    let requests = helpdeskRequests;
 
 
     let meetings = 0;
@@ -676,13 +679,11 @@ function updateStats() {
 ========================= */
 
 function showMeeting() {
+    let meeting = helpdeskRequests.find(request => request.type === "meeting");
 
+    if (!meeting) {
 
-    let savedMeeting =
-        localStorage.getItem("helpdeskMeeting");
-
-
-    if (!savedMeeting) {
+        document.getElementById("meetingSubject").textContent = "";
 
         document.getElementById(
             "meetingDateText"
@@ -702,25 +703,21 @@ function showMeeting() {
 
 
 
-    let meeting =
-        JSON.parse(savedMeeting);
-
-
     document.getElementById(
         "meetingSubject"
-    ).innerHTML =
+    ).textContent =
         meeting.subject;
 
 
     document.getElementById(
         "meetingDateText"
-    ).innerHTML =
+    ).textContent =
         meeting.date;
 
 
     document.getElementById(
         "meetingTimeText"
-    ).innerHTML =
+    ).textContent =
         meeting.time +
         " · " +
         meeting.duration;
@@ -728,7 +725,7 @@ function showMeeting() {
 
     document.getElementById(
         "meetingChannelText"
-    ).innerHTML =
+    ).textContent =
         meeting.channel;
 
 }
@@ -755,7 +752,7 @@ myRequestsBtn.onclick = function () {
    Clear Tickets
 ========================= */
 
-clearTicketsBtn.onclick = function () {
+clearTicketsBtn.onclick = async function () {
 
 
     let answer =
@@ -766,9 +763,17 @@ clearTicketsBtn.onclick = function () {
 
     if (answer) {
 
-        localStorage.removeItem(
-            "helpdeskRequests"
-        );
+        try {
+            const responses = await Promise.all(helpdeskRequests.map(request =>
+                fetch(`${API}/helpdeskRequests/${encodeURIComponent(request.id)}`, { method: "DELETE" })
+            ));
+            if (responses.some(response => !response.ok)) throw new Error("Could not clear all tickets.");
+            helpdeskRequests = [];
+        } catch (error) {
+            message.textContent = error.message;
+            await loadHelpdeskData();
+            return;
+        }
 
 
         showTickets();
@@ -867,12 +872,7 @@ rescheduleBtn.onclick = function () {
 ========================= */
 
 joinBtn.onclick = function () {
-
-
-    let meeting =
-        localStorage.getItem(
-            "helpdeskMeeting"
-        );
+    let meeting = helpdeskRequests.find(request => request.type === "meeting");
 
 
     if (!meeting) {
@@ -900,10 +900,4 @@ joinBtn.onclick = function () {
    Start Page
 ========================= */
 
-loadDraft();
-
-showTickets();
-
-showMeeting();
-
-updateStats();
+loadHelpdeskData();

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Workspace | TeamSpace HR</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css"><link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css"><link rel="stylesheet" href="../../shared/hr-layout.css"><link rel="stylesheet" href="workspace.css">
+</head>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="hr"></nav>
+  <main class="hr-page-shell">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="workspace" aria-label="HR workspace"></aside>
+    <div class="hr-page-content">
+      <header class="hr-workspace-heading"><p class="eyebrow">HR WORKSPACE</p><h1 id="hrGreeting">My Work Space</h1><p id="hrWorkspaceDate">Manage your team and daily HR work.</p></header>
+      <p id="hrWorkspaceMessage" class="hr-workspace-message" role="status" aria-live="polite"></p>
+      <section class="hr-workspace-stats" aria-label="Team summary">
+        <article><span>Total employees</span><strong id="hrTotalEmployees">—</strong><small>Company directory</small></article>
+        <article><span>Active employees</span><strong id="hrActiveEmployees">—</strong><small>Currently employed</small></article>
+        <article><span>First sign-in pending</span><strong id="hrFirstAttend">—</strong><small>New accounts to onboard</small></article>
+        <article><span>Blocked accounts</span><strong id="hrBlockedEmployees">—</strong><small>Records retained</small></article>
+      </section>
+      <section class="hr-workspace-grid" aria-label="HR modules">
+        <a href="../employees/employees.html"><span class="material-symbols-outlined">groups</span><strong>Employee Directory</strong><small>Search records, add people, and manage access.</small><span class="arrow">Open →</span></a>
+        <a href="../tasks/tasks.html"><span class="material-symbols-outlined">task_alt</span><strong>Tasks</strong><small>Assign and review work across the team.</small><span class="arrow">Open →</span></a>
+        <a href="../requests/requests.html"><span class="material-symbols-outlined">event_note</span><strong>Leave Requests</strong><small>Review upcoming absences and approvals.</small><span class="arrow">Open →</span></a>
+        <a href="../feedback/feedback.html"><span class="material-symbols-outlined">forum</span><strong>Feedback Inbox</strong><small>Read suggestions and employee inquiries.</small><span class="arrow">Open →</span></a>
+        <a href="../policies/policies.html"><span class="material-symbols-outlined">policy</span><strong>Policies</strong><small>Keep company guidance easy to find.</small><span class="arrow">Open →</span></a>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script><script src="../../shared/navbar.js?v=2"></script><script src="../../shared/hr-sidebar.js"></script><script src="workspace.js"></script>
+</body>
+</html>

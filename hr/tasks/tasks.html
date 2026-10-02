@@ -9,13 +9,32 @@
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="tasks.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css">
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
-
+  <main class="operations-layout">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="tasks" aria-label="HR workspace"></aside>
+    <section class="operations-content">
+      <header><p class="operations-kicker">PEOPLE OPERATIONS</p><h1>Team Tasks</h1><p>Assign work and track progress across employees.</p></header>
+      <p id="taskMessage" class="operations-message" role="status" aria-live="polite"></p>
+      <form id="newTaskForm" class="operations-form">
+        <h2>Assign a task</h2>
+        <label>Title<input name="title" required maxlength="120" placeholder="Task title"></label>
+        <label>Employee<select name="employeeId" required><option value="">Choose employee</option></select></label>
+        <label>Priority<select name="priority"><option>Normal</option><option>High</option><option>Routine</option></select></label>
+        <label>Due date<input name="dueDate" type="date"></label>
+        <label class="full">Description<textarea name="description" rows="3" placeholder="What needs to be done?"></textarea></label>
+        <button type="submit">Assign task</button>
+      </form>
+      <div class="operations-toolbar"><label>Search tasks<input id="taskSearch" type="search" placeholder="Title or employee"></label><label>Status<select id="taskStatus"><option value="">All statuses</option><option value="todo">To do</option><option value="progress">In progress</option><option value="review">Under review</option><option value="completed">Completed</option></select></label></div>
+      <div id="taskList" class="operations-list"></div>
+    </section>
+  </main>
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
-  <script src="../../shared/navbar.js"></script>
-  <script src="tasks.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/hr-sidebar.js"></script>
+  <script src="tasks.js?v=2"></script>
 </body>
 </html>

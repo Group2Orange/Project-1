@@ -1,8 +1,5 @@
-/* =====================================================
-   PROFILE PAGE
-   Signed-in data: loggedUser in localStorage
-   Optional office details: employee/details/data.json
-===================================================== */
+// The session stores the employee ID; the API provides the current profile.
+const API = 'http://127.0.0.1:3000';
 
 const elements = {
     profileName: document.getElementById("profileName"),
@@ -39,95 +36,30 @@ function setText(element, value, fallback = "-") {
 }
 
 
-function getProfileStorageKey(employeeId) {
-    return `profileEdits_${employeeId}`;
-}
-
-
-function getSavedEdits(employeeId) {
-    const key = getProfileStorageKey(employeeId);
-    const saved = localStorage.getItem(key);
-
-    if (!saved) {
-        return {};
-    }
-
-    try {
-        const parsed = JSON.parse(saved);
-
-        return parsed &&
-               typeof parsed === "object" &&
-               !Array.isArray(parsed)
-            ? parsed
-            : {};
-    } catch (error) {
-        console.error(
-            "Could not read profile edits from localStorage:",
-            error
-        );
-
-        return {};
-    }
-}
-
-
 /* =====================================================
    LOAD SIGNED-IN USER
 ===================================================== */
 
 async function getEmployeeFromJson() {
-    const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+    const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('loggedUser') || 'null');
     if (!user) {
         location.replace('../login/login.html');
         throw new Error('No signed-in user');
     }
-    let extra = {};
-    try {
-        const response = await fetch('../../employee/details/data.json');
-        if (response.ok) {
-            const data = await response.json();
-            extra = data.employees?.find(person => Number(person.id) === Number(user.id)) || {};
-        }
-    } catch (error) {
-        console.warn('Optional profile details are unavailable:', error);
-    }
+    // OLD WAY: use the user copied into localStorage at login, then merge
+    // extra fields from ../../employee/details/data.json. That could get stale.
+    // const employee = JSON.parse(localStorage.getItem('loggedUser'));
+    // NEW WAY: use the saved ID to fetch the latest employee from the API.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(user.id)}`);
+    if (!response.ok) throw new Error('Could not load employee profile.');
+    const employee = await response.json();
+    if (!employee) throw new Error('Employee not found.');
     return {
-        ...user,
-        employeeId: extra.employeeId || user.id,
-        fullName: user.name,
-        employmentStatus: user.status,
-        officeLocation: extra.officeLocation || '—'
-    };
-}
-
-
-/* =====================================================
-   APPLY SAVED PROFILE EDITS
-===================================================== */
-
-function mergeEmployeeData(jsonEmployee) {
-    const savedEdits =
-        getSavedEdits(jsonEmployee.employeeId);
-
-    // Only editable profile values override the signed-in record.
-    return {
-        ...jsonEmployee,
-
-        fullName:
-            savedEdits.name ??
-            jsonEmployee.fullName,
-
-        email:
-            savedEdits.email ??
-            jsonEmployee.email,
-
-        phone:
-            savedEdits.phone ??
-            jsonEmployee.phone,
-
-        image:
-            savedEdits.image ??
-            jsonEmployee.image
+        ...employee,
+        employeeId: employee.employeeId || employee.id,
+        fullName: employee.name,
+        employmentStatus: employee.status,
+        officeLocation: employee.officeLocation || '—'
     };
 }
 
@@ -229,13 +161,7 @@ function displayEmployee(employee) {
 
 async function loadProfile() {
     try {
-        const jsonEmployee =
-            await getEmployeeFromJson();
-
-        const employee =
-            mergeEmployeeData(jsonEmployee);
-
-        displayEmployee(employee);
+        displayEmployee(await getEmployeeFromJson());
 
     } catch (error) {
         console.error(

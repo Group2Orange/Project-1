@@ -1,0 +1,11 @@
+{
+  "name": "teamspace-hr-demo",
+  "private": true,
+  "scripts": {
+    "api": "json-server --watch api/db.json --host 127.0.0.1 --port 3000",
+    "reset": "node api/reset.js"
+  },
+  "devDependencies": {
+    "json-server": "0.17.4"
+  }
+}

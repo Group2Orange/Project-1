@@ -1,250 +1,84 @@
-const loginForm = document.querySelector('#login-form');
+const API = 'http://127.0.0.1:3000';
+const form = document.getElementById('reset-password-form');
+const password = document.getElementById('new-password');
+const confirmation = document.getElementById('confirm-password');
+const errorBox = document.getElementById('password-error');
+const errorText = document.getElementById('password-error-message');
+const submitButton = form.querySelector('[type="submit"]');
 
-const emailInput = document.querySelector('#email');
+let session = null;
+try { session = JSON.parse(localStorage.getItem('loggedUser') || 'null'); } catch { /* No active session. */ }
 
-const passwordInput = document.querySelector('#password');
-
-const loginError = document.querySelector('#login-error');
-
-const loginButton = document.querySelector('.login-btn');
-
-const passwordToggle = document.querySelector('.password-toggle');
-
-
-function setLoginError(message) {
-
-  loginError.textContent = message;
-
-  loginError.className = 'login-error';
-
+function showError(message) {
+  errorText.textContent = message;
+  errorBox.hidden = !message;
 }
 
-
-function clearLoginError() {
-
-  loginError.textContent = '';
-
-  loginError.className = 'login-error hidden';
-
+function workspaceFor(role) {
+  return role === 'HR'
+    ? '../../hr/workspace/workspace.html'
+    : '../../employee/MyWOrkSpace/MyWOrkSpace.html';
 }
 
-
-function togglePassword() {
-
-  if (passwordInput.type === 'password') {
-
-    passwordInput.type = 'text';
-
-    passwordToggle.textContent = 'visibility_off';
-
-  } else {
-
-    passwordInput.type = 'password';
-
-    passwordToggle.textContent = 'visibility';
-
-  }
-
-}
-
-
-passwordToggle.addEventListener('click', function () {
-
-  togglePassword();
-
-});
-
-
-loginForm.addEventListener('submit', function (event) {
-
-  event.preventDefault();
-
-  clearLoginError();
-
-
-  const email = emailInput.value.trim().toLowerCase();
-
-  const password = passwordInput.value;
-
-
-  if (email === '' || password === '') {
-
-    setLoginError('Please enter your email and password.');
-
+async function checkFirstLogin() {
+  if (!session?.id) {
+    location.replace('../login/login.html');
     return;
+  }
+  try {
+    const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`);
+    if (!response.ok) throw new Error('Could not check this account.');
+    const employee = await response.json();
+    if (employee.status !== 'Active' && employee.status !== 'Inactive') {
 
+      localStorage.removeItem('loggedUser');
+      localStorage.removeItem('currentUserId');
+      location.replace('../login/login.html');
+      return;
+    }
+    if (employee.firstAttend !== true) location.replace(workspaceFor(employee.role));
+  } catch (error) {
+    showError(`${error.message} Make sure the API is running.`);
+  }
+}
+
+document.querySelectorAll('.password-toggle').forEach(button => {
+  button.addEventListener('click', () => {
+    const input = document.getElementById(button.getAttribute('aria-controls'));
+    const reveal = input.type === 'password';
+    input.type = reveal ? 'text' : 'password';
+    button.setAttribute('aria-pressed', String(reveal));
+    button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    button.querySelector('span').textContent = reveal ? 'visibility_off' : 'visibility';
+  });
+});
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  showError('');
+  if (password.value.length < 8 || !/[a-z]/i.test(password.value) || !/\d/.test(password.value)) {
+    showError('Use at least 8 characters with letters and numbers.');
+    return;
+  }
+  if (password.value !== confirmation.value) {
+    showError('The passwords do not match.');
+    return;
   }
 
-
-  loginButton.disabled = true;
-
-
-  fetch('../../Data/employee.json')
-
-    .then(function (response) {
-
-      if (!response.ok) {
-
-        throw new Error('Could not load employee data.');
-
-      }
-
-      return response.json();
-
-    })
-
-    .then(function (data) {
-
-      if (!Array.isArray(data.employees)) {
-
-        throw new Error('Invalid employee data.');
-
-      }
-
-
-      let employee = null;
-
-
-      for (let i = 0; i < data.employees.length; i++) {
-
-        if (
-          typeof data.employees[i].email === 'string' &&
-          data.employees[i].email.trim().toLowerCase() === email
-        ) {
-
-          employee = data.employees[i];
-
-          break;
-
-        }
-
-      }
-
-
-      if (employee === null) {
-
-        setLoginError('Invalid email or password.');
-
-        return;
-
-      }
-
-
-      try {
-
-        const employeeEdits = JSON.parse(
-          localStorage.getItem('employeeEdits_' + employee.id)
-        );
-
-
-        if (employeeEdits !== null) {
-
-          if (typeof employeeEdits.password === 'string') {
-
-            employee.password = employeeEdits.password;
-
-          }
-
-
-          if (typeof employeeEdits.firstAttend === 'boolean') {
-
-            employee.firstAttend = employeeEdits.firstAttend;
-
-          }
-
-        }
-
-      } catch (error) {
-
-        console.log('Could not load local employee edits.');
-
-      }
-
-
-      if (employee.password !== password) {
-
-        setLoginError('Invalid email or password.');
-
-        return;
-
-      }
-
-
-      if (employee.status !== 'Active') {
-
-        setLoginError(
-          'Your account is not active. Please contact HR.'
-        );
-
-        return;
-
-      }
-
-
-      if (
-        employee.role !== 'HR' &&
-        employee.role !== 'EMP'
-      ) {
-
-        setLoginError(
-          'This account has no supported role. Please contact HR.'
-        );
-
-        return;
-
-      }
-
-
-      localStorage.setItem(
-        'currentUserId',
-        String(employee.id)
-      );
-
-
-      localStorage.setItem(
-        'loggedUser',
-        JSON.stringify(employee)
-      );
-
-
-      if (employee.firstAttend === true) {
-
-        window.location.href =
-          '../reset-password/reset-password.html';
-
-        return;
-
-      }
-
-
-      if (employee.role === 'HR') {
-
-        window.location.href =
-          '../home/home.html';
-
-      } else {
-
-        window.location.href =
-          '../../employee/MyWOrkSpace/MyWOrkSpace.html';
-
-      }
-
-    })
-
-    .catch(function (error) {
-
-      console.log(error);
-
-      setLoginError(
-        'Something went wrong. Please try again.'
-      );
-
-    })
-
-    .finally(function () {
-
-      loginButton.disabled = false;
-
+  submitButton.disabled = true;
+  try {
+    const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: password.value, firstAttend: false })
     });
-
+    if (!response.ok) throw new Error('Could not save your password.');
+    location.replace(workspaceFor(session.role));
+  } catch (error) {
+    showError(`${error.message} Make sure the API is running.`);
+  } finally {
+    submitButton.disabled = false;
+  }
 });
+
+checkFirstLogin();

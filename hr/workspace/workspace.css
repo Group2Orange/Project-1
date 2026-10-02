@@ -1,0 +1,20 @@
+body { background: var(--color-page); }
+.hr-workspace-heading { padding: 12px 0 26px; }
+.hr-workspace-heading .eyebrow { margin: 0 0 7px; color: var(--color-primary-dark); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+.hr-workspace-heading h1 { margin: 0 0 8px; color: var(--color-text); font: 700 clamp(27px, 3vw, 36px) var(--font-heading); }
+.hr-workspace-heading > p:last-child { margin: 0; color: var(--color-secondary); font-size: 14px; }
+.hr-workspace-message { min-height: 20px; margin: -12px 0 14px; color: var(--color-primary-dark); font-size: 13px; }
+.hr-workspace-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
+.hr-workspace-stats article { display: flex; flex-direction: column; gap: 7px; min-height: 118px; padding: 18px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-card); }
+.hr-workspace-stats article span { color: var(--color-secondary); font-size: 12px; }
+.hr-workspace-stats article strong { color: var(--color-text); font: 700 28px var(--font-heading); }
+.hr-workspace-stats article small { color: var(--color-secondary); font-size: 11px; }
+.hr-workspace-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.hr-workspace-grid a { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 180px; padding: 23px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-card); color: var(--color-text); text-decoration: none; transition: transform .2s, box-shadow .2s; }
+.hr-workspace-grid a:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgb(28 52 70 / 8%); }
+.hr-workspace-grid a > .material-symbols-outlined { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: var(--color-primary-light); color: var(--color-primary-dark); }
+.hr-workspace-grid strong { font: 700 18px var(--font-heading); }
+.hr-workspace-grid small { color: var(--color-secondary); font-size: 12px; line-height: 1.5; }
+.hr-workspace-grid .arrow { margin-top: auto; color: var(--color-primary-dark); font-size: 12px; font-weight: 700; }
+@media (max-width: 900px) { .hr-workspace-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .hr-workspace-grid, .hr-workspace-stats { grid-template-columns: 1fr; } }
