@@ -419,28 +419,13 @@ img {
 
 
 
-
-
 @media (max-width: 768px) {
 
     .team-container {
 display: flex;
 flex-direction: column;
       
-
         padding: 35px 0;
-    }
-
-
-    .about-content h1 {
-
-        font-size: 38px;
-    }
-
-
-    .about-image > img {
-
-        height: 280px;
     }
 
 }
