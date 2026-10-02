@@ -47,31 +47,195 @@ const flows = [
     ]
   },
   {
-    id: 'tasks', group: 'EMPLOYEE', title: 'My Tasks and workspace progress', description: 'Tasks are seeded from a bundled JSON file, then managed in localStorage.',
-    caveat: 'Task changes here are browser-local; they are not written to api/db.json and will not automatically appear on another device.',
-    steps: [
-      { title: 'Seed tasks once', kind: 'JSON → localStorage', source: 'employee/my-tasks/my-tasks.js', code: `if (!localStorage.getItem(STORAGE_KEY)) {\n  const response = await fetch('default-tasks.json');\n  const defaults = await response.json();\n  localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));\n}`, input: 'First visit to My Tasks', result: 'employeeTasks created in this browser', why: 'The bundled file supplies starting tasks; later edits use the browser copy.', state: { screen: 'My Tasks board', session: 'Employee identity unchanged', browser: 'employeeTasks seeded', api: 'No API request' } },
-      { title: 'Move or submit a task', kind: 'localStorage', source: 'employee/my-tasks/my-tasks.js', code: `function saveTasks() {\n  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));\n  window.dispatchEvent(new Event('teamspace:tasks-changed'));\n}`, input: 'Drag task / Send for review', result: 'Task status saved locally', why: 'The custom event tells other components on the page to refresh their task numbers.', state: { screen: 'Updated task board', session: 'Employee identity unchanged', browser: 'employeeTasks modified', api: 'No API write' } },
-      { title: 'Update sidebar progress', kind: 'UI', source: 'shared/employee-sidebar.js', code: `const activeCount = tasks.filter(task => task.status !== 'completed').length;\nconst completedCount = tasks.filter(task => task.status === 'completed').length;\nconst progress = tasks.length\n  ? Math.round(completedCount / tasks.length * 100) : 0;`, input: 'Task data or task-changed event', result: 'Progress bar and count recalculate', why: 'The progress display is derived from task status, not a fixed percentage.', state: { screen: 'Sidebar progress updated', session: 'Employee identity unchanged', browser: 'employeeTasks remains source of truth', api: 'No API write' } },
-      { title: 'Open task from workspace', kind: 'Route', source: 'employee/MyWOrkSpace/MyWOrkSpace.js', code: `row.href = \`../my-tasks/my-tasks.html\${task.id\n  ? \`?task=\${encodeURIComponent(task.id)}\` : ''}\`;`, input: 'Click a priority task on My Workspace', result: 'My Tasks opens selected task', why: 'A query parameter carries the task ID between the two pages.', state: { screen: 'My Tasks selected task', session: 'Employee identity unchanged', browser: 'URL has ?task=ID', api: 'No API request' } }
+    "id": "tasks",
+    "group": "EMPLOYEE",
+    "title": "My Tasks and workspace progress",
+    "description": "Employee tasks now load from and save to the local JSON API.",
+    "caveat": "Tasks are in api/db.json on the API host. Another browser using that same server sees updated task data after it reloads.",
+    "steps": [
+      {
+        "title": "Load my tasks",
+        "kind": "GET",
+        "source": "employee/my-tasks/my-tasks.js",
+        "code": "const response = await fetch(`${API}/tasks?employeeId=${encodeURIComponent(user.id)}`);\ntasks = await response.json();",
+        "input": "Open My Tasks",
+        "result": "Only signed-in employee tasks render",
+        "why": "The employee ID filters the shared tasks collection.",
+        "state": {
+          "screen": "My Tasks board",
+          "session": "Employee identity in loggedUser",
+          "browser": "No task copy in localStorage",
+          "api": "GET /tasks?employeeId=…"
+        }
+      },
+      {
+        "title": "Save task changes",
+        "kind": "PUT",
+        "source": "employee/my-tasks/my-tasks.js",
+        "code": "const response = await fetch(`${API}/tasks/${encodeURIComponent(task.id)}`, {\n  method: 'PUT',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify(task)\n});",
+        "input": "Move task or submit for review",
+        "result": "Changed task is written to api/db.json",
+        "why": "The board saves changed records through the API.",
+        "state": {
+          "screen": "Updated task board",
+          "session": "Employee identity in loggedUser",
+          "browser": "Current tasks in page memory",
+          "api": "PUT /tasks/:id"
+        }
+      },
+      {
+        "title": "Refresh sidebar progress",
+        "kind": "GET",
+        "source": "shared/employee-sidebar.js",
+        "code": "const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);\ntasks = await response.json();\nconst progress = tasks.length ? Math.round(completedCount / tasks.length * 100) : 0;",
+        "input": "Open page or task-changed event",
+        "result": "Progress and task count recalculate",
+        "why": "The sidebar derives progress from current API task statuses.",
+        "state": {
+          "screen": "Sidebar progress updated",
+          "session": "Employee identity in loggedUser",
+          "browser": "No task copy in localStorage",
+          "api": "GET /tasks?employeeId=…"
+        }
+      },
+      {
+        "title": "Preview tasks on workspace",
+        "kind": "GET",
+        "source": "employee/MyWOrkSpace/MyWOrkSpace.js",
+        "code": "const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);\ntasks = await response.json();",
+        "input": "Open My Workspace",
+        "result": "Top three active tasks appear",
+        "why": "The workspace uses the same API collection as My Tasks.",
+        "state": {
+          "screen": "Employee workspace",
+          "session": "Employee identity in loggedUser",
+          "browser": "Preview in page memory",
+          "api": "GET /tasks?employeeId=…"
+        }
+      }
     ]
   },
   {
-    id: 'leave', group: 'EMPLOYEE', title: 'Leave & Time Off', description: 'The employee leave screen seeds data from its JSON file and stores requests in this browser.',
-    caveat: 'HR Leave Requests currently has an empty JavaScript file. Employee leave requests are not yet sent to a shared API or visible to HR on another device.',
-    steps: [
-      { title: 'Open request dialog', kind: 'Route', source: 'employee/MyWOrkSpace/MyWOrkSpace.html', code: `<a class="workspace-action"\n   href="../Leave&amp;TimeOff/Leave&amp;TimeOff.html#request-time-off">\n  Request Time Off\n</a>`, input: 'Request Time Off on workspace', result: 'Leave page loads with request hash', why: 'The hash is a lightweight signal to open the existing request modal.', state: { screen: 'Leave & Time Off', session: 'EMP identity available', browser: 'URL #request-time-off', api: 'No API request' } },
-      { title: 'Seed leave data', kind: 'JSON → localStorage', source: 'employee/Leave&TimeOff/Leave&TimeOff.js', code: `fetch(jsonFilePath).then(response => response.json()).then(data => {\n  var balances = data.leaveBalances.filter(item =>\n    Number(item.employeeId) === currentEmployeeId);\n  localStorage.setItem(storageKeyBalances, JSON.stringify(balances));\n});`, input: 'Leave page initializes', result: 'Current employee balances and requests cached', why: 'Only the signed-in employee’s leave records are selected from the bundled JSON.', state: { screen: 'Balance cards visible', session: 'EMP ID used for filter', browser: 'hr_leaveBalances, hr_leaveRequests', api: 'No API write' } },
-      { title: 'Show and save request', kind: 'localStorage', source: 'employee/Leave&TimeOff/Leave&TimeOff.js', code: `if (location.hash === '#request-time-off') openModal();\n// After validation:\nall.push(newRequest);\nsaveRequests(all);`, input: 'Submit valid leave dates and reason', result: 'Pending request appears locally', why: 'The request is saved under hr_leaveRequests in the browser, not the API database.', state: { screen: 'Leave request list refreshed', session: 'EMP identity unchanged', browser: 'hr_leaveRequests modified', api: 'No /leaveRequests call' } }
+    "id": "leave",
+    "group": "EMPLOYEE",
+    "title": "Leave & Time Off",
+    "description": "Leave balances and requests now come from the local API; submissions are shared on that API host.",
+    "caveat": "The sample balances and requests you supplied are in api/db.seed.json and api/db.json. A new employee receives a default balance when HR adds their account.",
+    "steps": [
+      {
+        "title": "Open the request dialog",
+        "kind": "Route",
+        "source": "employee/MyWOrkSpace/MyWOrkSpace.html",
+        "code": "<a href=\"../Leave&amp;TimeOff/Leave&amp;TimeOff.html#request-time-off\">Request Time Off</a>",
+        "input": "Click Request Time Off",
+        "result": "Leave page opens its dialog",
+        "why": "The hash signals the existing modal to open.",
+        "state": {
+          "screen": "Leave request modal",
+          "session": "Employee identity in loggedUser",
+          "browser": "URL hash only",
+          "api": "No write"
+        }
+      },
+      {
+        "title": "Load employee leave data",
+        "kind": "GET",
+        "source": "employee/Leave&TimeOff/Leave&TimeOff.js",
+        "code": "var responses = await Promise.all(urls.map(function (url) { return fetch(url); }));\nvar data = await Promise.all(responses.map(function (response) { return response.json(); }));\nemployeeRecord = data[0]; leaveBalances = data[1]; leaveRequests = data[2];",
+        "input": "Leave page loads",
+        "result": "Current employee balance and requests display",
+        "why": "The page reads /employees, /leaveBalances, and /leaveRequests by employee ID.",
+        "state": {
+          "screen": "Leave balances and history",
+          "session": "Employee identity in loggedUser",
+          "browser": "No leave data saved locally",
+          "api": "GET three API resources"
+        }
+      },
+      {
+        "title": "Submit leave request",
+        "kind": "POST",
+        "source": "employee/Leave&TimeOff/Leave&TimeOff.js",
+        "code": "var response = await fetch(API + \"/leaveRequests\", {\n  method: \"POST\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(request)\n});",
+        "input": "Submit validated dates and reason",
+        "result": "Pending request saved to JSON API",
+        "why": "HR Leave Requests can now see and decide on the same record.",
+        "state": {
+          "screen": "New pending request",
+          "session": "Employee identity in loggedUser",
+          "browser": "No leave request in localStorage",
+          "api": "POST /leaveRequests"
+        }
+      },
+      {
+        "title": "HR approves or rejects",
+        "kind": "PATCH",
+        "source": "hr/requests/requests.js",
+        "code": "const response = await fetch(`${API}/leaveRequests/${encodeURIComponent(request.id)}`, {\n  method: 'PATCH', headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ status, reviewer: session.name })\n});",
+        "input": "HR clicks Approve or Reject",
+        "result": "Status persists; approval updates balance used",
+        "why": "The HR screen reads all requests and writes a decision through the API.",
+        "state": {
+          "screen": "HR Leave Requests",
+          "session": "Employee identity in loggedUser",
+          "browser": "No duplicate local request store",
+          "api": "PATCH /leaveRequests/:id"
+        }
+      }
     ]
   },
   {
-    id: 'helpdesk', group: 'EMPLOYEE', title: 'Helpdesk support', description: 'The helpdesk form saves drafts, tickets, and meeting information locally.',
-    caveat: 'Helpdesk requests currently live in localStorage. They are not synchronized to the JSON API or other browsers.',
-    steps: [
-      { title: 'Choose a request', kind: 'Input', source: 'employee/helpDesk/helpDesk.js', code: `let requestType = "meeting";\nlet selectedChannel = "Zoom";\nlet selectedTime = "02:00 PM";\nlet selectedDuration = "20m";`, input: 'Meeting or standard ticket, details and time', result: 'Form holds request choices', why: 'These values determine the request status and meeting details.', state: { screen: 'Helpdesk form', session: 'Employee identity available', browser: 'Unsaved form state', api: 'No API request' } },
-      { title: 'Save request', kind: 'localStorage', source: 'employee/helpDesk/helpDesk.js', code: `requests.unshift(request);\nlocalStorage.setItem("helpdeskRequests", JSON.stringify(requests));\nif (requestType == "meeting") {\n  localStorage.setItem("helpdeskMeeting", JSON.stringify(request));\n}\nlocalStorage.removeItem("helpdeskDraft");`, input: 'Submit support request', result: 'Recent ticket or meeting appears', why: 'The same browser can reload these saved objects after a page refresh.', state: { screen: 'Recent support tickets', session: 'Employee identity unchanged', browser: 'helpdeskRequests (+ meeting)', api: 'No API write' } },
-      { title: 'Read recent tickets', kind: 'localStorage', source: 'employee/helpDesk/helpDesk.js', code: `let requests = JSON.parse(\n  localStorage.getItem("helpdeskRequests")\n) || [];\nrecentTickets.innerHTML = "";`, input: 'Open or refresh Helpdesk', result: 'Saved tickets render again', why: 'The list is reconstructed from browser storage, not fetched from a server.', state: { screen: 'Ticket list', session: 'Employee identity unchanged', browser: 'helpdeskRequests read', api: 'No API request' } }
+    "id": "helpdesk",
+    "group": "EMPLOYEE",
+    "title": "Helpdesk support",
+    "description": "Helpdesk drafts, tickets, and meetings now use the local JSON API.",
+    "caveat": "Requests are filtered by employeeId. The current local json-server is an educational demo and does not enforce server-side authorization.",
+    "steps": [
+      {
+        "title": "Load my tickets and draft",
+        "kind": "GET",
+        "source": "employee/helpDesk/helpDesk.js",
+        "code": "const [requestsResponse, draftsResponse] = await Promise.all([\n  fetch(`${API}/helpdeskRequests?employeeId=${helpdeskEmployeeId}`),\n  fetch(`${API}/helpdeskDrafts?employeeId=${helpdeskEmployeeId}`)\n]);",
+        "input": "Open Helpdesk",
+        "result": "Saved tickets and draft render",
+        "why": "The page no longer reads helpdesk data from localStorage.",
+        "state": {
+          "screen": "Helpdesk",
+          "session": "Employee identity in loggedUser",
+          "browser": "Tickets in page memory",
+          "api": "GET /helpdeskRequests and /helpdeskDrafts"
+        }
+      },
+      {
+        "title": "Save a draft",
+        "kind": "POST / PATCH",
+        "source": "employee/helpDesk/helpDesk.js",
+        "code": "const response = await fetch(helpdeskDraft ? `${API}/helpdeskDrafts/${encodeURIComponent(helpdeskDraft.id)}` : `${API}/helpdeskDrafts`, {\n  method: helpdeskDraft ? \"PATCH\" : \"POST\",\n  headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify(draft)\n});",
+        "input": "Click Save Draft",
+        "result": "Draft persists on API host",
+        "why": "A later visit can reload the same draft.",
+        "state": {
+          "screen": "Draft saved",
+          "session": "Employee identity in loggedUser",
+          "browser": "No helpdeskDraft localStorage key",
+          "api": "POST or PATCH /helpdeskDrafts"
+        }
+      },
+      {
+        "title": "Submit a ticket or meeting",
+        "kind": "POST",
+        "source": "employee/helpDesk/helpDesk.js",
+        "code": "const response = await fetch(`${API}/helpdeskRequests`, {\n  method: \"POST\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(request)\n});",
+        "input": "Click Submit",
+        "result": "New ticket appears; draft is removed",
+        "why": "The meeting card is derived from saved meeting-type requests.",
+        "state": {
+          "screen": "Recent support tickets",
+          "session": "Employee identity in loggedUser",
+          "browser": "No helpdeskRequests localStorage key",
+          "api": "POST /helpdeskRequests"
+        }
+      }
     ]
   },
   {
@@ -111,12 +275,72 @@ const flows = [
     ]
   },
   {
-    id: 'hr-workspace', group: 'HR', title: 'HR workspace and unfinished screens', description: 'The HR landing page shows live employee counts; some linked management screens are still scaffolds.',
-    caveat: 'hr/tasks/tasks.js and hr/requests/requests.js are empty in this checkout. Do not assume those screens save or process records yet.',
-    steps: [
-      { title: 'Greet signed-in HR', kind: 'localStorage', source: 'hr/workspace/workspace.js', code: `user = JSON.parse(localStorage.getItem('loggedUser') || '{}');\nconst firstName = user.name?.trim().split(/\\s+/)[0] || 'there';\ndocument.getElementById('hrGreeting').textContent =\n  \`\${greeting}, \${firstName} 👋\`;`, input: 'Open HR workspace', result: 'Personalized greeting', why: 'The role-specific workspace uses the small saved identity.', state: { screen: 'HR workspace', session: 'HR name read', browser: 'Greeting displayed', api: 'No write' } },
-      { title: 'Count company accounts', kind: 'GET', source: 'hr/workspace/workspace.js', code: `const response = await fetch(\`\${API}/employees\`);\nconst employees = await response.json();\ndocument.getElementById('hrActiveEmployees').textContent =\n  employees.filter(item => item.status === 'Active').length;`, input: 'Workspace initializes', result: 'Total, active, first-time, blocked counts', why: 'These numbers are derived from the current API records.', state: { screen: 'HR summary cards', session: 'HR identity unchanged', browser: 'Counts displayed', api: 'GET /employees' } },
-      { title: 'Check remaining routes', kind: 'Status', source: 'shared/hr-sidebar.html', code: `<a href="../../hr/tasks/tasks.html">Tasks</a>\n<a href="../../hr/requests/requests.html">Leave Requests</a>\n<!-- Their .js files are currently empty. -->`, input: 'Click Tasks or Leave Requests in sidebar', result: 'Pages open, but JavaScript business flow is not implemented', why: 'The simulator labels these accurately as unfinished instead of inventing API behavior.', state: { screen: 'HR Tasks / Leave Requests scaffold', session: 'HR identity remains', browser: 'No workflow implementation yet', api: 'No implemented write flow' } }
+    "id": "hr-workspace",
+    "group": "HR",
+    "title": "HR workspace and operations",
+    "description": "HR sees live employee counts and can act on shared tasks and leave requests.",
+    "caveat": "The demo API is local to the host running json-server; it has no production authentication or atomic multi-record transactions.",
+    "steps": [
+      {
+        "title": "Show HR identity",
+        "kind": "localStorage",
+        "source": "hr/workspace/workspace.js",
+        "code": "user = JSON.parse(localStorage.getItem('loggedUser') || '{}');\nconst firstName = user.name?.trim().split(/\\s+/)[0] || 'there';",
+        "input": "Open HR workspace",
+        "result": "Personalized greeting",
+        "why": "Only the small identity is read locally.",
+        "state": {
+          "screen": "HR workspace",
+          "session": "HR identity in loggedUser",
+          "browser": "loggedUser identity only",
+          "api": "No write"
+        }
+      },
+      {
+        "title": "Load live company counts",
+        "kind": "GET",
+        "source": "hr/workspace/workspace.js",
+        "code": "const response = await fetch(`${API}/employees`);\nconst employees = await response.json();\ndocument.getElementById('hrActiveEmployees').textContent = employees.filter(item => item.status === 'Active').length;",
+        "input": "Workspace initializes",
+        "result": "Total, active, first-time, blocked counts",
+        "why": "Numbers derive from the current employee database.",
+        "state": {
+          "screen": "HR summary cards",
+          "session": "HR identity in loggedUser",
+          "browser": "Counts in DOM",
+          "api": "GET /employees"
+        }
+      },
+      {
+        "title": "Manage team work",
+        "kind": "POST / PATCH",
+        "source": "hr/tasks/tasks.js",
+        "code": "const response = await fetch(`${API}/tasks`, {\n  method: 'POST', headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify(task)\n});",
+        "input": "Open HR Tasks and assign work",
+        "result": "New task appears for the chosen employee",
+        "why": "The employee task board reads the same /tasks collection.",
+        "state": {
+          "screen": "HR Team Tasks",
+          "session": "HR identity in loggedUser",
+          "browser": "Task list in page memory",
+          "api": "POST /tasks"
+        }
+      },
+      {
+        "title": "Review leave requests",
+        "kind": "PATCH",
+        "source": "hr/requests/requests.js",
+        "code": "const response = await fetch(`${API}/leaveRequests/${encodeURIComponent(request.id)}`, {\n  method: 'PATCH', headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ status, reviewer: session.name })\n});",
+        "input": "Open HR Leave Requests and decide",
+        "result": "Approved or rejected status persists",
+        "why": "The employee leave page sees the updated decision on reload.",
+        "state": {
+          "screen": "HR Leave Requests",
+          "session": "HR identity in loggedUser",
+          "browser": "No local leave store",
+          "api": "PATCH /leaveRequests/:id"
+        }
+      }
     ]
   },
   {
