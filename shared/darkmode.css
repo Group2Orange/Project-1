@@ -1,0 +1,42 @@
+
+
+body.dark {
+
+    /* =========================
+       GENERAL WEBSITE COLORS
+    ========================= */
+
+    --primary: #19B5B8;
+    --primary-dark: #67E8E8;
+    --primary-light: #153B3E;
+
+    --secondary: #A8B2C1;
+    --green: #34D399;
+
+    --dark: #F8FAFC;
+    --white: #172033;
+
+    --bg: #0F172A;
+    --border: #334155;
+
+
+    /* =========================
+       NAVBAR + FOOTER COLORS
+    ========================= */
+
+    --color-primary: #19B5B8;
+    --color-primary-dark: #67E8E8;
+    --color-primary-light: #153B3E;
+
+    --color-secondary: #A8B2C1;
+    --color-tertiary: #34D399;
+    --color-danger: #F87171;
+
+    --color-text: #F8FAFC;
+    --color-text-muted: #94A3B8;
+
+    --color-page: #0F172A;
+    --color-card: #172033;
+    --color-surface: #1E293B;
+    --color-border: #334155;
+}

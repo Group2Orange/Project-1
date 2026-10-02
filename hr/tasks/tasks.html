@@ -1,258 +1,43 @@
-<!-- hr/tasks/tasks.html -->
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Task Management | TeamSpace HR</title>
-
+  <title>Task Management | HR System</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
-  <link rel="stylesheet" href="../../shared/hr-sidebar.css">
-  <link rel="stylesheet" href="../../shared/hr-layout.css">
   <link rel="stylesheet" href="tasks.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css">
 </head>
 
+
 <body class="has-footer">
-
   <nav class="navbar" data-navbar="hr"></nav>
-
-  <main class="hr-page-shell">
-
-    <aside
-      class="hr-sidebar"
-      data-hr-sidebar
-      data-hr-sidebar-active="tasks"
-      aria-label="HR workspace">
-    </aside>
-
-    <section class="hr-page-content tasks-page" aria-labelledby="tasksTitle">
-
-      <header class="tasks-heading">
-        <div>
-          <p class="eyebrow">PEOPLE OPERATIONS</p>
-          <h1 id="tasksTitle">Team Tasks</h1>
-          <p>Assign work and track progress across employees.</p>
-        </div>
-
-        <div class="heading-actions">
-          <button type="button" class="button button-primary" id="addTaskButton">
-            <span class="material-symbols-outlined" aria-hidden="true">add_task</span>
-            Assign Task
-          </button>
-        </div>
-      </header>
-
-      <p id="taskMessage" class="tasks-message" role="status" aria-live="polite"></p>
-
-      <section class="tasks-panel" aria-label="Team tasks">
-
-        <div class="tasks-filters">
-          <label class="search-field">
-            <span class="visually-hidden">Search tasks</span>
-            <span class="material-symbols-outlined" aria-hidden="true">search</span>
-            <input id="taskSearch" type="search" placeholder="Search tasks or employees..." autocomplete="off">
-          </label>
-
-          <label>
-            <span class="visually-hidden">Status</span>
-            <select id="taskStatus" aria-label="Filter tasks by status">
-              <option value="">All statuses</option>
-              <option value="todo">To do</option>
-              <option value="progress">In progress</option>
-              <option value="review">Under review</option>
-              <option value="completed">Completed</option>
-            </select>
-          </label>
-        </div>
-
-        <p id="taskResultsMessage" class="tasks-results" role="status" aria-live="polite"></p>
-
-        <div class="tasks-table-wrap">
-          <table class="tasks-table">
-            <thead>
-              <tr>
-                <th scope="col">TASK &amp; DESCRIPTION</th>
-                <th scope="col">ASSIGNED TO</th>
-                <th scope="col">PRIORITY &amp; DUE</th>
-                <th scope="col">STATUS</th>
-                <th scope="col" class="actions-header">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody id="taskList"></tbody>
-          </table>
-        </div>
-      </section>
-
+  <main class="operations-layout">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="tasks" aria-label="HR workspace"></aside>
+    <section class="operations-content">
+      <header><p class="operations-kicker">PEOPLE OPERATIONS</p><h1>Team Tasks</h1><p>Assign work and track progress across employees.</p></header>
+      <p id="taskMessage" class="operations-message" role="status" aria-live="polite"></p>
+      <form id="newTaskForm" class="operations-form">
+        <h2>Assign a task</h2>
+        <label>Title<input name="title" required maxlength="120" placeholder="Task title"></label>
+        <label>Employee<select name="employeeId" required><option value="">Choose employee</option></select></label>
+        <label>Priority<select name="priority"><option>Normal</option><option>High</option><option>Routine</option></select></label>
+        <label>Due date<input name="dueDate" type="date"></label>
+        <label class="full">Description<textarea name="description" rows="3" placeholder="What needs to be done?"></textarea></label>
+        <button type="submit">Assign task</button>
+      </form>
+      <div class="operations-toolbar"><label>Search tasks<input id="taskSearch" type="search" placeholder="Title or employee"></label><label>Status<select id="taskStatus"><option value="">All statuses</option><option value="todo">To do</option><option value="progress">In progress</option><option value="review">Under review</option><option value="completed">Completed</option></select></label></div>
+      <div id="taskList" class="operations-list"></div>
     </section>
   </main>
-
-  <!-- Assign / Edit task popup -->
-  <dialog id="taskDialog" class="task-dialog" aria-labelledby="taskDialogTitle">
-    <form id="newTaskForm">
-
-      <div class="dialog-heading">
-        <div>
-          <p class="eyebrow">TASK MANAGEMENT</p>
-          <h2 id="taskDialogTitle">Assign a task</h2>
-          <p id="taskDialogHint">Set the task details and choose one or more employees.</p>
-        </div>
-
-        <button type="button" class="icon-button" id="closeTaskDialog" aria-label="Close dialog">
-          <span class="material-symbols-outlined" aria-hidden="true">close</span>
-        </button>
-      </div>
-
-      <input type="hidden" id="editTaskId" name="editTaskId">
-
-      <div class="dialog-grid">
-
-        <label class="dialog-wide">
-          Task title
-          <input name="title" required maxlength="120" placeholder="e.g. Q4 Marketing Report">
-        </label>
-
-        <div class="dialog-field dialog-wide">
-          <span class="dialog-label">Employees</span>
-
-          <button
-            type="button"
-            class="employee-picker-trigger"
-            id="employeePickerTrigger"
-            aria-haspopup="listbox"
-            aria-expanded="false">
-            <span class="employee-picker-trigger-text" id="employeePickerText">Select employees</span>
-            <span class="employee-picker-count" id="employeePickerCount">0 selected</span>
-            <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
-          </button>
-
-          <div class="employee-picker" id="employeePicker" hidden>
-            <div class="employee-picker-toolbar">
-              <button type="button" class="picker-action" id="selectAllEmployees">Select all</button>
-              <button type="button" class="picker-action" id="clearEmployees">Clear</button>
-              <span class="employee-picker-total" id="employeePickerTotal"></span>
-            </div>
-            <div class="employee-picker-list" id="employeeOptions" role="listbox" aria-multiselectable="true"></div>
-          </div>
-
-          <p class="field-help">You can select multiple employees for the same task. Blocked employees cannot be assigned new tasks.</p>
-        </div>
-
-        <label>
-          Priority
-          <select name="priority">
-            <option value="Normal">Normal</option>
-            <option value="High">High</option>
-            <option value="Routine">Routine</option>
-          </select>
-        </label>
-
-        <label>
-          Due date
-          <input name="dueDate" type="date">
-        </label>
-
-        <label class="dialog-wide">
-          Description
-          <textarea name="description" rows="4" maxlength="1000" placeholder="Brief details on what needs to be done"></textarea>
-        </label>
-      </div>
-
-      <p id="formError" class="form-error" role="alert" hidden></p>
-
-      <div class="dialog-actions">
-        <button type="button" class="button button-light" id="cancelTaskDialog">Cancel</button>
-        <button type="submit" class="button button-primary" id="saveTaskButton">Assign Task</button>
-      </div>
-
-    </form>
-  </dialog>
-
-  <!-- View task popup -->
-  <dialog id="viewDialog" class="task-dialog" aria-labelledby="viewDialogTitle">
-    <div class="dialog-heading">
-      <div>
-        <p class="eyebrow">TASK DETAILS</p>
-        <h2 id="viewDialogTitle">Task Details</h2>
-        <p>Review the full task information.</p>
-      </div>
-
-      <button type="button" class="icon-button" id="closeViewDialog" aria-label="Close dialog">
-        <span class="material-symbols-outlined" aria-hidden="true">close</span>
-      </button>
-    </div>
-
-    <div class="dialog-grid dialog-readonly-grid">
-      <label class="dialog-wide">
-        Title
-        <input id="viewTitle" readonly>
-      </label>
-
-      <div class="dialog-field dialog-wide">
-        <span class="dialog-label">Employees</span>
-        <div class="view-employee-list" id="viewEmployees"></div>
-      </div>
-
-      <label>
-        Priority
-        <input id="viewPriority" readonly>
-      </label>
-
-      <label>
-        Due date
-        <input id="viewDueDate" readonly>
-      </label>
-
-      <label>
-        Status
-        <input id="viewStatus" readonly>
-      </label>
-
-      <label>
-        Assignment
-        <input id="viewAssignment" readonly>
-      </label>
-
-      <label class="dialog-wide">
-        Description
-        <textarea id="viewDescription" readonly rows="4"></textarea>
-      </label>
-    </div>
-
-    <div class="dialog-actions dialog-actions-standalone">
-      <button type="button" class="button button-light" id="closeViewDialogFooter">Close</button>
-    </div>
-  </dialog>
-
-  <!-- Delete confirmation popup -->
-  <dialog id="deleteDialog" class="task-dialog confirm-dialog" aria-labelledby="deleteTitle">
-    <div class="confirm-icon">
-      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-    </div>
-
-    <h2 id="deleteTitle">Delete task?</h2>
-    <p id="deleteMessage">This will remove the task for all assigned employees.</p>
-
-    <div class="dialog-actions">
-      <button type="button" class="button button-light" id="cancelDelete">Cancel</button>
-      <button type="button" class="button button-danger" id="confirmDelete">Delete Task</button>
-    </div>
-  </dialog>
-
-  <!-- Non-blocking popup message -->
-  <div id="taskToast" class="task-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-
   <footer class="site-footer" data-footer></footer>
-
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
   <script src="../../shared/hr-sidebar.js"></script>
-  <script src="tasks.js?v=9&old=6"></script>
-
+  <script src="tasks.js?v=2"></script>
 </body>
 </html>

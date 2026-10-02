@@ -26,10 +26,8 @@ html {
 
 body {
     font-family: "Public Sans", sans-serif;
-
     background: var(--bg);
     color: var(--dark);
-
     line-height: 1.6;
 
     min-height: 100vh;
@@ -53,6 +51,7 @@ img {
 }
 
 
+
 /* =========================
    TEAM
 ========================= */
@@ -60,12 +59,7 @@ img {
 .team-section {
     padding: 90px 5%;
 
-    background:
-        linear-gradient(
-            180deg,
-            #EFF7F7,
-            #F8FAFB
-        );
+  
 }
 
 .team-header {
@@ -169,7 +163,7 @@ img {
 
 .team-card h3 {
     font-size: 19px;
-
+    color:#021617;
     margin-bottom: 5px;
 }
 
@@ -425,28 +419,13 @@ img {
 
 
 
-
-
 @media (max-width: 768px) {
 
     .team-container {
 display: flex;
 flex-direction: column;
       
-
         padding: 35px 0;
-    }
-
-
-    .about-content h1 {
-
-        font-size: 38px;
-    }
-
-
-    .about-image > img {
-
-        height: 280px;
     }
 
 }
