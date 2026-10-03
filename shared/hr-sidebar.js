@@ -19,8 +19,29 @@
         try {
           const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('loggedUser'));
           if (user?.name) {
-            sidebar.querySelector('.hr-sidebar-name').textContent = user.name;
-            sidebar.querySelector('.hr-sidebar-avatar').textContent = user.name.trim().split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase();
+            const name = user.name.trim();
+            const initials = name.split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase();
+            const avatar = sidebar.querySelector('.hr-sidebar-avatar');
+            const fallbackImage = '../../common/profile/assets/profile.svg';
+            const imageSource = typeof user.image === 'string' && user.image.startsWith('data:image/')
+              ? user.image
+              : typeof user.image === 'string' && user.image.startsWith('assets/')
+                ? new URL(`../../${user.image}`, document.baseURI).href
+                : fallbackImage;
+            const image = document.createElement('img');
+            image.alt = '';
+            image.addEventListener('error', () => {
+              if (image.dataset.usingFallback === 'true') {
+                image.remove();
+                avatar.textContent = initials;
+                return;
+              }
+              image.dataset.usingFallback = 'true';
+              image.src = fallbackImage;
+            });
+            image.src = imageSource;
+            avatar.replaceChildren(image);
+            sidebar.querySelector('.hr-sidebar-name').textContent = name;
           }
         } catch { /* Keep the generic label. */ }
         const toggle = sidebar.querySelector('.hr-sidebar-toggle');

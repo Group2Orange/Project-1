@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Meeting | TeamSpace HR</title>
+  <script src="../../shared/theme-init.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar" data-navbar="hr"></nav>
+  <main class="meeting-page">
+    <a id="backLink" class="back-link" href="../../employee/helpDesk/helpDesk.html">← Back to Helpdesk</a>
+    <section class="meeting-panel">
+      <header class="meeting-heading">
+        <div>
+          <span class="meeting-label">Jitsi demo meeting</span>
+          <h1 id="meetingTitle">Your video meeting</h1>
+          <p id="meetingSchedule">Loading your meeting…</p>
+        </div>
+        <div class="meeting-actions">
+          <button type="button" id="joinMeeting" hidden>Join meeting</button>
+          <a id="externalMeeting" target="_blank" rel="noopener noreferrer" hidden>Open in Jitsi ↗</a>
+        </div>
+      </header>
+      <p id="meetingNotice" class="meeting-notice" role="status">Checking this approved request.</p>
+      <div id="meet" class="meeting-frame" hidden></div>
+    </section>
+  </main>
+  <script src="../../shared/navbar.js?v=3"></script>
+  <script src="../../shared/helpdesk-meetings.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

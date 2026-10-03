@@ -92,6 +92,11 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function openMeeting(link) {
+  if (new URL(link).origin === location.origin) location.assign(link);
+  else window.open(link, '_blank', 'noopener,noreferrer');
+}
+
 function nowHHMM() {
   const n = new Date();
   return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
@@ -471,8 +476,9 @@ function renderMeetingCard() {
   meetingStatusBadge.textContent = displayStatus(meeting.status);
   meetingStatusBadge.hidden = false;
 
-  const joinBtn = meeting.meetingLink && ['Approved', 'Confirmed'].includes(meeting.status)
-    ? `<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meeting.meetingLink)}">
+  const meetingLink = HelpdeskMeetings.joinLink(meeting);
+  const joinBtn = meetingLink && ['Approved', 'Confirmed'].includes(meeting.status)
+    ? `<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meetingLink)}">
          <span class="material-symbols-outlined" style="font-size:16px;">videocam</span> Join
        </button>`
     : '';
@@ -482,14 +488,14 @@ function renderMeetingCard() {
       <div class="meeting-subject">${escapeHtml(meeting.subject)}</div>
       <div class="meeting-meta">
         <p><span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span> ${escapeHtml(formatDate(meeting.date))}</p>
-        <p><span class="material-symbols-outlined" style="font-size:16px;">schedule</span> ${escapeHtml(meeting.timeFrom || meeting.time || '—')} – ${escapeHtml(meeting.timeTo || meeting.time || '—')}</p>
-        <p><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> ${escapeHtml(meeting.platform || meeting.channel || '—')}</p>
+        <p><span class="material-symbols-outlined" style="font-size:16px;">schedule</span> ${escapeHtml(meeting.timeFrom || meeting.time || '—')}${meeting.timeTo ? ` – ${escapeHtml(meeting.timeTo)}` : ''}</p>
+        <p><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> ${escapeHtml(HelpdeskMeetings.platformLabel(meeting))}</p>
       </div>
       ${joinBtn ? `<div class="meeting-btns">${joinBtn}</div>` : ''}
     </div>
   `;
   meetingCardContent.querySelector('[data-meeting-link]')?.addEventListener('click', event => {
-    window.open(event.currentTarget.dataset.meetingLink, '_blank', 'noopener,noreferrer');
+    openMeeting(event.currentTarget.dataset.meetingLink);
   });
 }
 
@@ -516,9 +522,9 @@ function buildDetailBody(t) {
 
   if (t.type === 'meeting') {
     html += `
-      <div class="detail-row"><span class="detail-label">Platform</span><span class="detail-value">${escapeHtml(t.platform || t.channel || '—')}</span></div>
+      <div class="detail-row"><span class="detail-label">Platform</span><span class="detail-value">${escapeHtml(HelpdeskMeetings.platformLabel(t))}</span></div>
       <div class="detail-row"><span class="detail-label">Meeting Date</span><span class="detail-value">${escapeHtml(formatDate(t.date))}</span></div>
-      <div class="detail-row"><span class="detail-label">Time Range</span><span class="detail-value">${escapeHtml(t.timeFrom || t.time || '—')} – ${escapeHtml(t.timeTo || t.time || '—')}</span></div>
+      <div class="detail-row"><span class="detail-label">Time Range</span><span class="detail-value">${escapeHtml(t.timeFrom || t.time || '—')}${t.timeTo ? ` – ${escapeHtml(t.timeTo)}` : ''}</span></div>
     `;
   }
 
@@ -535,7 +541,7 @@ function buildDetailBody(t) {
     const rr = t.rescheduleRequest;
     html += `
       <div class="reschedule-box">
-        <h4>Reschedule Proposed by HR</h4>
+        <h4>Reschedule Proposed by ${rr.proposedBy === 'HR' ? 'HR' : 'You'}</h4>
         <p><strong>New Date:</strong> ${escapeHtml(formatDate(rr.date))}</p>
         <p><strong>Time:</strong> ${escapeHtml(rr.timeFrom || '—')} – ${escapeHtml(rr.timeTo || '—')}</p>
       </div>
@@ -549,12 +555,13 @@ function buildDetailActions(t) {
   const actions = [];
 
   // Join button (Approved meeting with link)
-  if (t.type === 'meeting' && t.meetingLink && ['Approved', 'Confirmed'].includes(t.status)) {
-    actions.push(`<button type="button" class="btn-join" data-meeting-link="${escapeHtml(t.meetingLink)}"><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> Join</button>`);
+  const meetingLink = HelpdeskMeetings.joinLink(t);
+  if (t.type === 'meeting' && meetingLink && ['Approved', 'Confirmed'].includes(t.status)) {
+    actions.push(`<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meetingLink)}"><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> Join</button>`);
   }
 
   // Reschedule Requested: Accept or Propose new time
-  if (t.status === 'Reschedule Requested' && t.rescheduleRequest) {
+  if (t.status === 'Reschedule Requested' && t.rescheduleRequest?.proposedBy === 'HR') {
     actions.push(`<button class="btn-success" id="acceptRescheduleBtn">Accept</button>`);
     actions.push(`<button class="btn-secondary" id="proposeNewTimeBtn">Propose New Time</button>`);
   }
@@ -573,7 +580,7 @@ function attachDetailActions(ticket) {
   const joinBtn = ticketDetailActions.querySelector('[data-meeting-link]');
   if (joinBtn) {
     joinBtn.addEventListener('click', event => {
-      window.open(event.currentTarget.dataset.meetingLink, '_blank', 'noopener,noreferrer');
+      openMeeting(event.currentTarget.dataset.meetingLink);
     }, { once: true });
   }
 
@@ -606,6 +613,7 @@ function attachDetailActions(ticket) {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            ...HelpdeskMeetings.roomPatch(ticket),
             status: 'Approved',
             date:   rr.date,
             timeFrom: rr.timeFrom,
@@ -650,9 +658,10 @@ ticketDetailModal.addEventListener('click', e => {
 --------------------------------------------------------- */
 function openRescheduleModal(ticket) {
   currentTicket = ticket;
-  rescheduleDate.value  = '';
-  rescheduleFrom.value  = '';
-  rescheduleTo.value    = '';
+  const proposed = ticket.rescheduleRequest || ticket;
+  rescheduleDate.value  = proposed.date || '';
+  rescheduleFrom.value  = HelpdeskMeetings.normaliseTime(proposed.timeFrom || proposed.time);
+  rescheduleTo.value    = HelpdeskMeetings.normaliseTime(proposed.timeTo);
   document.getElementById('rescheduleDateError').textContent  = '';
   document.getElementById('rescheduleTimeError').textContent  = '';
   rescheduleModal.showModal();

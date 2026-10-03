@@ -149,6 +149,9 @@
 .workspace-timeline time { color: var(--color-primary-dark); font-size: 10px; font-weight: 700; }
 .workspace-timeline strong { color: #263a4e; font-size: 11px; line-height: 1.35; }
 .workspace-timeline span { color: #7a899d; font-size: 10px; }
+.workspace-timeline a { width: fit-content; color: var(--color-primary-dark); font-size: 10px; font-weight: 700; text-decoration: none; }
+.workspace-timeline a:hover { text-decoration: underline; }
+.workspace-timeline .workspace-meeting-empty { padding: 12px 0; color: #687b8f; font-size: 11px; }
 
 .workspace-request-empty { display: grid; justify-items: start; gap: 7px; padding: 13px; border-radius: 8px; background: #f5f8fc; }
 .workspace-request-empty .material-symbols-outlined { color: var(--color-primary); font-size: 19px; }

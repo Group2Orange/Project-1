@@ -93,7 +93,7 @@
   <dialog id="approveDialog" class="directory-dialog">
     <form method="dialog">
       <header class="dialog-head">
-        <div><p class="dialog-eyebrow">ACTION</p><h2>Approve Ticket</h2></div>
+        <div><p class="dialog-eyebrow">ACTION</p><h2 id="approveTitle">Approve Ticket</h2></div>
         <button type="submit" class="dialog-x" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
       </header>
       <div class="dialog-body">
@@ -107,6 +107,7 @@
           <label for="hrReplyInput">Reply Message (optional)</label>
           <textarea id="hrReplyInput" rows="3" placeholder="Write a reply to the employee..."></textarea>
         </div>
+        <span class="field-error" id="approveError" role="alert"></span>
       </div>
       <footer class="dialog-foot">
         <button type="submit" class="button button-light">Cancel</button>
@@ -162,7 +163,8 @@
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=3"></script>
-  <script src="../../shared/hr-sidebar.js?v=2"></script>
-  <script src="helpdesk.js?v=2"></script>
+  <script src="../../shared/hr-sidebar.js?v=3"></script>
+  <script src="../../shared/helpdesk-meetings.js"></script>
+  <script src="helpdesk.js?v=3"></script>
 </body>
 </html>

@@ -23,7 +23,7 @@ npm install
 npm run reset
 ```
 
-`npm install` creates `node_modules/` for your computer. You do not create or upload that folder. `npm run reset` creates the writable `api/db.json` from `api/db.seed.json`. Run reset again only when you want to discard local test changes.
+`npm install` creates `node_modules/` for your computer. You do not create or upload that folder. `npm run reset` creates the writable `api/db.json` from `api/db.seed.json`. Before resetting later, stop the API terminal with Ctrl+C. The reset script refuses to run while the API is listening and saves the current file as an ignored `api/db.backup-*.json` backup before replacing it. Reset still replaces the database with the sample data.
 
 The repository's current `package-lock.json` is still an empty starter file. The first normal `npm install` will update it; commit that updated lockfile with `package.json` before teammates pull this setup.
 
@@ -36,6 +36,8 @@ npm run api
 ```
 
 Leave this terminal open. In VS Code, open `common/login/login.html` with **Live Server**. Use the HR demo account:
+
+If you pulled the database-wipe fix while the API was running, press **Ctrl+C** in that API terminal and run `npm run api` again. The command must include `--foreignKeySuffix _ref`; the old command can delete employee records when you withdraw a leave request or delete a helpdesk request/task. VS Code can remain open. Stop the API before saving or restoring `api/db.json` manually.
 
 ```text
 Email:    hr@company.com
@@ -64,3 +66,9 @@ That account opens **My Workspace**. Use **My Details** in the employee sidebar 
 | Port 3000 is busy | Stop the other process using port 3000. The page code currently expects this port. |
 
 The active API code is written directly in each screen's `.js` file. The older JSON/localStorage reads are left as `// OLD WAY` comments beside the new `fetch()` calls so you can compare them; comments do not run. The HR directory also uses the API because adding or blocking an employee must affect the same data that Login reads.
+
+## Check the database-wipe fix
+
+Run `npm run test:api`. It creates temporary databases, reproduces the old employee wipe, and verifies that leave submission/withdrawal, helpdesk and task deletion, employee add/edit/block, policy add/edit, and concurrent requests preserve unrelated records. It does not reset or write to your working database.
+
+For a browser check, log in, submit a leave request, and withdraw that request. Check `http://127.0.0.1:3000/employees` and `/policies` before and after. They should keep the same records. Do not run `npm run reset` as part of this check: it intentionally replaces all local data with the seed.

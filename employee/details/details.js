@@ -36,7 +36,26 @@ const API = 'http://127.0.0.1:3000';
   const text = (id, item) => { document.getElementById(id).textContent = value(item); };
   const field = (id, item) => { document.getElementById(id).value = item ?? ''; };
 
-  text('mainAvatar', initials);
+  const avatar = document.getElementById('mainAvatar');
+  const fallbackImage = '../../common/profile/assets/profile.svg';
+  const imageSource = typeof user.image === 'string' && user.image.startsWith('data:image/')
+    ? user.image
+    : typeof user.image === 'string' && user.image.startsWith('assets/')
+      ? new URL(`../../${user.image}`, document.baseURI).href
+      : fallbackImage;
+  const avatarImage = document.createElement('img');
+  avatarImage.alt = `${name}'s profile photo`;
+  avatarImage.addEventListener('error', () => {
+    if (avatarImage.dataset.usingFallback === 'true') {
+      avatarImage.remove();
+      avatar.textContent = initials;
+      return;
+    }
+    avatarImage.dataset.usingFallback = 'true';
+    avatarImage.src = fallbackImage;
+  });
+  avatarImage.src = imageSource;
+  avatar.replaceChildren(avatarImage);
   text('name', name);
   text('position', user.position);
   text('emailText', user.email);

@@ -39,7 +39,9 @@ function formatDate(str) {
 
 function formatTime(str) {
   if (!str) return '—';
-  const [h, m] = str.split(':');
+  const normalised = HelpdeskMeetings.normaliseTime(str);
+  if (!normalised) return str;
+  const [h, m] = normalised.split(':');
   const hour = parseInt(h, 10);
   const ampm = hour >= 12 ? 'PM' : 'AM';
   return `${hour % 12 || 12}:${m} ${ampm}`;
@@ -70,12 +72,15 @@ function getStatusBadge(status) {
 
 function buildActions(t) {
   let html = `<button type="button" data-action="view" aria-label="View ticket"><span class="material-symbols-outlined">visibility</span></button>`;
-  if (t.status === 'Pending' || t.status === 'In Review') {
-    html += `<button type="button" data-action="approve" aria-label="Approve"><span class="material-symbols-outlined">check_circle</span></button>`;
+  if (HelpdeskMeetings.canApprove(t)) {
+    const setupMeeting = ['Approved', 'Confirmed'].includes(t.status);
+    html += `<button type="button" data-action="approve" aria-label="${setupMeeting ? 'Set up meeting' : 'Approve'}" title="${setupMeeting ? 'Set up the approved Jitsi demo meeting' : 'Approve request'}"><span class="material-symbols-outlined">${setupMeeting ? 'videocam' : 'check_circle'}</span></button>`;
+  }
+  if (['Pending', 'In Review'].includes(t.status) || (t.status === 'Reschedule Requested' && t.rescheduleRequest?.proposedBy !== 'HR')) {
     html += `<button type="button" data-action="reject" aria-label="Reject"><span class="material-symbols-outlined">cancel</span></button>`;
-    if (t.type === 'meeting') {
-      html += `<button type="button" data-action="reschedule" aria-label="Reschedule"><span class="material-symbols-outlined">event_repeat</span></button>`;
-    }
+  }
+  if (HelpdeskMeetings.canReschedule(t)) {
+    html += `<button type="button" data-action="reschedule" aria-label="Reschedule" title="Propose a new meeting time"><span class="material-symbols-outlined">event_repeat</span></button>`;
   }
   return html;
 }
@@ -217,11 +222,13 @@ function openViewDialog(ticket) {
     const endTime = ticket.timeTo || ticket.time;
     html += detailRow('Meeting Date', formatDate(ticket.date));
     html += detailRow('Time', startTime ? `${formatTime(startTime)}${endTime && endTime !== startTime ? ` – ${formatTime(endTime)}` : ''}` : '—');
-    html += detailRow('Platform', escapeHtml(ticket.platform || ticket.channel || '—'));
+    html += detailRow('Platform', escapeHtml(HelpdeskMeetings.platformLabel(ticket)));
   }
 
-  if (ticket.meetingLink) {
-    html += detailRow('Meeting Link', `<a href="${escapeHtml(ticket.meetingLink)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ticket.meetingLink)}</a>`);
+  const meetingLink = HelpdeskMeetings.joinLink(ticket);
+  if (meetingLink && ['Approved', 'Confirmed'].includes(ticket.status)) {
+    const external = new URL(meetingLink).origin !== location.origin;
+    html += detailRow('Meeting Link', `<a href="${escapeHtml(meetingLink)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>Open meeting ↗</a>`);
   }
 
   if (ticket.hrReply) {
@@ -230,7 +237,7 @@ function openViewDialog(ticket) {
 
   if (ticket.rescheduleRequest) {
     const rs = ticket.rescheduleRequest;
-    html += `<div class="detail-row detail-reschedule"><span class="detail-label">Employee Proposed Time</span><span class="detail-value">${formatDate(rs.date)} · ${formatTime(rs.timeFrom)} – ${formatTime(rs.timeTo)}</span></div>`;
+    html += `<div class="detail-row detail-reschedule"><span class="detail-label">${rs.proposedBy === 'HR' ? 'HR Proposed Time' : 'Employee Proposed Time'}</span><span class="detail-value">${formatDate(rs.date)} · ${formatTime(rs.timeFrom)} – ${formatTime(rs.timeTo)}</span></div>`;
   }
 
   document.getElementById('viewBody').innerHTML = html;
@@ -241,19 +248,25 @@ function openViewDialog(ticket) {
 
 function openApproveDialog(ticket) {
   actionTicketId = ticket.id;
-  const meetingPlatform = ticket.platform || ticket.channel;
+  const setupMeeting = ['Approved', 'Confirmed'].includes(ticket.status);
+  document.getElementById('approveTitle').textContent = setupMeeting ? 'Set up meeting' : 'Approve Ticket';
+  document.getElementById('confirmApproveBtn').textContent = setupMeeting ? 'Save meeting' : 'Approve';
+  const meetingPlatform = HelpdeskMeetings.platformLabel(ticket);
   const isGoogleMeet = ticket.type === 'meeting' && meetingPlatform === 'Google Meet';
 
-  const desc = ticket.type === 'meeting'
+  const desc = HelpdeskMeetings.isZoomDemo(ticket)
+    ? 'Approval saves a unique Jitsi demo room. You and the employee can open the same room from the meeting link.'
+    : ticket.type === 'meeting'
     ? `Approve this meeting request${meetingPlatform ? ` (${meetingPlatform})` : ''}. The employee will be notified.`
     : 'Approve this support ticket. The employee will be notified.';
   document.getElementById('approveDesc').textContent = desc;
 
   const meetingLinkField = document.getElementById('meetingLinkField');
   meetingLinkField.hidden = !isGoogleMeet;
-  document.getElementById('meetingLinkInput').value = '';
+  document.getElementById('meetingLinkInput').value = isGoogleMeet ? (ticket.meetingLink || '') : '';
   document.getElementById('meetingLinkError').textContent = '';
-  document.getElementById('hrReplyInput').value = '';
+  document.getElementById('approveError').textContent = '';
+  document.getElementById('hrReplyInput').value = ticket.hrReply || '';
 
   approveDialog.showModal();
 }
@@ -277,10 +290,15 @@ document.getElementById('confirmApproveBtn').addEventListener('click', async () 
   const btn = document.getElementById('confirmApproveBtn');
   btn.disabled = true;
   try {
+    // Read the current record before approval so a retry reuses its saved room.
+    const currentRes = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`);
+    if (!currentRes.ok) throw new Error('This ticket could not be found. Refresh the page.');
+    const current = await currentRes.json();
+    const patch = HelpdeskMeetings.approvalPatch(current, hrReply, meetingLink);
     const res = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'Approved', meetingLink: meetingLink || null, hrReply })
+      body: JSON.stringify(patch)
     });
     if (!res.ok) throw new Error('Could not approve ticket.');
     const updated = await res.json();
@@ -291,7 +309,7 @@ document.getElementById('confirmApproveBtn').addEventListener('click', async () 
     renderStats();
   } catch (err) {
     console.error(err);
-    meetingLinkError.textContent = err.message;
+    document.getElementById('approveError').textContent = err.message;
   } finally {
     btn.disabled = false;
   }
@@ -343,10 +361,11 @@ document.getElementById('confirmRejectBtn').addEventListener('click', async () =
 
 function openRescheduleDialog(ticket) {
   actionTicketId = ticket.id;
-  document.getElementById('rsDate').value = '';
+  const proposed = ticket.rescheduleRequest || ticket;
+  document.getElementById('rsDate').value = proposed.date || '';
   document.getElementById('rsDate').min = todayIso();
-  document.getElementById('rsTimeFrom').value = '';
-  document.getElementById('rsTimeTo').value = '';
+  document.getElementById('rsTimeFrom').value = HelpdeskMeetings.normaliseTime(proposed.timeFrom || proposed.time);
+  document.getElementById('rsTimeTo').value = HelpdeskMeetings.normaliseTime(proposed.timeTo);
   document.getElementById('rsDateError').textContent = '';
   document.getElementById('rsTimeError').textContent = '';
   rescheduleDialog.showModal();

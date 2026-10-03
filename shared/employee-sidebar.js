@@ -18,10 +18,26 @@
           const user = JSON.parse(localStorage.getItem('loggedUser'));
           if (user?.name) {
             const parts = user.name.trim().split(/\s+/);
+            const initials = `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
             sidebar.querySelector('.employee-sidebar-person strong').textContent = user.name;
             sidebar.querySelector('.employee-sidebar-person small').textContent = user.department || user.position || 'Employee';
-            sidebar.querySelector('.employee-sidebar-avatar').textContent =
-              `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
+            const avatar = sidebar.querySelector('.employee-sidebar-avatar');
+            avatar.textContent = initials;
+
+            const imageSource = String(user.image || '');
+            if (imageSource.startsWith('data:image/') || imageSource.startsWith('assets/')) {
+              const image = document.createElement('img');
+              image.alt = '';
+              image.addEventListener('error', () => {
+                image.remove();
+                avatar.textContent = initials;
+              });
+              avatar.textContent = '';
+              image.src = imageSource.startsWith('assets/')
+                ? new URL(`../../${imageSource}`, document.baseURI).href
+                : imageSource;
+              avatar.append(image);
+            }
           }
         } catch (error) {
           console.warn('Could not read the logged-in user for the sidebar:', error);

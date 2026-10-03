@@ -34,9 +34,9 @@
 
         <section class="workspace-stats" aria-label="Workspace summary">
           <article class="workspace-stat workspace-card">
-            <div class="workspace-stat-top"><span>Today's Schedule</span><span class="material-symbols-outlined" aria-hidden="true">schedule</span></div>
-            <strong>3 <small>meetings</small></strong>
-            <p>Sample agenda for your day</p>
+            <div class="workspace-stat-top"><span>Upcoming Meetings</span><span class="material-symbols-outlined" aria-hidden="true">schedule</span></div>
+            <strong><span id="workspaceMeetingTotal">0</span> <small>meetings</small></strong>
+            <p id="workspaceMeetingSummary">Loading your meeting schedule…</p>
           </article>
           <article class="workspace-stat workspace-card">
             <div class="workspace-stat-top"><span>Active Tasks</span><span class="material-symbols-outlined" aria-hidden="true">task_alt</span></div>
@@ -71,27 +71,13 @@
             <section class="workspace-agenda workspace-card" aria-labelledby="agendaTitle">
               <div class="workspace-section-heading">
                 <div>
-                  <h2 id="agendaTitle"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Today's Agenda</h2>
-                  <p>Example schedule</p>
+                  <h2 id="agendaTitle"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Upcoming Agenda</h2>
+                  <p id="workspaceAgendaCaption">Your approved and confirmed meetings</p>
                 </div>
-                <span class="workspace-section-count">3 events</span>
+                <span class="workspace-section-count" id="workspaceMeetingCount">0 upcoming</span>
               </div>
-              <ol class="workspace-timeline">
-                <li>
-                  <time>10:30 AM – 11:00 AM</time>
-                  <strong>Sprint 24 Daily Standup</strong>
-                  <span>Google Meet · Project team</span>
-                </li>
-                <li>
-                  <time>02:00 PM – 02:30 PM</time>
-                  <strong>1:1 Sync with Sarah Jenkins</strong>
-                  <span>HR Lead · Monthly catch-up</span>
-                </li>
-                <li>
-                  <time>04:00 PM – 05:00 PM</time>
-                  <strong>Frontend Architecture Review</strong>
-                  <span>Engineering · All hands</span>
-                </li>
+              <ol class="workspace-timeline" id="workspaceMeetingList" aria-live="polite">
+                <li class="workspace-meeting-empty">Loading your meeting schedule…</li>
               </ol>
             </section>
 
@@ -117,7 +103,8 @@
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
-  <script src="../../shared/employee-sidebar.js?v=2"></script>
+  <script src="../../shared/employee-sidebar.js?v=3"></script>
+  <script src="../../shared/helpdesk-meetings.js?v=2"></script>
   <script src="MyWOrkSpace.js?v=2"></script>
 </body>
 </html>

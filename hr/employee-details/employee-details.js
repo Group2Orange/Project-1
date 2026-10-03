@@ -12,7 +12,27 @@ const API = 'http://127.0.0.1:3000';
     const text = (element, value) => { document.getElementById(element).textContent = value ?? '—'; };
     const name = employee.name || 'Employee';
     text('detailName', name);
-    text('detailAvatar', name.trim().split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase());
+    const initials = name.trim().split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase();
+    const avatar = document.getElementById('detailAvatar');
+    const fallbackImage = '../../common/profile/assets/profile.svg';
+    const imageSource = typeof employee.image === 'string' && employee.image.startsWith('data:image/')
+      ? employee.image
+      : typeof employee.image === 'string' && employee.image.startsWith('assets/')
+        ? new URL(`../../${employee.image}`, document.baseURI).href
+        : fallbackImage;
+    const avatarImage = document.createElement('img');
+    avatarImage.alt = `${name}'s profile photo`;
+    avatarImage.addEventListener('error', () => {
+      if (avatarImage.dataset.usingFallback === 'true') {
+        avatarImage.remove();
+        avatar.textContent = initials;
+        return;
+      }
+      avatarImage.dataset.usingFallback = 'true';
+      avatarImage.src = fallbackImage;
+    });
+    avatarImage.src = imageSource;
+    avatar.replaceChildren(avatarImage);
     text('detailPosition', employee.position);
     text('detailStatus', employee.status || 'Inactive');
     document.getElementById('detailStatus').classList.add(String(employee.status || 'Inactive').toLowerCase());

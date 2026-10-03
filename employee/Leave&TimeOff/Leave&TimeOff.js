@@ -154,11 +154,25 @@ function daysBetween(startStr, endStr) {
     return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
 }
 
-function isPastDate(dateStr) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    var d = new Date(dateStr);
-    return d < today;
+// A leave request remains current through its end date and moves to history
+// on the following day, regardless of whether it was approved or rejected.
+function isRequestEnded(request) {
+    var endDate = request.endDate || request.startDate;
+    if (!endDate) return false;
+
+    var today = getTodayString();
+    if (endDate < today) return true;
+    if (endDate > today) return false;
+
+    // Early departures finish at their selected time, not at midnight.
+    if (request.type === "Early Departure" && request.toTime) {
+        var now = new Date();
+        var currentTime = padZero(now.getHours()) + ":" + padZero(now.getMinutes());
+        return currentTime >= request.toTime;
+    }
+
+    // A full-day leave that ends today is complete after today has passed.
+    return false;
 }
 
 function getAvailableDays(type) {
@@ -275,9 +289,7 @@ function renderUpcomingCards() {
     var upcoming = [];
     for (var i = 0; i < all.length; i++) {
         var r = all[i];
-        if (r.status === "Pending") {
-            upcoming.push(r);
-        } else if (r.status === "Approved" && !isPastDate(r.startDate)) {
+        if (!isRequestEnded(r) && (r.status === "Pending" || r.status === "Approved")) {
             upcoming.push(r);
         }
     }
@@ -395,9 +407,7 @@ function renderHistoryTable() {
     var history = [];
     for (var i = 0; i < all.length; i++) {
         var r = all[i];
-        if (r.status === "Approved" && isPastDate(r.startDate)) {
-            history.push(r);
-        } else if (r.status === "Rejected") {
+        if (isRequestEnded(r) || r.status === "Rejected") {
             history.push(r);
         }
     }
@@ -497,7 +507,7 @@ function renderTabCounts() {
 
     for (var i = 0; i < all.length; i++) {
         var r = all[i];
-        if (r.status === "Pending" || (r.status === "Approved" && !isPastDate(r.startDate))) {
+        if (!isRequestEnded(r) && (r.status === "Pending" || r.status === "Approved")) {
             upcomingCount++;
         } else {
             historyCount++;
@@ -804,6 +814,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     seedData(function () {
         refreshAll();
+        // Keep same-day early departures in sync while the page stays open.
+        window.setInterval(refreshAll, 60 * 1000);
+        document.addEventListener("visibilitychange", function () {
+            if (!document.hidden) refreshAll();
+        });
         if (location.hash === "#request-time-off") openModal();
     });
 
