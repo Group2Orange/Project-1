@@ -129,9 +129,11 @@ function openEmployeeDialog(person = null) {
   document.getElementById('employeeDialogTitle').textContent = person ? `Edit ${person.name}` : 'Add New Employee';
   document.getElementById('employeeDialogHint').textContent = person ? 'Update the employee record. Leave password empty to keep it.' : 'Create a record and set the initial password.';
   document.getElementById('passwordHint').textContent = person ? 'Optional: enter a new password to reset access.' : 'Required for new employees. Share it privately.';
-  for (const field of ['name', 'email', 'department', 'position', 'phone', 'officeLocation', 'role', 'status']) {
+  for (const field of ['name', 'email', 'department', 'position', 'officeLocation', 'role', 'status']) {
     form.elements[field].value = person?.[field] || form.elements[field].value;
   }
+  // Strip +962 prefix so the field shows only the 9-digit local number
+  form.elements.phone.value = person?.phone ? String(person.phone).replace(/^\+962/, '') : '';
   form.elements.employeeId.value = person?.employeeId || (person ? `EMP-${person.id}` : nextEmployeeId());
   form.elements.joiningDate.value = person?.joiningDate || currentDateInput();
   form.elements.salaryAmount.value = person?.salary?.amount ?? '';
@@ -154,6 +156,25 @@ async function saveEmployee(event) {
   data.position = data.position.trim();
   data.phone = data.phone.trim();
   data.officeLocation = data.officeLocation.trim();
+
+  // Jordan phone validation: optional field, but if provided must be exactly 9 digits
+  const phoneInput = document.getElementById('dialogPhone');
+  const phoneErrorIcon = document.getElementById('dialogPhoneErrorIcon');
+  const phoneErrorMessage = document.getElementById('dialogPhoneErrorMessage');
+  const phoneRegex = /^[0-9]{9}$/;
+  if (data.phone && !phoneRegex.test(data.phone)) {
+    phoneInput.classList.add('error-input');
+    phoneErrorIcon.style.display = 'inline-block';
+    phoneErrorMessage.style.display = 'block';
+    phoneInput.focus();
+    return;
+  }
+  // Clear any previous phone error
+  phoneInput.classList.remove('error-input');
+  phoneErrorIcon.style.display = 'none';
+  phoneErrorMessage.style.display = 'none';
+  // Prepend +962 country code before saving
+  if (data.phone) data.phone = '+962' + data.phone;
   data.employeeId = form.elements.employeeId.value;
   const salaryAmount = data.salaryAmount;
   const salaryCurrency = data.salaryCurrency.trim().toUpperCase() || 'JOD';
@@ -273,6 +294,11 @@ document.getElementById('addButton').addEventListener('click', () => openEmploye
 document.getElementById('closeEmployeeDialog').addEventListener('click', () => employeeDialog.close());
 document.getElementById('cancelEmployeeDialog').addEventListener('click', () => employeeDialog.close());
 form.addEventListener('submit', saveEmployee);
+document.getElementById('dialogPhone').addEventListener('input', () => {
+  document.getElementById('dialogPhone').classList.remove('error-input');
+  document.getElementById('dialogPhoneErrorIcon').style.display = 'none';
+  document.getElementById('dialogPhoneErrorMessage').style.display = 'none';
+});
 document.getElementById('cancelBlock').addEventListener('click', () => blockDialog.close());
 document.getElementById('confirmBlock').addEventListener('click', async () => {
   const person = employees.find(item => String(item.id) === String(blockId));

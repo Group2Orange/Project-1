@@ -76,3 +76,29 @@ body { background: #f4f7fb; }
 .confirm-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 12px; border-radius: 9px; background: #ffeded; color: #b63742; }
 @media (max-width: 1180px) { .directory-filters { grid-template-columns: repeat(2,minmax(0,1fr)); } .directory-filters .search-field { grid-column: 1/-1; } .directory-stats { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 600px) { .directory-heading { align-items: flex-start; flex-direction: column; } .heading-actions { width: 100%; } .heading-actions .button { flex: 1; } .directory-stats { gap: 8px; } .directory-stats article { min-height: 98px; padding: 13px; } .directory-stats strong { font-size: 22px; } .directory-filters { grid-template-columns: 1fr; } .directory-filters .search-field { grid-column: auto; } .directory-bottom { align-items: flex-start; flex-direction: column; } .dialog-grid { grid-template-columns: 1fr; } }
+
+/* ===== Phone field – Create/Edit Employee dialog ===== */
+.phone-field-label { display: block; }
+.phone-input-wrapper { position: relative; }
+.phone-input-wrapper .phone-prefix {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 2; color: #6b7280;
+  background: transparent; pointer-events: none;
+  font-size: 12px;
+}
+.phone-input-wrapper input[name="phone"] { padding-left: 55px; width: 100%; }
+.phone-input-wrapper .error-icon {
+  position: absolute; right: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: #DC2626; font-size: 18px; display: none;
+}
+.dialog-grid input.error-input,
+.phone-input-wrapper input.error-input {
+  border-color: #DC2626 !important;
+  background-color: #FFF5F5 !important;
+}
+.phone-field-label .error-message {
+  display: block; margin-top: 4px;
+  color: #DC2626; font-size: 11px;
+}

@@ -47,7 +47,14 @@
         <label>Work Email<input name="email" type="email" required autocomplete="email" maxlength="150"></label>
         <label>Department<select name="department" required><option value="">Select a department</option></select></label>
         <label>Position<input name="position" required maxlength="100"></label>
-        <label>Phone<input name="phone" type="tel" maxlength="40"></label>
+        <label class="phone-field-label">Phone
+          <div class="phone-input-wrapper">
+            <span class="phone-prefix">+962</span>
+            <input name="phone" type="tel" id="dialogPhone" maxlength="9" placeholder="Enter 9-digit number">
+            <span class="material-symbols-outlined error-icon" id="dialogPhoneErrorIcon" style="display:none;">error</span>
+          </div>
+          <small class="error-message" id="dialogPhoneErrorMessage" style="display:none;">Please enter a valid Jordanian phone number (9 digits).</small>
+        </label>
         <label>Join Date <small>Assigned automatically</small><input name="joiningDate" type="date" required readonly></label>
         <label>Employee ID <small>Assigned automatically</small><input name="employeeId" maxlength="30" readonly></label>
         <label>Office Location<input name="officeLocation" maxlength="100"></label>
