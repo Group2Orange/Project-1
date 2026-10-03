@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const SCRIPT_SRC = document.currentScript && document.currentScript.src;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -166,17 +167,53 @@
     });
   }
 
-  /* ===== Feedback marquee loop ===== */
+  /* ===== Feedback marquee loop + click focus ===== */
   function feedback() {
-    const track = $("#feedbackTrack"), group = $("#feedbackGroup");
-    if (!track || !group) return;
-    if (track.children.length > 1) return;
-    const clone = group.cloneNode(true);
-    clone.removeAttribute("id");
-    clone.setAttribute("aria-hidden", "true");
-    $$("[tabindex]", clone).forEach((i) => i.setAttribute("tabindex", "-1"));
-    track.appendChild(clone);
+    const slider = $("#feedbackSlider"), track = $("#feedbackTrack"), group = $("#feedbackGroup");
+    if (!slider || !track || !group) return;
+
+    if (track.children.length === 1) {
+      const clone = group.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.setAttribute("aria-hidden", "true");
+      $$("[tabindex]", clone).forEach((item) => item.setAttribute("tabindex", "-1"));
+      track.appendChild(clone);
+    }
+
+    const clearSelection = () => {
+      slider.classList.remove("has-selected");
+      $$(".testimonial", slider).forEach((card) => {
+        card.classList.remove("is-selected");
+        if (!card.closest('[aria-hidden="true"]')) card.setAttribute("aria-pressed", "false");
+      });
+    };
+
+    const selectCard = (card) => {
+      const alreadySelected = card.classList.contains("is-selected");
+      clearSelection();
+      if (alreadySelected) return;
+      slider.classList.add("has-selected");
+      card.classList.add("is-selected");
+      if (!card.closest('[aria-hidden="true"]')) card.setAttribute("aria-pressed", "true");
+    };
+
+    slider.addEventListener("click", (event) => {
+      const card = event.target.closest(".testimonial");
+      if (card) selectCard(card);
+    });
+
+    slider.addEventListener("keydown", (event) => {
+      const card = event.target.closest(".testimonial");
+      if (!card || !["Enter", " "].includes(event.key)) return;
+      event.preventDefault();
+      selectCard(card);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (slider.classList.contains("has-selected") && !slider.contains(event.target)) clearSelection();
+    });
   }
+
   /* ===== Carousel ===== */
   function carousel() {
     const car = $("#companyCarousel"), tr = $("#companyTrack");
@@ -226,23 +263,44 @@
     reduce.addEventListener("change", play);
     mark(); play();
   }
-  /* ===== Video visibility (only visible videos play) ===== */
+  /* ===== Company video loading + visibility ===== */
   function videos() {
-    const vids = $$("video");
+    const vids = $$('[data-company-video]');
     if (!vids.length) return;
-    if (!("IntersectionObserver" in window)) return;
-    const state = new Map();
-    const apply = (v) => {
-      if (reduce.matches || document.hidden || !state.get(v)) v.pause();
-      else v.play().catch(() => { });
+
+    const visible = new WeakMap();
+    const canPlay = (video) => !reduce.matches && !document.hidden && visible.get(video);
+
+    const sync = (video) => {
+      const media = video.closest('.company-media');
+      if (video.readyState >= 2) media?.classList.add('is-ready');
+      if (canPlay(video)) video.play().catch(() => {});
+      else video.pause();
     };
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { state.set(e.target, e.isIntersecting); apply(e.target); });
-    }, { threshold: 0.4 });
-    vids.forEach((v) => io.observe(v));
-    const all = () => vids.forEach(apply);
-    document.addEventListener("visibilitychange", all);
-    reduce.addEventListener("change", all);
+
+    vids.forEach((video) => {
+      const media = video.closest('.company-media');
+      video.muted = true;
+      video.playsInline = true;
+      video.addEventListener('loadeddata', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); sync(video); });
+      video.addEventListener('canplay', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); });
+      video.addEventListener('error', () => { media?.classList.add('has-error'); media?.classList.remove('is-ready'); });
+      if (video.readyState >= 2) media?.classList.add('is-ready');
+    });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => { visible.set(entry.target, entry.isIntersecting && entry.intersectionRatio >= .35); sync(entry.target); });
+      }, { threshold: [0, .35, .65] });
+      vids.forEach((video) => io.observe(video));
+    } else {
+      vids.forEach((video) => { visible.set(video, true); sync(video); });
+    }
+
+    const syncAll = () => vids.forEach(sync);
+    document.addEventListener('visibilitychange', syncAll);
+    reduce.addEventListener('change', syncAll);
+    $('#companyCarousel')?.addEventListener('company:active-change', syncAll);
   }
 
   /* A lightweight 2D-canvas renderer of a rotating 3D globe. All artwork is local. */
@@ -486,169 +544,40 @@
     scene.dataset.linkMode = mode; sync();
   }
 
-  /* Full-page telecom scene: ground uplink → satellite relay → ground downlink. */
+  /* Full-page 3D telecom scene (Three.js/WebGL): ground uplink → satellite relay → ground downlink.
+     The static SVG fallback stays visible until WebGL has rendered its first frame. */
   function signalWorld() {
     const canvas = $('#signalWorldCanvas'), world = $('#signalWorld'), toggle = $('#backgroundMotion');
     if (!canvas || !world || !toggle) return;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-    const TAU = Math.PI * 2, cycleDuration = 10;
-    let width = 1, height = 1, elapsed = 0, raf = 0, last = 0, lastDraw = 0, paused = false, inPage = true;
-    let scrollTarget = 0, scrollView = 0, dpr = 1, backdrop;
-    const stars = Array.from({ length: 115 }, (_, i) => ({ x: (i * 0.61803398875) % 1, y: (i * 0.754877666) % 1, r: i % 13 === 0 ? 1.2 : .55 }));
-    const geometry = () => {
-      const mobile = width <= 820;
-      const scale = mobile ? Math.min(1, width / 520) : Math.min(1.25, Math.max(.72, width / 1440));
-      const ground = height * (mobile ? .935 : .865);
-      const tower = { x: width * (mobile ? .47 : .74), y: ground, h: Math.min(mobile ? 168 : 280, height * (mobile ? .22 : .31)), s: scale };
-      const tip = { x: tower.x, y: tower.y - tower.h - 15 * scale };
-      const drift = Math.sin(elapsed * .24) * 12 * scale;
-      const a = { x: width * (mobile ? .22 : .595) + drift, y: height * (mobile ? .53 : .19) + Math.sin(elapsed * .32) * 9 * scale - scrollView * 10, s: scale, rotation: -.32 };
-      const b = { x: width * (mobile ? .83 : .907) - drift * .6, y: height * (mobile ? .59 : .285) + Math.cos(elapsed * .25) * 12 * scale - scrollView * 6, s: scale * .86, rotation: .30 };
-      const receiver = { x: width * (mobile ? .88 : .914), y: ground + 5 * scale, s: scale };
-      const end = { x: receiver.x - 4 * scale, y: receiver.y - 42 * scale };
-      return { mobile, scale, ground, tower, tip, a, b, receiver, end };
+    const cycleDuration = 10;
+    let api = null, width = 1, height = 1, elapsed = 0, raf = 0, last = 0, lastDraw = 0, paused = false, inPage = true, lost = false;
+    let scrollTarget = 0, scrollView = 0, px = 0, py = 0, tpx = 0, tpy = 0, slow = 0, frames = 0, dprCap = 0;
+    const weak = isSmall() || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+    const running = () => !!api && !lost && !paused && !reduce.matches && !document.hidden && inPage;
+    const draw = () => {
+      if (!api || lost) return;
+      try {
+        const still = reduce.matches, phaseName = api.update({ elapsed: still ? 3 : elapsed, px, py, scroll: scrollView, still, cycle: cycleDuration });
+        api.render();
+        if (world.dataset.phase !== phaseName) world.dataset.phase = phaseName;
+      } catch (error) { fail(error); }
     };
-    const stroke = (points, color, lineWidth = 1, c = ctx) => {
-      c.beginPath(); points.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.strokeStyle = color; c.lineWidth = lineWidth; c.stroke();
+    const fail = error => {
+      console.warn('TeamSpace: 3D background unavailable', error);
+      cancelAnimationFrame(raf); raf = 0; world.classList.remove('is-ready'); toggle.hidden = true;
+      try { api?.dispose(); } catch (e) { /* ignore */ } api = null;
     };
-    const circle = (x, y, r, color, c = ctx) => { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fillStyle = color; c.fill(); };
-    function buildBackdrop() {
-      backdrop = document.createElement('canvas'); backdrop.width = canvas.width; backdrop.height = canvas.height;
-      const c = backdrop.getContext('2d'); if (!c) { backdrop = null; return; }
-      c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const bg = c.createLinearGradient(0, 0, width, height); bg.addColorStop(0, '#03101b'); bg.addColorStop(.6, '#071b29'); bg.addColorStop(1, '#092e38');
-      c.fillStyle = bg; c.fillRect(0, 0, width, height);
-      const glow = c.createRadialGradient(width * .8, height * .60, 0, width * .8, height * .60, width * .58);
-      glow.addColorStop(0, '#23687b3b'); glow.addColorStop(1, '#04121c00'); c.fillStyle = glow; c.fillRect(0, 0, width, height);
-      stars.forEach(s => circle(s.x * width, s.y * height * .86, s.r, '#c9faff39', c));
-      const g = geometry(), horizonY = g.ground - 2 * g.scale, rx = width * (g.mobile ? 1.8 : .9), ry = height * .42, centerX = width * (g.mobile ? .65 : .8), centerY = horizonY + ry;
-      c.save(); c.beginPath(); c.ellipse(centerX, centerY, rx, ry, 0, 0, TAU); c.clip();
-      const earth = c.createLinearGradient(0, horizonY, 0, height); earth.addColorStop(0, '#123a46'); earth.addColorStop(.18, '#09202e'); earth.addColorStop(1, '#020b13');
-      c.fillStyle = earth; c.fillRect(0, horizonY, width, height - horizonY);
-      // A perspective mesh makes the lower edge read as Earth's curved surface.
-      for (let i = 0; i < 22; i++)stroke([[centerX + (i - 11) * 18, horizonY], [centerX + (i - 11) * width * .13, height]], '#5baca826', .65, c);
-      for (let i = 0; i < 5; i++) { c.beginPath(); c.ellipse(centerX, centerY, rx + i * 60, ry - i * 18, 0, Math.PI, TAU); c.strokeStyle = '#5baca822'; c.lineWidth = .75; c.stroke(); }
-      for (let i = 0; i < 36; i++) { const x = width * .48 + (i * 61.71) % (width * .55), y = horizonY + 12 + (i * 23.1) % Math.max(20, height - horizonY); circle(x, y, .9, '#90e1c950', c); }
-      c.restore();
-      c.save(); c.beginPath(); c.ellipse(centerX, centerY, rx, ry, 0, Math.PI, TAU); c.strokeStyle = '#70e7ec69'; c.lineWidth = 1.2; c.shadowBlur = 20; c.shadowColor = '#68e0ff'; c.stroke(); c.restore();
-    }
-    function drawTower(g) {
-      const { x, y, h, s } = g.tower, top = y - h, half = 28 * s;
-      ctx.save();
-      const base = ctx.createRadialGradient(x, y, 0, x, y, 92 * s); base.addColorStop(0, '#76e8d027'); base.addColorStop(1, '#76e8d000'); circle(x, y, 92 * s, base);
-      ctx.fillStyle = '#0a1b28'; ctx.beginPath(); ctx.moveTo(x - 6 * s, top); ctx.lineTo(x - half, y); ctx.lineTo(x + half, y); ctx.lineTo(x + 6 * s, top); ctx.closePath(); ctx.fill();
-      stroke([[x - 6 * s, top], [x - half, y], [x + half, y], [x + 6 * s, top]], '#a1cfdb', 2 * s);
-      for (let i = 0; i < 6; i++) {
-        const p = i / 6, q = (i + 1) / 6, y1 = top + h * p, y2 = top + h * q, w1 = 6 * s + (half - 6 * s) * p, w2 = 6 * s + (half - 6 * s) * q;
-        stroke([[x - w1, y1], [x + w2, y2]], '#668c9f', 1.05 * s); stroke([[x + w1, y1], [x - w2, y2]], '#4d758c', 1.05 * s);
-        stroke([[x - w2, y2], [x + w2, y2]], '#9bbbbd', 1.05 * s);
-      }
-      stroke([[x, top - 25 * s], [x, top + 20 * s]], '#d4f4f6', 2 * s);
-      // Antenna panels and mounting booms.
-      for (const side of [-1, 1]) {
-        stroke([[x, top + 26 * s], [x + side * 30 * s, top + 26 * s]], '#93b5c3', 2 * s);
-        const ax = x + side * 28 * s;
-        const panel = ctx.createLinearGradient(ax - 5 * s, top + 7 * s, ax + 6 * s, top + 44 * s); panel.addColorStop(0, '#d8eeee'); panel.addColorStop(1, '#628491');
-        ctx.fillStyle = panel; ctx.fillRect(ax - 5 * s, top + 7 * s, 10 * s, 39 * s); ctx.strokeStyle = '#b6d9de'; ctx.lineWidth = .8 * s; ctx.strokeRect(ax - 5 * s, top + 7 * s, 10 * s, 39 * s);
-      }
-      ctx.fillStyle = '#153141'; ctx.fillRect(x - 44 * s, y - 4 * s, 88 * s, 10 * s); stroke([[x - 45 * s, y - 4 * s], [x + 45 * s, y - 4 * s]], '#5b858f', 2 * s);
-      circle(g.tip.x, g.tip.y, 3 * s, '#f3c582');
-      ctx.font = `${Math.max(7, 9 * s)}px monospace`; ctx.textAlign = 'center'; ctx.fillStyle = '#94bdc5'; ctx.fillText('GROUND STATION', x, y + 29 * s);
-      ctx.restore();
-    }
-    function satellite(p, label) {
-      const s = p.s;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation); ctx.scale(s, s);
-      const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, 85); halo.addColorStop(0, '#90c7ff14'); halo.addColorStop(1, '#90c7ff00'); circle(0, 0, 85, halo);
-      for (const side of [-1, 1]) {
-        const x = side < 0 ? -62 : 21;
-        const fill = ctx.createLinearGradient(x, -20, x + 41, 20); fill.addColorStop(0, '#3d7193'); fill.addColorStop(.5, '#234b6d'); fill.addColorStop(1, '#102d4b');
-        ctx.fillStyle = fill; ctx.fillRect(x, -20, 41, 40); ctx.strokeStyle = '#9bd0e8'; ctx.lineWidth = 1; ctx.strokeRect(x, -20, 41, 40);
-        for (let i = 1; i < 4; i++)stroke([[x + i * 10.25, -20], [x + i * 10.25, 20]], '#70a4d582', .65);
-        for (let i = 1; i < 4; i++)stroke([[x, -20 + i * 10], [x + 41, -20 + i * 10]], '#70a4d582', .65);
-        ctx.fillStyle = '#9cbdc9'; ctx.fillRect(side < 0 ? -22 : 12, -2, 10, 4);
-      }
-      const bus = ctx.createLinearGradient(-12, -13, 12, 15); bus.addColorStop(0, '#f4efcc'); bus.addColorStop(.5, '#becbd0'); bus.addColorStop(1, '#647f9f');
-      ctx.fillStyle = bus; ctx.fillRect(-12, -14, 24, 28); ctx.strokeStyle = '#e4f4f6'; ctx.strokeRect(-12, -14, 24, 28);
-      ctx.fillStyle = '#425c72'; ctx.fillRect(-6, -7, 12, 10);
-      stroke([[0, 14], [0, 27]], '#d7ebeb', 1.5);
-      ctx.beginPath(); ctx.ellipse(0, 28, 10, 4, -.1, 0, Math.PI); ctx.strokeStyle = '#e9f5ee'; ctx.lineWidth = 1.3; ctx.stroke();
-      stroke([[0, 28], [4, 34]], '#bce9de', 1);
-      circle(3, -18, 2, '#cafff1'); ctx.restore();
-      ctx.font = `${Math.max(7, 9 * s)}px monospace`; ctx.textAlign = 'center'; ctx.fillStyle = '#8eafb9'; ctx.fillText(label, p.x, p.y + 48 * s);
-    }
-    function dish(g) {
-      const { x, y, s } = g.receiver;
-      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
-      stroke([[-17, 1], [17, 1]], '#a1cbd3', 3); stroke([[0, 0], [0, -23], [-8, -39]], '#809fac', 3);
-      ctx.save(); ctx.translate(-4, -40); ctx.rotate(-.5);
-      const metal = ctx.createLinearGradient(-22, -7, 22, 12); metal.addColorStop(0, '#e0f0ed'); metal.addColorStop(1, '#557e94');
-      ctx.beginPath(); ctx.ellipse(0, 0, 25, 10, 0, 0, Math.PI); ctx.fillStyle = metal; ctx.fill(); ctx.strokeStyle = '#d7f3ef'; ctx.lineWidth = 1.3; ctx.stroke();
-      stroke([[-19, 2], [0, -17], [19, 2]], '#adc9d4', 1.2); circle(0, -17, 2, '#adf4de'); ctx.restore();
-      ctx.font = '8px monospace'; ctx.fillStyle = '#94bdc5'; ctx.textAlign = 'center'; ctx.fillText('EARTH / RECEIVE', 0, 28); ctx.restore();
-    }
-    const curve = (a, b, c, d, t) => ({ x: (1 - t) ** 3 * a.x + 3 * (1 - t) ** 2 * t * b.x + 3 * (1 - t) * t * t * c.x + t ** 3 * d.x, y: (1 - t) ** 3 * a.y + 3 * (1 - t) ** 2 * t * b.y + 3 * (1 - t) * t * t * c.y + t ** 3 * d.y });
-    function routes(g) {
-      const { tip, a, b, end, scale: s } = g;
-      return [
-        [tip, { x: tip.x + 28 * s, y: tip.y - 130 * s }, { x: a.x + 80 * s, y: a.y + 110 * s }, a],
-        [a, { x: a.x + 85 * s, y: a.y - 75 * s }, { x: b.x - 100 * s, y: b.y - 80 * s }, b],
-        [b, { x: b.x + 80 * s, y: b.y + 130 * s }, { x: end.x - 55 * s, y: end.y - 155 * s }, end]
-      ];
-    }
-    function path(route, color, alpha) {
-      ctx.globalAlpha = alpha; ctx.beginPath(); ctx.moveTo(route[0].x, route[0].y); ctx.bezierCurveTo(route[1].x, route[1].y, route[2].x, route[2].y, route[3].x, route[3].y); ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke(); ctx.globalAlpha = 1;
-    }
-    function packet(route, t, color, s) {
-      if (t < 0 || t > 1) return;
-      ctx.save();
-      for (let i = 12; i >= 0; i--) {
-        const tt = t - i * .008; if (tt < 0) continue;
-        const p = curve(...route, tt); ctx.globalAlpha = (1 - i / 13) * .8; circle(p.x, p.y, (i ? 1.4 : 3) * s, color);
-      }
-      const p = curve(...route, t), q = curve(...route, Math.min(1, t + .01));
-      ctx.globalAlpha = 1; ctx.translate(p.x, p.y); ctx.rotate(Math.atan2(q.y - p.y, q.x - p.x));
-      ctx.shadowBlur = 12 * s; ctx.shadowColor = color; ctx.fillStyle = '#f0fff9'; ctx.fillRect(-5 * s, -1.6 * s, 8 * s, 3.2 * s); ctx.restore();
-    }
-    function impact(point, age, color, s) {
-      if (age < 0 || age > .10) return;
-      const p = age / .10;
-      ctx.save(); ctx.globalAlpha = (1 - p) * .8; ctx.strokeStyle = color; ctx.lineWidth = 1.5 * s;
-      for (let i = 0; i < 2; i++) { ctx.beginPath(); ctx.arc(point.x, point.y, (8 + p * 47 + i * 10) * s, 0, TAU); ctx.stroke(); }
-      if (p < .45) { ctx.globalAlpha = (1 - p / .45) * .9; circle(point.x, point.y, 7 * s, color); }
-      ctx.restore();
-    }
-    function draw() {
-      if (backdrop) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(backdrop, 0, 0); ctx.restore(); }
-      else { ctx.fillStyle = '#04131e'; ctx.fillRect(0, 0, width, height); }
-      const g = geometry(), links = routes(g), colors = ['#64e2ed', '#c3b6ff', '#f2c789'];
-      // Static guide paths remain present for reduced-motion users.
-      links.forEach((r, i) => path(r, colors[i], .19));
-      // Slow orbital arcs sit behind the satellites.
-      ctx.save(); ctx.setLineDash([3, 7]); ctx.strokeStyle = '#87afc12b'; ctx.lineWidth = .8;
-      ctx.beginPath(); ctx.ellipse(width * .79, height * (g.mobile ? .60 : .28), width * (g.mobile ? .48 : .29), height * .13, -.24, Math.PI * .9, Math.PI * 2); ctx.stroke(); ctx.restore();
-      drawTower(g); satellite(g.a, 'ORBITAL RELAY / 01'); satellite(g.b, 'ORBITAL RELAY / 02'); dish(g);
-      const phase = (elapsed % cycleDuration) / cycleDuration;
-      // One complete, chronological cycle: no return packet until the relay is hit.
-      if (phase < .36) for (let i = 0; i < 4; i++)packet(links[0], phase / .36 - i * .035, colors[0], g.scale);
-      else if (phase < .62) for (let i = 0; i < 4; i++)packet(links[1], (phase - .36) / .26 - i * .035, colors[1], g.scale);
-      else if (phase < .95) for (let i = 0; i < 4; i++)packet(links[2], (phase - .62) / .33 - i * .035, colors[2], g.scale);
-      impact(g.tip, phase, '#64e2ed', g.scale);
-      impact(g.a, phase - .36, '#a0f2ff', g.scale);
-      impact(g.b, phase - .62, '#d3c3ff', g.scale);
-      impact(g.end, phase - .95, '#f2c789', g.scale);
-      // A static position for each leg explains the route when motion is disabled.
-      if (reduce.matches) links.forEach((r, i) => packet(r, .55, colors[i], g.scale));
-      const phaseName = phase < .36 ? 'uplink' : phase < .62 ? 'relay' : phase < .95 ? 'downlink' : 'received';
-      if (world.dataset.phase !== phaseName) world.dataset.phase = phaseName;
-    }
-    const running = () => !paused && !reduce.matches && !document.hidden && inPage;
     const frame = now => {
       raf = 0; if (!running()) return;
       if (!last) last = now;
-      elapsed += Math.min((now - last) / 1000, .055); last = now;
-      if (now - lastDraw >= 32) { scrollView += (scrollTarget - scrollView) * .09; draw(); lastDraw = now; }
+      const dt = Math.min((now - last) / 1000, .055); elapsed += dt; last = now;
+      if (now - lastDraw >= (weak ? 30 : 15)) {
+        px += (tpx - px) * .06; py += (tpy - py) * .06; scrollView += (scrollTarget - scrollView) * .08;
+        const t0 = performance.now(); draw(); lastDraw = now;
+        // Adaptive quality: sustained slow frames reduce resolution, then shadows.
+        if (++frames > 20) { slow += performance.now() - t0 > 20 ? 1 : -1; slow = Math.max(0, slow);
+          if (slow > 25) { slow = 0; if (dprCap > 1) { dprCap = Math.max(1, dprCap - .25); resize(); } else api?.setShadows(false); } }
+      }
       raf = requestAnimationFrame(frame);
     };
     const sync = () => {
@@ -661,19 +590,30 @@
       world.dataset.animation = running() ? 'running' : 'paused'; draw();
       if (running()) raf = requestAnimationFrame(frame);
     };
-    const resize = () => {
+    function resize() {
+      if (!api) return;
       const rect = world.getBoundingClientRect(); width = Math.max(1, rect.width); height = Math.max(1, rect.height);
-      dpr = Math.min(devicePixelRatio || 1, width <= 820 ? 1.5 : 1.75);
-      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); buildBackdrop(); draw();
-    };
-    resize(); world.classList.add('is-ready'); toggle.hidden = false;
-    toggle.addEventListener('click', () => { paused = !paused; sync(); });
-    addEventListener('scroll', () => { scrollTarget = Math.min(1, scrollY / Math.max(1, root.scrollHeight - innerHeight)); if (!running()) draw(); }, { passive: true });
-    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(world); else addEventListener('resize', resize);
-    reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync);
-    addEventListener('pagehide', () => { inPage = false; sync(); }); addEventListener('pageshow', () => { inPage = true; sync(); });
-    sync();
+      if (!dprCap) dprCap = weak ? 1.25 : 1.75;
+      api.resize(width, height, Math.min(devicePixelRatio || 1, dprCap)); draw();
+    }
+    const base = (document.currentScript && document.currentScript.src) || SCRIPT_SRC;
+    const load = () => window.TeamSpaceSignalWorld3D ? Promise.resolve() : new Promise((ok, no) => {
+      const s = document.createElement('script'); s.src = new URL('vendor/signal-world-3d.js', base || location.href).href;
+      s.onload = ok; s.onerror = () => no(new Error('Could not load vendor/signal-world-3d.js')); document.head.appendChild(s);
+    });
+    load().then(() => {
+      api = window.TeamSpaceSignalWorld3D.create(canvas, { weak });
+      canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); lost = true; cancelAnimationFrame(raf); raf = 0; world.classList.remove('is-ready'); });
+      canvas.addEventListener('webglcontextrestored', () => { lost = false; resize(); world.classList.add('is-ready'); sync(); });
+      resize(); world.classList.add('is-ready'); toggle.hidden = false;
+      toggle.addEventListener('click', () => { paused = !paused; sync(); });
+      addEventListener('scroll', () => { scrollTarget = Math.min(1, scrollY / Math.max(1, root.scrollHeight - innerHeight)); if (!running()) { scrollView = scrollTarget; draw(); } }, { passive: true });
+      if (finePointer.matches) addEventListener('pointermove', e => { tpx = e.clientX / innerWidth - .5; tpy = e.clientY / innerHeight - .5; }, { passive: true });
+      if ('ResizeObserver' in window) new ResizeObserver(resize).observe(world); else addEventListener('resize', resize);
+      reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync);
+      addEventListener('pagehide', () => { inPage = false; sync(); }); addEventListener('pageshow', () => { inPage = true; sync(); });
+      sync();
+    }).catch(fail);
   }
 
   const initialize = fn => {

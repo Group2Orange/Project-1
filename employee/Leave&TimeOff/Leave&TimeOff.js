@@ -135,6 +135,12 @@ function formatDate(dateStr) {
     return months[parseInt(parts[1], 10) - 1] + " " + parseInt(parts[2], 10) + ", " + parts[0];
 }
 
+function isValidDateString(dateStr) {
+    if (typeof dateStr !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+    var date = new Date(dateStr + "T00:00:00Z");
+    return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === dateStr;
+}
+
 function formatShortDate(dateStr) {
     var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     var parts = String(dateStr).split("-");
@@ -250,7 +256,7 @@ function renderBalances() {
 
     if (!bal.annualPto) bal.annualPto = {total: 0, used: 0};
     if (!bal.sickLeave) bal.sickLeave = {total: 0, used: 0};
-    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0, expiresOn: getTodayString()};
+    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0};
     if (!bal.unpaid) bal.unpaid = {total: 0, used: 0};
     var annualLeft = bal.annualPto.total - bal.annualPto.used;
     document.getElementById("annualPtoUsed").textContent = annualLeft;
@@ -267,8 +273,11 @@ function renderBalances() {
     var fltLeft = bal.floatingHoliday.total - bal.floatingHoliday.used;
     document.getElementById("floatingUsed").textContent = fltLeft;
     document.getElementById("floatingTotal").textContent = bal.floatingHoliday.total;
-    document.getElementById("floatingFill").style.width = (fltLeft / bal.floatingHoliday.total * 100) + "%";
-    document.getElementById("floatingFooter").textContent = "Expires " + formatDate(bal.floatingHoliday.expiresOn);
+    document.getElementById("floatingFill").style.width = (bal.floatingHoliday.total > 0 ? fltLeft / bal.floatingHoliday.total * 100 : 0) + "%";
+    var expiresOn = bal.floatingHoliday.expiresOn;
+    document.getElementById("floatingFooter").textContent = isValidDateString(expiresOn)
+        ? "Expires " + formatDate(expiresOn)
+        : "Expiration date unavailable";
 
     var unpaidLeft = bal.unpaid.total - bal.unpaid.used;
     document.getElementById("unpaidUsed").textContent = unpaidLeft;
@@ -560,7 +569,7 @@ function renderDropdown() {
 
     if (!bal.annualPto) bal.annualPto = {total: 0, used: 0};
     if (!bal.sickLeave) bal.sickLeave = {total: 0, used: 0};
-    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0, expiresOn: getTodayString()};
+    if (!bal.floatingHoliday) bal.floatingHoliday = {total: 0, used: 0};
     if (!bal.unpaid) bal.unpaid = {total: 0, used: 0};
     var annualLeft = bal.annualPto.total - bal.annualPto.used;
     var sickLeft = bal.sickLeave.total - bal.sickLeave.used;

@@ -1,0 +1,190 @@
+/* Animation styles copied from Project 2. The original home layout and footer remain in their own files. */
+/* ========================================
+   05. EMPLOYEE FEEDBACK
+======================================== */
+.feedback-section {
+  overflow: hidden;
+  padding-bottom: 112px;
+  background: radial-gradient(circle at 8% 10%, rgba(0, 143, 139, 0.05), transparent 22%), #ffffff;
+}
+.feedback-interaction-hint {
+  width: min(1180px, calc(100% - 40px));
+  margin: -22px auto 4px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #71848c;
+  font-size: 11px;
+}
+.feedback-interaction-hint .material-symbols-outlined {
+  color: var(--home-teal);
+  font-size: 17px;
+}
+.feedback-slider {
+  --feedback-gap: 18px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 38px 0 46px;
+}
+.feedback-slider::before,
+.feedback-slider::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 8;
+  width: clamp(26px, 7vw, 110px);
+  pointer-events: none;
+}
+.feedback-slider::before { left: 0; background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0)); }
+.feedback-slider::after { right: 0; background: linear-gradient(270deg, #ffffff, rgba(255,255,255,0)); }
+.feedback-track {
+  width: max-content;
+  display: flex;
+  gap: var(--feedback-gap);
+  animation: feedbackMove 42s linear infinite;
+  will-change: transform;
+}
+.feedback-group { display: flex; gap: var(--feedback-gap); }
+.feedback-slider:hover .feedback-track,
+.feedback-slider:focus-within .feedback-track,
+.feedback-slider.has-selected .feedback-track { animation-play-state: paused; }
+.testimonial {
+  position: relative;
+  width: 310px;
+  min-height: 230px;
+  flex: 0 0 310px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  border: 1px solid #e2e9ec;
+  border-top: 3px solid #12a99f;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 12px 34px rgba(31, 67, 79, 0.07);
+  opacity: 1;
+  transform: scale(1);
+  cursor: pointer;
+  transform-origin: center;
+  transition: opacity .28s ease, transform .38s var(--ease-out), box-shadow .38s ease, border-color .28s ease;
+}
+.feedback-slider:hover .testimonial { opacity: .68; transform: scale(.985); }
+.feedback-slider .testimonial:hover,
+.feedback-slider .testimonial:focus-visible {
+  z-index: 6;
+  opacity: 1;
+  transform: translate3d(0,-5px,0) scale(1.02);
+}
+.feedback-slider.has-selected .testimonial { opacity: .42; transform: scale(.965); }
+.feedback-slider.has-selected .testimonial.is-selected {
+  z-index: 12;
+  opacity: 1;
+  transform: translate3d(0,-4px,0) scale(1.11);
+  box-shadow: 0 24px 58px rgba(20, 61, 72, .18);
+  border-color: rgba(0,143,139,.38);
+}
+.testimonial-teal { border-top-color:#12a99f; }
+.testimonial-green { border-top-color:#45b978; }
+.testimonial-yellow { border-top-color:#e8b34d; }
+.testimonial-orange { border-top-color:#ea845c; }
+.testimonial-blue { border-top-color:#4b7bec; }
+.testimonial-icon {
+  width: 36px; height: 36px; display:grid; place-items:center; margin-bottom:18px;
+  border-radius:10px; background:#edf8f7; color:var(--home-teal); animation:testimonialFloat 4.3s var(--ease-soft) infinite;
+}
+.testimonial-icon .material-symbols-outlined { font-size:21px; }
+.testimonial p { flex:1; margin:0 0 24px; color:#52666f; font-size:12px; line-height:1.78; }
+.employee { display:flex; align-items:center; gap:10px; }
+.employee-avatar {
+  width:39px; height:39px; flex-shrink:0; display:grid; place-items:center; border-radius:50%;
+  background:#e4f6f4; color:var(--home-teal); animation:avatarFloat 5s var(--ease-soft) -1s infinite;
+}
+.employee-avatar .material-symbols-outlined { font-size:20px; }
+.employee strong { display:block; color:#263b43; font-size:12px; }
+.employee div > span { display:block; margin-top:2px; color:#89969b; font-size:11px; }
+
+/* ========================================
+   08. LIFE & TECHNOLOGY CAROUSEL
+======================================== */
+.company-section {
+  overflow: hidden;
+  background: linear-gradient(180deg, #f7fafb 0%, #ffffff 100%);
+}
+.company-carousel { position: relative; padding: 8px 0 26px; }
+.company-track {
+  display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 36px)/3); gap:18px;
+  overflow-x:auto; padding:18px 8px 32px; scroll-behavior:smooth; scroll-snap-type:x mandatory; scrollbar-width:none;
+}
+.company-track::-webkit-scrollbar { display:none; }
+.company-slide {
+  position:relative; scroll-snap-align:start; overflow:hidden; border:1px solid #dce7e9; border-radius:20px;
+  background:#fff; box-shadow:0 14px 36px rgba(31,67,79,.07); opacity:.72; transform:translateY(8px) scale(.965);
+  transition:transform .55s var(--ease-out), opacity .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+.company-slide::after {
+  content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit; border:1px solid transparent;
+  transition:border-color .35s ease;
+}
+.company-slide.is-active {
+  opacity:1; transform:translateY(0) scale(1.01); border-color:#c9dfdf; box-shadow:0 22px 52px rgba(24,63,75,.12);
+}
+.company-slide.is-active::after { border-color:rgba(4,170,164,.18); }
+.company-slide:hover { opacity:1; transform:translateY(-5px) scale(1.005); }
+.company-media {
+  position:relative; aspect-ratio:16/10; overflow:hidden; background:linear-gradient(145deg,#dce9ea,#cbdcdf); isolation:isolate;
+}
+.company-media video {
+  position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; object-position:center;
+  opacity:0; transform:scale(1.035); filter:saturate(.9) contrast(.98);
+  transition:opacity .45s ease, transform 1s var(--ease-out), filter .45s ease;
+}
+.company-media.is-ready video { opacity:1; }
+.company-slide.is-active .company-media video, .company-slide:hover .company-media video { transform:scale(1.075); filter:saturate(1.04) contrast(1.02); }
+.company-media::after {
+  content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg,transparent 48%,rgba(4,24,31,.08) 70%,rgba(4,24,31,.42) 100%);
+}
+.company-media-fallback {
+  position:absolute; inset:0; z-index:0; display:grid; place-items:center; align-content:center; gap:9px;
+  background:radial-gradient(circle at 35% 30%,rgba(85,221,212,.23),transparent 28%),linear-gradient(145deg,#0c323d,#102530);
+  color:#d8f4f1; transition:opacity .35s ease;
+}
+.company-media-fallback .material-symbols-outlined { font-size:34px; color:#72dfd6; }
+.company-media-fallback small { font-size:10px; letter-spacing:.12em; text-transform:uppercase; }
+.company-media.is-ready .company-media-fallback { opacity:0; }
+.company-media.has-error .company-media-fallback { opacity:1; }
+.company-media-tag {
+  position:absolute; left:14px; bottom:13px; z-index:3; padding:7px 10px; border:1px solid rgba(255,255,255,.24);
+  border-radius:999px; background:rgba(4,31,38,.52); color:#fff; backdrop-filter:blur(8px);
+  font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  transform:translateY(8px); opacity:0; transition:opacity .35s ease, transform .5s var(--ease-out);
+}
+.company-slide.is-active .company-media-tag, .company-slide:hover .company-media-tag { opacity:1; transform:none; }
+.company-slide-content { padding:21px 20px 22px; }
+.company-slide-content > span { display:block; margin-bottom:7px; color:var(--home-teal); font-size:11px; font-weight:700; letter-spacing:.9px; text-transform:uppercase; }
+.company-slide-content h3 { margin:0 0 8px; color:#21363e; font-family:"Space Grotesk",sans-serif; font-size:17px; }
+.company-slide-content p { margin:0; color:#74858c; font-size:12px; line-height:1.68; }
+.company-control {
+  position:absolute; top:42%; z-index:8; width:46px; height:46px; display:grid; place-items:center; border:1px solid #d7e4e5;
+  border-radius:50%; background:rgba(255,255,255,.94); color:#087f80; box-shadow:0 8px 25px rgba(28,66,77,.12);
+  cursor:pointer; backdrop-filter:blur(10px); transition:transform var(--motion-fast) var(--ease-out), background .25s ease;
+}
+.company-control:hover { transform:scale(1.09); background:#f5fbfb; }
+.company-control-prev { left:-22px; }
+.company-control-next { right:-22px; }
+.company-control .material-symbols-outlined { font-size:20px; }
+.company-nav { display:flex; align-items:center; gap:14px; margin-top:6px; }
+.company-progress { flex:1; height:3px; overflow:hidden; border-radius:999px; background:#dbe6e7; }
+.company-progress span { display:block; height:100%; background:linear-gradient(90deg,#04aaa4,#55ddd4); transform:scaleX(0); transform-origin:left; }
+.company-progress.run span { animation:lineDraw 4.5s linear forwards; }
+.company-dots { display:flex; gap:8px; }
+.company-dots button { width:10px; height:10px; padding:0; border:0; border-radius:50%; background:#c4d4d6; cursor:pointer; }
+.company-dots button.on { background:#008f8b; transform:scale(1.25); }
+
+/* Motion controls copied from Project 2; static view for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .feedback-track, .testimonial-icon, .employee-avatar, .company-media::before { animation:none !important; }
+  .testimonial, .company-slide, .company-media video { transition:none !important; }
+}

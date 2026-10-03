@@ -73,8 +73,11 @@ form.addEventListener('submit', async event => {
       body: JSON.stringify({ password: password.value, firstAttend: false })
     });
     if (!response.ok) throw new Error('Could not save your password.');
+    window.RouterReset?.success();
+    await window.RouterReset?.finish();
     location.replace(workspaceFor(session.role));
   } catch (error) {
+    window.RouterReset?.error();
     showError(`${error.message} Make sure the API is running.`);
   } finally {
     submitButton.disabled = false;

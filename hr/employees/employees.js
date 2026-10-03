@@ -14,6 +14,12 @@ let passwordForNotice = '';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const initials = name => String(name || '?').trim().split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase();
 const detailUrl = id => `../employee-details/employee-details.html?id=${encodeURIComponent(id)}`;
+// Existing floating holidays expire on March 31; new balances use the next one.
+const nextFloatingHolidayExpiry = () => {
+  const today = new Date();
+  const year = today.getFullYear() + (today.getMonth() >= 3 ? 1 : 0);
+  return `${year}-03-31`;
+};
 const dateLabel = value => {
   const date = new Date(`${value}T00:00:00`);
   return Number.isNaN(date.getTime()) ? String(value || '—') : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
@@ -193,7 +199,7 @@ async function saveEmployee(event) {
         body: JSON.stringify({
           id: savedEmployee.id, employeeId: savedEmployee.id,
           annualPto: { used: 0, total: 20 }, sickLeave: { used: 0, total: 8 },
-          floatingHoliday: { used: 0, total: 3 }, unpaid: { used: 0, total: 30 }
+          floatingHoliday: { used: 0, total: 3, expiresOn: nextFloatingHolidayExpiry() }, unpaid: { used: 0, total: 30 }
         })
       }).catch(() => null);
       if (!balanceResponse?.ok) balanceWarning = ' Employee was added, but its leave balance could not be created.';
@@ -297,7 +303,7 @@ document.getElementById('exportButton').addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'teamspace-employees.csv';
+  link.download = 'connectra-employees.csv';
   link.click();
   URL.revokeObjectURL(url);
 });

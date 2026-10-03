@@ -101,11 +101,11 @@ document.getElementById('pdf').addEventListener('click', async () => {
     const latest = await response.json();
     if (!Array.isArray(latest) || !latest.length) throw new Error('There are no policies to download.');
     const sections = latest.map(policy => `<section><p class="category">${escapeHtml(policy.category)}</p><h2>${escapeHtml(policy.title)}</h2><p>${escapeHtml(policy.description).replaceAll('\n', '<br>')}</p></section>`).join('');
-    const documentHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TeamSpace HR Policies</title><style>body{max-width:800px;margin:40px auto;padding:0 24px;font:16px/1.6 Arial,sans-serif;color:#18313a}h1{color:#00626a}section{padding:20px 0;border-top:1px solid #d9e3e9}h2{margin:0 0 8px;font-size:21px}.category{margin:0 0 5px;color:#00626a;font-size:12px;font-weight:bold;text-transform:uppercase}section p:last-child{margin:0}small{color:#587080}@media print{body{margin:0;max-width:none}}</style></head><body><h1>TeamSpace HR Policies</h1><small>Downloaded ${escapeHtml(new Date().toLocaleDateString())}</small>${sections}</body></html>`;
+    const documentHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Connectra Policies</title><style>body{max-width:800px;margin:40px auto;padding:0 24px;font:16px/1.6 Arial,sans-serif;color:#18313a}h1{color:#00626a}section{padding:20px 0;border-top:1px solid #d9e3e9}h2{margin:0 0 8px;font-size:21px}.category{margin:0 0 5px;color:#00626a;font-size:12px;font-weight:bold;text-transform:uppercase}section p:last-child{margin:0}small{color:#587080}@media print{body{margin:0;max-width:none}}</style></head><body><h1>Connectra Policies</h1><small>Downloaded ${escapeHtml(new Date().toLocaleDateString())}</small>${sections}</body></html>`;
     const url = URL.createObjectURL(new Blob([documentHtml], { type: 'text/html;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'TeamSpace-HR-Policies.html';
+    link.download = 'Connectra-Policies.html';
     document.body.append(link);
     link.click();
     link.remove();

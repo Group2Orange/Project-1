@@ -19,6 +19,7 @@ passwordToggle.addEventListener('click', () => {
 });
 
 function setLoginError(message = '') {
+  window.LoginMotion?.error(message);
   document.querySelector('#login-error').hidden = !message;
   if (message) {
     document.querySelector('#login-error-message').textContent = message;
@@ -39,6 +40,7 @@ loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   setLoginError();
   submitButton.disabled = true;
+  window.LoginMotion?.start();
 
   try {
     const email = emailInput.value.trim().toLowerCase();
@@ -85,6 +87,8 @@ loginForm.addEventListener('submit', async (event) => {
     localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
     localStorage.removeItem('currentUser');
     localStorage.setItem('currentUserId', String(employee.id));
+
+    await window.LoginMotion?.success();
 
     if (employee.firstAttend === true) {
       window.location.href = '../reset-password/reset-password.html';

@@ -414,9 +414,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-            alert(
-                "Feedback sent successfully!"
-            );
+            if (window.FeedbackMotion) {
+                await window.FeedbackMotion.show(feedback);
+            } else {
+                alert("Feedback sent successfully!");
+            }
 
 
 

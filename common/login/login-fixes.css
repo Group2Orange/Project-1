@@ -1,0 +1,205 @@
+/* login-fixes.css — load AFTER login.css. Overrides only; nothing in login.css is edited. */
+
+/* 1. Cable: no printed text (reference has none); data packets read as bright blocks inside the tube */
+.fiber-print { display: none; }
+
+.lan-lane {
+  stroke-width: 3.2;
+  stroke-dasharray: 14 30;
+  opacity: .9;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.lan-lane-a { color: #25e6df; }
+.lan-lane-b { color: #42dc91; }
+.lan-lane-c { color: #5ac8fa; }
+.lan-lane-d { color: #8498ff; opacity: .55; }
+@keyframes lanLaneTravel { to { stroke-dashoffset: -88; } }
+
+/* 2. Hero title: heavier and larger */
+.hero-copy h1 {
+  font-weight: 700;
+  font-size: clamp(44px, 3.9vw, 60px);
+  letter-spacing: -2.2px;
+}
+
+/* 3. Status pill text in aqua */
+.system-pill {
+  color: var(--mint);
+  font-weight: 700;
+}
+
+/* 4. Step indicator: completed = filled aqua with dark text; step 03 stays outlined */
+.login-step.complete { color: var(--mint); }
+.login-step.complete > span {
+  border-color: var(--mint);
+  background: var(--mint);
+  color: #03212a;
+  font-weight: 700;
+  box-shadow: 0 0 0 5px rgba(37, 230, 223, .06), 0 0 16px rgba(37, 230, 223, .25);
+}
+.login-step.active > span {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* 5. Primary button: bright aqua gradient, dark navy text */
+.login-button {
+  background: linear-gradient(110deg, #25e6df 0%, #55ddd4 55%, #7bf2e9 100%);
+  color: #03212a;
+  box-shadow: 0 10px 24px rgba(37, 230, 223, .2), inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.login-button .button-content { color: #03212a; }
+.login-button .button-loader {
+  border-color: rgba(3, 33, 42, .25);
+  border-top-color: #03212a;
+}
+.login-button .button-progress { background: rgba(3, 33, 42, .55); }
+
+/* 6. Login card: stronger cyan edge glow, sits a little higher */
+.login-card {
+  margin-top: 10px;
+  border-color: rgba(59, 230, 221, .4);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, .38),
+    inset 0 1px 0 rgba(255, 255, 255, .06),
+    0 0 0 1px rgba(37, 230, 223, .08),
+    0 0 38px rgba(37, 230, 223, .14);
+}
+
+/* 7. Waveform: audio-style heights (tall left, tapering to dots) */
+.data-wave { gap: 5px; }
+.data-wave i {
+  height: var(--h, 10px);
+  transform-origin: center;
+}
+.data-wave.active i {
+  animation: waveBreathe .9s ease-in-out infinite alternate;
+}
+.data-wave i:nth-child(1)  { --h: 14px; }
+.data-wave i:nth-child(2)  { --h: 26px; }
+.data-wave i:nth-child(3)  { --h: 36px; }
+.data-wave i:nth-child(4)  { --h: 42px; }
+.data-wave i:nth-child(5)  { --h: 38px; }
+.data-wave i:nth-child(6)  { --h: 32px; }
+.data-wave i:nth-child(7)  { --h: 26px; }
+.data-wave i:nth-child(8)  { --h: 22px; }
+.data-wave i:nth-child(9)  { --h: 18px; }
+.data-wave i:nth-child(10) { --h: 14px; }
+.data-wave i:nth-child(11) { --h: 10px; }
+.data-wave i:nth-child(12) { --h: 8px; }
+.data-wave i:nth-child(13) { --h: 6px; }
+.data-wave i:nth-child(14) { --h: 4px; }
+.data-wave i:nth-child(15) { --h: 4px; }
+.data-wave i:nth-child(16) { --h: 4px; }
+@keyframes waveBreathe {
+  from { transform: scaleY(.55); }
+  to   { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-wave.active i { animation: none; }
+}
+
+/* ===== Round 2 (from screenshot review) ===== */
+
+/* 8. Hero title: my size bump made it wrap to 3 lines. Keep it on two. */
+.hero-copy { max-width: 1000px; }
+.hero-copy h1 {
+  max-width: none;
+  font-size: clamp(40px, 3.5vw, 56px);
+}
+@media (min-width: 1181px) {
+  .hero-copy h1 span { white-space: nowrap; }
+}
+
+/* 9. Telemetry bar: icon sat above the text and the values were clipped.
+   An earlier rule set flex-direction: column and was never reset to row. */
+.telemetry-bar > div { flex-direction: row; }
+
+/* 10. Password field turned white: Chrome autofill styling. Keep it dark. */
+.input-shell input:-webkit-autofill,
+.input-shell input:-webkit-autofill:hover,
+.input-shell input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f6fbfb;
+  caret-color: #f6fbfb;
+  -webkit-box-shadow: 0 0 0 1000px #04202a inset;
+  box-shadow: 0 0 0 1000px #04202a inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* 11. RJ45 label printed upside down on the left plug; reference has no label */
+.lan-plug-label { display: none; }
+
+/* 12. Cable and client node (desktop/tablet only) */
+@media (min-width: 641px) {
+  .fiber-depth        { stroke-width: 74; }
+  .fiber-halo         { stroke-width: 65; }
+  .fiber-rim          { stroke-width: 50; }
+  .fiber-jacket-outer { stroke-width: 46; }
+  .fiber-ticks        { stroke-width: 43; }
+  .fiber-yarn         { stroke-width: 34px; }
+  .fiber-jacket       { stroke-width: 28; }
+  .fiber-clad         { stroke-width: 18; }
+  .fiber-main         { stroke-width: 4.2; }
+  .fiber-progress     { stroke-width: 8; }
+  .lan-lane           { stroke-width: 4; stroke-dasharray: 18 28; }
+  .client-node        { left: 10.5%; }
+}
+
+
+/* ===== Round 3: 3D cable (drawn by cable3d.js) ===== */
+/* hide the old flat cable layers, old plugs and old sleeves; keep #fiberPath (login.js needs its geometry) */
+.fiber-depth, .fiber-halo, .fiber-rim, .fiber-jacket-outer, .fiber-ticks, .fiber-yarn,
+.fiber-jacket, .fiber-clad, .fiber-strand, .fiber-sheen, .fiber-print,
+.lan-lane, .lan-pulse-track, .lan-plug,
+.network-svg:not(.cable3d) > g:not([id]):not([class]) { display: none; }
+
+.fiber-main { stroke-width: 2.4; opacity: .5; stroke-dasharray: 3 14; }
+.fiber-progress { stroke-width: 10; }
+
+.cable3d { transition: opacity 1.4s ease, transform .1s linear; }
+.access-shell.booting .cable3d { opacity: 0; }
+
+.c3-flow-a { animation: c3Flow 1.6s linear infinite; }
+.c3-flow-b { animation: c3Flow 2.1s linear infinite; }
+@keyframes c3Flow { to { stroke-dashoffset: -68; } }
+
+.c3-plug { filter: drop-shadow(0 10px 12px rgba(0,0,0,.55)) drop-shadow(0 0 10px rgba(37,230,223,.18)); }
+.c3-led { fill: #35545b; }
+.access-shell.typing .c3-led-a, .access-shell.success .c3-led-a { fill: var(--green); }
+.access-shell.typing .c3-led-b { fill: var(--mint); }
+.access-shell.success .c3-led-b { fill: var(--green); }
+.access-shell.error .c3-led { fill: var(--red); }
+
+.access-shell.typing .c3-glow { stroke: rgba(37,230,223,.34); }
+.access-shell.error   .c3-glow { stroke: rgba(236,83,100,.3); }
+.access-shell.success .c3-glow { stroke: rgba(66,220,145,.34); }
+.access-shell.success .c3-flow-b { stroke: #d8fff0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .c3-flow-a, .c3-flow-b { animation: none; }
+}
+
+
+/* ===== Round 4: cable fits the stage, calmer screen ===== */
+.fiber-light { display: none; }              /* white cursor blob on the cable */
+.fiber-main { opacity: .22; }
+.backdrop-scan { display: none; }
+.mouse-glow { opacity: .1; }
+
+.access-shell.typing .c3-glow  { stroke: rgba(37,230,223,.2); }
+.access-shell.error   .c3-glow { stroke: rgba(236,83,100,.2); }
+.access-shell.success .c3-glow { stroke: rgba(66,220,145,.22); }
+
+@media (min-width: 641px) {
+  .client-node { left: 19%; }
+  .core-node   { left: 82%; }
+}
+/* On phones, bring the sign-in form above the decorative network scene. */
+@media (max-width: 640px) {
+  .access-shell { display: flex; flex-direction: column; }
+  .access-header { order: 0; }
+  .login-card { order: 1; }
+  .hero-area { order: 2; }
+  .telemetry-bar { order: 3; }
+}

@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us and Submit Feedback | HR System</title>
+  <title>Contact Us and Submit Feedback | Connectra</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="contact.css">
+  <link rel="stylesheet" href="contact-motion.css">
   <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
@@ -380,9 +381,59 @@ Send Feedback →
 </main>
 
 
+<section class="feedback-success" id="feedbackSuccess" aria-hidden="true">
+  <div class="feedback-success-backdrop" data-feedback-close></div>
+
+  <div class="feedback-success-card" role="dialog" aria-modal="true" aria-labelledby="feedbackSuccessTitle" aria-describedby="feedbackSuccessDescription">
+    <div class="feedback-success-brand">
+      <span class="feedback-success-brand-icon material-symbols-outlined" aria-hidden="true">forum</span>
+      <span>
+        <strong>Connectra</strong>
+        <small>Employee Feedback</small>
+      </span>
+    </div>
+
+    <div class="feedback-success-visual" aria-hidden="true">
+      <span class="feedback-success-ring"></span>
+      <div class="feedback-success-icon">
+        <span class="material-symbols-outlined" data-success-icon>send</span>
+      </div>
+    </div>
+
+    <p class="feedback-success-eyebrow" data-success-eyebrow>Secure delivery</p>
+    <h2 id="feedbackSuccessTitle">Sending your feedback...</h2>
+    <p id="feedbackSuccessDescription">Your message is being securely delivered to People Operations.</p>
+
+    <div class="feedback-route" aria-hidden="true">
+      <div class="feedback-route-node">
+        <span class="material-symbols-outlined">person</span>
+        <small>You</small>
+      </div>
+      <span class="feedback-route-line feedback-route-line-one"></span>
+      <div class="feedback-route-node feedback-route-node-center">
+        <span class="material-symbols-outlined">hub</span>
+        <small>Connectra</small>
+      </div>
+      <span class="feedback-route-line feedback-route-line-two"></span>
+      <div class="feedback-route-node">
+        <span class="material-symbols-outlined">groups</span>
+        <small>People Ops</small>
+      </div>
+    </div>
+
+    <div class="feedback-success-progress" aria-hidden="true"><span></span></div>
+
+    <button class="feedback-success-done" id="closeFeedbackSuccess" type="button" hidden>
+      Done
+    </button>
+  </div>
+</section>
+
+
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
+  <script src="contact-motion.js"></script>
   <script src="contact.js"></script>
 </body>
 </html>

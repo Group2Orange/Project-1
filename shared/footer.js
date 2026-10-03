@@ -23,7 +23,7 @@
       })
       .catch(error => {
         console.error('Could not load the shared footer. Open this page through Live Server.', error);
-        placeholder.textContent = 'TeamSpace HR';
+        placeholder.textContent = 'Connectra';
       });
   }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us and Team | HR System</title>
+  <title>About Us and Team | Connectra</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
@@ -13,364 +13,189 @@
 </head>
 <body>
 <nav class="navbar" data-navbar="hr"></nav>
-<main>
+<section class="team" aria-labelledby="team-title">
+  <header class="team-head">
+    <p class="chip"><span class="dot"></span>Six people online</p>
+    <h2 id="team-title">Meet Our Team</h2>
+    <p class="sub">Every system runs on people. Here is who keeps ours running.</p>
+    <p class="intro">Each unit in the rack below holds one teammate. Pull a drawer open to see their role, what they are good at, and how to reach them.</p>
+  </header>
+  <div class="rack">
+    <ol class="units">
 
-    <!-- ================= TEAM SECTION ================= -->
-
-    <section class="team-section">
-
-        <div class="team-header">
-
-            <span class="section-label">
-                OUR PEOPLE
-            </span>
-
-            <h2>
-                Meet Our Team
-            </h2>
-
-            <div class="title-line center"></div>
-
-            <p>
-                Our team is a group of passionate and dedicated individuals
-                working together to build a better and more efficient
-                HR Management System.
-            </p>
-
-        </div>
-
-
-        <div class="team-container">
-
-
-            <!-- Raghad -->
-
-            <article
-                class="team-card"
-                data-name="Raghad Alkdearat"
-                data-role="Front end developer"
-                data-skills="Leadership, Project Management, Communication"
-                data-description="Responsible for leading the team, organizing tasks, and ensuring the successful completion of the HR Management System."
-                data-github="https://github.com/raghadalkdearat-prog">
-
-                <div class="member-image">
-                    <img
-                        src="https://randomuser.me/api/portraits/women/44.jpg"
-                        alt="Raghad Alkdearat">
-                </div>
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m1">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U1</span>
+          <span class="who"><strong>Raghad Alkdearat</strong><small>Project Leader</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m1" role="region" aria-label="Raghad Alkdearat">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../team/team photos/1786056180212.jpg" alt="Raghad Alkdearat photo"></div>
+              <div class="info">
                 <h3>Raghad Alkdearat</h3>
-
-                <span class="member-role">
-                    Project Leader
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Leads the team and ensures the project's success,
-                    organization, and overall development.
-                </p>
-
-                <div class="socials">
-
-                    <a href="https://github.com/raghadalkdearat-prog" target="_blank" rel="noopener noreferrer" aria-label="Raghad on GitHub">
-                        <i class="fa-brands fa-github"></i>
-                    </a>
-
-                    <a href="mailto:raghad@example.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
+                <p class="role">Project Leader</p>
+                <p class="desc">Leads the team, organizes tasks, and makes sure the HR Management System ships on track.</p>
+                <ul class="skills"><li>Leadership</li><li>Project Management</li><li>Communication</li></ul>
+                <div class="links">
+                   <a href="https://www.linkedin.com/in/raghad-mahmoud-al-khudairat-6394a4356?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                  <a href="https://github.com/raghadalkdearat-prog" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="mailto:raghadalkdearat@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
+              </div>
             </article>
+          </div>
+        </div>
+      </li>
 
-
-            <!-- Dana -->
-
-            <article
-                class="team-card"
-                data-name="Dana Alkateeb"
-                data-role="Front End Web Developer"
-                data-skills="HTML, CSS, JavaScript"
-                data-description="Designs and develops the user interface of the HR Management System."
-                data-github="https://github.com/DanaAlkhateeb123">
-
-                <div class="member-image">
-
-                    <img
-                        src="https://randomuser.me/api/portraits/women/44.jpg"
-                        alt="Dana Alkateeb">
-
-                </div>
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m2">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U2</span>
+          <span class="who"><strong>Dana Alkateeb</strong><small>Frontend Developer</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m2" role="region" aria-label="Dana Alkateeb">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../../common/team/team photos/1788295933122.jpg" alt="Dana Alkateeb photo"></div>
+              <div class="info">
                 <h3>Dana Alkateeb</h3>
-
-                <span class="member-role">
-                    Frontend Developer
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Develops responsive web interfaces, implements interactive features,
-                    and helps create a smooth and user-friendly experience.
-                </p>
-
-                <div class="socials">
-
-                    <a href="https://www.linkedin.com/in/dana-alkhateeb-3636a5422"
-                        target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-
-                    <a href="mailto:danakhateeb2003@gmail.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
+                <p class="role">Frontend Developer</p>
+                <p class="desc">Builds responsive interfaces and interactive features that feel smooth and easy to use.</p>
+                <ul class="skills"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+                <div class="links">
+                   <a href="https://www.linkedin.com/in/dana-alkhateeb-3636a5422/?isSelfProfile=false" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                   <a href="https://github.com/DanaAlkhateeb123" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="mailto:danakhateeb2003@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
+              </div>
             </article>
+          </div>
+        </div>
+      </li>
 
-
-            <!-- Marwaa -->
-
-            <article
-                class="team-card"
-                data-name="Marwaa Badarneh"
-                data-role="Frontend Web Developer"
-                data-skills="HTML, CSS, JavaScript, Responsive Design"
-                data-description="Responsible for developing and improving the user interface of the HR Management System and creating responsive and user-friendly web pages."
-                data-github="https://github.com/MarwaM5">
-
-                <div class="member-image">
-
-                    <img
-                        src="https://randomuser.me/api/portraits/men/46.jpg"
-                        alt="Marwaa Badarneh">
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m3">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U3</span>
+          <span class="who"><strong>Marwa Badarneh</strong><small>Frontend Web Developer</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m3" role="region" aria-label="Marwaa Badarneh">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../../common/team/team photos/1757349204668.jpg" alt="Marwa Badarneh"></div>
+              <div class="info">
+                <h3>Marwa Badarneh</h3>
+                <p class="role">Frontend Web Developer</p>
+                <p class="desc">Develops and improves the user interface with clean, responsive, user-friendly pages.</p>
+                <ul class="skills"><li>HTML</li><li>Responsive Design</li><li>JavaScript</li></ul>
+                <div class="links">
+                  <a href="https://github.com/MarwaM5" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="http://www.linkedin.com/in/marwa-albadarneh" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                  <a href="mailto:albadarnehmarwa@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
-                <h3>Marwaa Badarneh</h3>
-
-                <span class="member-role">
-                    Backend Developer
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Develops responsive web interfaces, implements interactive features,
-                    and helps create a smooth and user-friendly experience.
-                </p>
-
-                <div class="socials">
-
-                    <a href="http://www.linkedin.com/in/marwa-albadarneh"
-                        target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-
-                    <a href="mailto:albadarnehmarwa@gmail.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
-                </div>
-
+              </div>
             </article>
+          </div>
+        </div>
+      </li>
 
-
-            <!-- Osama -->
-
-            <article
-                class="team-card"
-                data-name="Osama Banihani"
-                data-role="Product Owner"
-                data-skills="Product Management, Team Communication, Requirement Analysis, Decision Making"
-                data-description="Responsible for defining product requirements, prioritizing features, communicating with the team, and ensuring that the HR Management System meets the project goals."
-                data-github="https://github.com/osamabanihani">
-
-                <div class="member-image">
-
-                    <img
-                        src="https://randomuser.me/api/portraits/women/68.jpg"
-                        alt="Osama Banihani">
-
-                </div>
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m4">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U4</span>
+          <span class="who"><strong>Osama Banihani</strong><small>Product Owner</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m4" role="region" aria-label="Osama Banihani">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../../common/team/team photos/882d2ddf-bd7d-4978-bfc5-f97c80431944.jpg" alt="Osama Banihani"></div>
+              <div class="info">
                 <h3>Osama Banihani</h3>
-
-                <span class="member-role">
-                    Product Owner / Frontend Developer
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Defines product requirements, prioritizes features,
-                    and ensures the system meets user needs and project goals.
-                </p>
-
-                <div class="socials">
-
-                    <a href="https://www.linkedin.com/in/osama-banihani-/"
-                        target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-
-                    <a href="mailto:osamabanihani124@gmail.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
+                <p class="role">Product Owner</p>
+                <p class="desc">Defines requirements, prioritizes features, and keeps the product aligned with project goals.</p>
+                <ul class="skills"><li>Product Management</li><li>Requirement Analysis</li><li>Decision Making</li></ul>
+                <div class="links">
+                  <a href="https://github.com/osamabanihani" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="https://www.linkedin.com/in/osama-banihani-/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                  <a href="mailto:osamabanihani124@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
+              </div>
             </article>
+          </div>
+        </div>
+      </li>
 
-
-            <!-- Anas -->
-
-            <article
-                class="team-card"
-                data-name="Anas Ghawanmah"
-                data-role="Frontend Web Developer"
-                data-skills="HTML, CSS, JavaScript, Responsive Design"
-                data-description="Responsible for developing responsive user interfaces, implementing interactive features, and improving the overall user experience of the HR Management System."
-                data-github="https://github.com/aghawanmeh857-alt">
-
-                <div class="member-image">
-
-                    <img
-                        src="https://randomuser.me/api/portraits/men/46.jpg"
-                        alt="Anas Ghawanmah">
-
-                </div>
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m5">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U5</span>
+          <span class="who"><strong>Anas Ghawanmah</strong><small>Frontend Web Developer</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m5" role="region" aria-label="Anas Ghawanmah">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../../common/team/team photos/1790259668410 (1).jpg" alt="Anas Photo"></div>
+              <div class="info">
                 <h3>Anas Ghawanmah</h3>
-
-                <span class="member-role">
-                    Backend Developer
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Develops responsive user interfaces, implements interactive features,
-                    and improves the overall user experience of the HR Management System.
-                </p>
-
-                <div class="socials">
-
-                    <a href="https://www.linkedin.com/in/anas-ghawanmeh-4047902b5/"
-                        target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-
-                    <a href="mailto:aghawanmeh857@gmail.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
+                <p class="role">Frontend Web Developer</p>
+                <p class="desc">Builds responsive interfaces and refines interface behavior for a better overall experience.</p>
+                <ul class="skills"><li>HTML</li><li>CSS</li><li>Responsive Design</li></ul>
+                <div class="links">
+                  <a href="https://github.com/aghawanmeh857-alt" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="https://www.linkedin.com/in/anas-ghawanmeh-4047902b5/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                  <a href="mailto:aghawanmeh857@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
+              </div>
             </article>
+          </div>
+        </div>
+      </li>
 
-
-            <!-- Wadea -->
-
-            <article
-                class="team-card"
-                data-name="Wadea Yawanseh"
-                data-role="Scrum Master"
-                data-skills="Scrum, Team Coordination, Communication, Problem Solving"
-                data-description="Responsible for facilitating Scrum activities, coordinating the team, removing obstacles, and helping ensure smooth and effective progress throughout the HR Management System project."
-                data-github="https://github.com/WadeaYH">
-
-                <div class="member-image">
-
-                    <img
-                        src="https://randomuser.me/api/portraits/men/46.jpg"
-                        alt="Wadea Yawanseh">
-
-                </div>
-
+      <li class="unit">
+        <button class="front" type="button" aria-expanded="false" aria-controls="m6">
+          <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="slot" aria-hidden="true">U6</span>
+          <span class="who"><strong>Wadea Yawanseh</strong><small>Scrum Master</small></span>
+          <span class="vents" aria-hidden="true"></span>
+          <span class="chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+        <div class="bay" id="m6" role="region" aria-label="Wadea Yawanseh">
+          <div class="bay-inner">
+            <article class="card">
+              <div class="photo"><span><i class="fa-regular fa-image"></i>Add Photo</span><img src="../../common/team/team photos/Generated_Image_April_30_2026_-_12_13AM.jpg" alt="/////// Wadea Yawanseh//////"></div>
+              <div class="info">
                 <h3>Wadea Yawanseh</h3>
-
-                <span class="member-role">
-                    Frontend Developer
-                </span>
-
-                <div class="member-line"></div>
-
-                <p>
-                    Facilitates Scrum activities, supports team collaboration,
-                    removes obstacles, and helps the team stay organized and on track.
-                </p>
-
-                <div class="socials">
-
-                    <a href="https://www.linkedin.com/in/wadea-yh-2188b6278/"
-                        target="_blank">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-
-                    <a href="mailto:wadeayawanseh@gmail.com">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-
+                <p class="role">Scrum Master</p>
+                <p class="desc">Facilitates Scrum activities, coordinates the team, and clears obstacles so work keeps moving.</p>
+                <ul class="skills"><li>Scrum</li><li>Team Coordination</li><li>Problem Solving</li></ul>
+                <div class="links">
+                  <a href="https://github.com/WadeaYH" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>GitHub</a>
+                  <a href="https://www.linkedin.com/in/wadea-yh-2188b6278/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+                  <a href="mailto:wadeayawanseh@gmail.com"><i class="fa-solid fa-envelope"></i>Email</a>
                 </div>
-
+              </div>
             </article>
-
+          </div>
         </div>
+      </li>
 
-    </section>
+    </ol>
+  </div>
+</section>
 
-
-    <!-- ================= MEMBER MODAL ================= -->
-
-    <div class="member-modal" id="memberModal">
-
-        <div class="modal-box">
-
-            <button id="closeModal" class="close-modal">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <span class="modal-label">
-                TEAM MEMBER
-            </span>
-
-            <h2 id="modalName"></h2>
-
-            <p id="modalRole" class="modal-role"></p>
-
-            <div class="modal-line"></div>
-
-            <h4>About</h4>
-
-            <p id="modalDescription" class="modal-description"></p>
-
-            <h4>Skills</h4>
-
-            <div id="modalSkills" class="skills-container"></div>
-
-            <a
-                id="modalGithub"
-                class="github-button"
-                href="#"
-                target="_blank">
-
-                <i class="fa-brands fa-github"></i>
-
-                View GitHub Profile
-
-            </a>
-
-        </div>
-
-    </div>
-
-</main>
+   
 
 <footer class="site-footer" data-footer></footer>
  <script src="../../shared/footer.js"></script>

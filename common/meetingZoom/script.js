@@ -78,7 +78,7 @@ joinButton.addEventListener('click', async () => {
     jitsi = new JitsiMeetExternalAPI('meet.jit.si', {
       roomName: currentMeeting.meetingRoom,
       width: '100%', height: '100%', parentNode: meet,
-      userInfo: { displayName: session.name || 'TeamSpace participant' },
+      userInfo: { displayName: session.name || 'Connectra participant' },
       configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true }
     });
     joinButton.hidden = true;
