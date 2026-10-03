@@ -36,7 +36,13 @@ const API = 'http://127.0.0.1:3000';
   const text = (id, item) => { document.getElementById(id).textContent = value(item); };
   const field = (id, item) => { document.getElementById(id).value = item ?? ''; };
 
-  text('mainAvatar', initials);
+  const avatar = document.getElementById('mainAvatar');
+  const avatarImage = document.createElement('img');
+  avatarImage.src = user.image?.startsWith('data:')
+    ? user.image
+    : '../../common/profile/assets/profile.svg';
+  avatarImage.alt = `${name}'s profile photo`;
+  avatar.replaceChildren(avatarImage);
   text('name', name);
   text('position', user.position);
   text('emailText', user.email);
