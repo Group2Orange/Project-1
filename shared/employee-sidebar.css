@@ -1,0 +1,218 @@
+.employee-sidebar,
+.employee-sidebar * {
+  box-sizing: border-box;
+}
+
+.employee-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  align-self: start;
+  color: var(--color-text);
+  font-family: var(--font-text);
+}
+
+.employee-sidebar-profile,
+.employee-sidebar-menu {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+}
+
+.employee-sidebar-profile {
+  padding: 18px;
+}
+
+.employee-sidebar-person {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.employee-sidebar-avatar {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.employee-sidebar-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.employee-sidebar-person strong,
+.employee-sidebar-person small {
+  display: block;
+}
+
+.employee-sidebar-person strong {
+  font: 700 13px var(--font-heading);
+}
+
+.employee-sidebar-person small {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+.employee-sidebar-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+.employee-sidebar-progress-label strong {
+  color: var(--color-primary-dark);
+}
+
+.employee-sidebar-progress-track {
+  height: 5px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e9eef3;
+}
+
+.employee-sidebar-progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+  transition: width .25s ease;
+}
+
+.employee-sidebar-menu {
+  padding: 10px;
+}
+
+.employee-sidebar-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 8px 9px;
+  color: var(--color-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.employee-sidebar-toggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary-dark);
+  cursor: pointer;
+}
+
+.employee-sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.employee-sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #43546a;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.employee-sidebar-links a:hover,
+.employee-sidebar-links a.is-active {
+  background: #e8f4f5;
+  color: var(--color-primary-dark);
+}
+
+.employee-sidebar-links a:focus-visible,
+.employee-sidebar-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.employee-sidebar-links .material-symbols-outlined {
+  flex: 0 0 18px;
+  font-size: 18px;
+}
+
+.employee-sidebar-count {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+@media (max-width: 820px) {
+  .employee-sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    align-self: stretch;
+  }
+
+  .employee-sidebar-menu { align-self: start; }
+
+  .employee-sidebar-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+  }
+
+  .employee-sidebar-links {
+    display: none;
+  }
+
+  .employee-sidebar.is-open .employee-sidebar-links {
+    display: flex;
+  }
+}
+
+@media (max-width: 560px) {
+  .employee-sidebar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .employee-sidebar-profile {
+    padding: 12px 14px;
+  }
+
+  .employee-sidebar-person {
+    padding-bottom: 10px;
+  }
+
+  .employee-sidebar-progress-label {
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Support &amp; Helpdesk | HR System</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
+  <link rel="stylesheet" href="helpDesk.css?v=5">
+</head>
+<body class="has-footer">
+
+  <!-- Navbar -->
+  <nav class="navbar" data-navbar="employee"></nav>
+
+  <!-- Main Layout -->
+  <main class="helpdesk-page">
+    <div class="helpdesk-layout">
+
+      <!-- Sidebar -->
+      <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="helpdesk" aria-label="Employee workspace"></aside>
+
+      <!-- Content -->
+      <section class="helpdesk-content">
+
+    <!-- Page Header -->
+    <header class="helpdesk-header">
+      <div>
+        <p class="eyebrow">SUPPORT / HELPDESK</p>
+        <h1>HR Support &amp; Helpdesk</h1>
+        <p>Submit a support ticket or request a meeting with HR.</p>
+      </div>
+      <div class="header-actions">
+        <button id="myRequestsBtn" class="btn-secondary" type="button"><span class="material-symbols-outlined" aria-hidden="true">confirmation_number</span>My Requests</button>
+      </div>
+    </header>
+
+    <!-- Two-column grid -->
+    <div class="helpdesk-grid">
+
+      <!-- ===== LEFT: Form Column ===== -->
+      <section class="helpdesk-form-col">
+        <div id="requestCard">
+
+          <!-- Card Header -->
+          <div id="requestHeader">
+            <div>
+              <h2>Submit Request or Schedule a Meeting</h2>
+              <p>Select a request type and fill in the details below.</p>
+            </div>
+            <span class="ticket-badge" id="ticketBadge">TKT-NEW</span>
+          </div>
+
+          <!-- 1. Request Type -->
+          <label>Request Type</label>
+          <div id="typeOptions">
+            <button type="button" class="type-option selected" data-type="ticket" aria-pressed="true">
+              <span class="material-symbols-outlined">forum</span>
+              <div>
+                <b>Submit a Request</b>
+                <small>Ask HR a question or report an issue</small>
+              </div>
+            </button>
+            <button type="button" class="type-option" data-type="meeting" aria-pressed="false">
+              <span class="material-symbols-outlined">videocam</span>
+              <div>
+                <b>Request a Meeting</b>
+                <small>Schedule a 1:1 with your HR partner</small>
+              </div>
+            </button>
+          </div>
+
+          <!-- 2. Meeting Box (hidden by default) -->
+          <div id="meetingBox" hidden>
+
+            <label>Platform <span class="required">*</span></label>
+            <div id="platforms">
+              <button type="button" class="platform-btn" data-platform="Zoom" aria-pressed="false">
+                <span class="material-symbols-outlined">videocam</span> Zoom (Jitsi demo)
+              </button>
+              <button type="button" class="platform-btn" data-platform="Google Meet" aria-pressed="false">
+                <span class="material-symbols-outlined">video_camera_front</span> Google Meet
+              </button>
+            </div>
+            <span class="field-error" id="platformError"></span>
+
+            <label for="meetingDate">Meeting Date <span class="required">*</span></label>
+            <input id="meetingDate" type="date">
+            <span class="field-error" id="dateError"></span>
+
+            <label>Your Available Time Range <span class="required">*</span></label>
+            <div class="time-range-row">
+              <div>
+                <label for="timeFrom">From</label>
+                <input id="timeFrom" type="time">
+              </div>
+              <span>—</span>
+              <div>
+                <label for="timeTo">To</label>
+                <input id="timeTo" type="time">
+              </div>
+            </div>
+            <span class="field-error" id="timeError"></span>
+
+          </div>
+
+          <!-- 3. Topic Category -->
+          <label for="category">Topic Category <span class="required">*</span></label>
+          <select id="category">
+            <option value="">Select a category…</option>
+            <option value="Payroll & Compensation">Payroll &amp; Compensation</option>
+            <option value="Leave & Time Off">Leave &amp; Time Off</option>
+            <option value="Benefits">Benefits</option>
+            <option value="Workplace Issues">Workplace Issues</option>
+            <option value="Performance & Development">Performance &amp; Development</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="field-error" id="categoryError"></span>
+
+          <!-- 4. Subject -->
+          <label for="subject">Subject <span class="required">*</span></label>
+          <input id="subject" type="text" placeholder="Brief description of your request">
+          <span class="field-error" id="subjectError"></span>
+
+          <!-- 5. Inquiry Notes / Agenda -->
+          <label for="details">Inquiry Notes / Agenda <span class="required">*</span></label>
+          <textarea id="details" placeholder="Describe your request in detail…"></textarea>
+          <span class="field-error" id="detailsError"></span>
+
+          <!-- 6. Attachments -->
+          <label>Attachments (Optional)</label>
+          <div id="uploadBox">
+            <span class="material-symbols-outlined">cloud_upload</span>
+            <p id="fileText">Click to upload or drag and drop files</p>
+            <small>PDF, PNG, JPG or DOCX</small>
+            <input id="fileInput" type="file" hidden>
+          </div>
+
+          <!-- 7. Form Buttons -->
+          <div id="formButtons">
+            <button id="draftBtn" type="button">Save Draft</button>
+            <button id="submitBtn" type="button">
+              <span class="material-symbols-outlined">send</span> Submit Request
+            </button>
+          </div>
+
+          <p id="message"></p>
+
+        </div><!-- /#requestCard -->
+      </section>
+
+      <!-- ===== RIGHT: Sidebar Cards ===== -->
+      <aside class="helpdesk-right-col">
+
+        <!-- Upcoming Meeting Card -->
+        <div class="right-card" id="meetingCard">
+          <div class="right-card-header">
+            <h3><span class="material-symbols-outlined">event</span> Upcoming Meeting</h3>
+            <span class="status-badge" id="meetingStatusBadge" hidden></span>
+          </div>
+          <div id="meetingCardContent">
+            <p class="meeting-empty">No confirmed meetings yet.</p>
+          </div>
+        </div>
+
+        <!-- Recent Tickets Card -->
+        <div class="right-card" id="recentTicketsCard">
+          <div class="right-card-header">
+            <h3>My Requests</h3>
+            <button type="button" class="btn-secondary btn-compact" id="viewAllBtn">View All</button>
+          </div>
+          <div id="recentTicketsList">
+            <p class="meeting-empty">No requests yet.</p>
+          </div>
+        </div>
+
+      </aside>
+
+    </div><!-- /.helpdesk-grid -->
+
+    </section><!-- /.helpdesk-content -->
+    </div><!-- /.helpdesk-layout -->
+  </main>
+
+  <footer class="site-footer" data-footer></footer>
+
+  <!-- ===== Ticket Detail Modal ===== -->
+  <dialog id="ticketDetailModal">
+    <div class="dialog-header">
+      <h2>Request Details</h2>
+      <button type="button" class="dialog-close" id="closeDetailModal" aria-label="Close"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
+    </div>
+    <div class="dialog-body" id="ticketDetailBody">
+      <!-- Populated by JS -->
+    </div>
+    <div class="dialog-actions" id="ticketDetailActions">
+      <!-- Populated by JS -->
+    </div>
+  </dialog>
+
+  <!-- ===== Reschedule Modal ===== -->
+  <dialog id="rescheduleModal">
+    <div class="dialog-header">
+      <h2>Propose New Time</h2>
+      <button type="button" class="dialog-close" id="closeRescheduleModal" aria-label="Close"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
+    </div>
+    <div class="dialog-body">
+      <label for="rescheduleDate">Date <span class="required">*</span></label>
+      <input id="rescheduleDate" type="date">
+      <span class="field-error" id="rescheduleDateError"></span>
+
+      <label class="dialog-field-label">Time Range <span class="required">*</span></label>
+      <div class="time-range-row">
+        <div>
+          <label for="rescheduleFrom">From</label>
+          <input id="rescheduleFrom" type="time">
+        </div>
+        <span>—</span>
+        <div>
+          <label for="rescheduleTo">To</label>
+          <input id="rescheduleTo" type="time">
+        </div>
+      </div>
+      <span class="field-error" id="rescheduleTimeError"></span>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn-secondary" id="cancelRescheduleBtn">Cancel</button>
+      <button type="button" class="btn-primary" id="submitRescheduleBtn">Submit</button>
+    </div>
+  </dialog>
+
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=3"></script>
+  <script src="../../shared/employee-sidebar.js?v=3"></script>
+  <script src="../../shared/helpdesk-meetings.js"></script>
+  <script src="helpDesk.js?v=6"></script>
+</body>
+</html>

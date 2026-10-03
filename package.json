@@ -1,0 +1,12 @@
+{
+  "name": "teamspace-hr-demo",
+  "private": true,
+  "scripts": {
+    "api": "json-server api/db.json --host 127.0.0.1 --port 3000 --foreignKeySuffix _ref",
+    "reset": "node api/reset.js",
+    "test:api": "node --test api/database.test.js"
+  },
+  "devDependencies": {
+    "json-server": "0.17.4"
+  }
+}

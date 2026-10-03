@@ -6,10 +6,175 @@
   <title>Edit Profile | HR System</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="edit-profile.css">
 </head>
-<body>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="hr"></nav>
 
-  <script src="edit-profile.js"></script>
+
+    <!-- MAIN -->
+    <main class="profile-page">
+        <div class="profile-container">
+
+            
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Edit Profile</h1>
+                <p>Update your personal contact details and profile preferences.</p>
+            </div>
+
+            <!-- PROFILE CARD -->
+            <div class="profile-card">
+
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-image" id="profileImage">
+                        <!-- الصورة رح تنعرض عن طريق الـ JS -->
+                </div>
+    
+                <div class="profile-info-actions">
+                    <h2 id="employeeName">Loading...</h2>
+        
+                    <!-- File Input المخفي للرفع -->
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+        
+                    <!-- زر اختيار الصورة المربوط بالـ Input -->
+                    <button type="button" class="btn-edit-photo" id="btnEditPhoto" onclick="document.getElementById('photoInput').click();">
+                          Edit Photo
+                    </button>
+                 </div>
+             </div>
+
+                <!-- Form -->
+                <form id="editProfileForm" class="profile-form">
+
+                    <!-- PERSONAL INFORMATION -->
+                    <div class="section-header">
+                        <h3>
+                            <span class="material-symbols-outlined">person</span>
+                            Personal & Contact Information
+                        </h3>
+                        <small>All changes reflect in the company directory</small>
+                    </div>
+
+                    <!-- Personal Info Row: Name + Phone -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="fullName">Full Name <span>*</span></label>
+                            <input type="text" id="fullName" class="form-control" placeholder="Enter full name">
+                            <small>Used on formal HR records and communications.</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="label-row">
+                                <label for="phone">Phone Number <span>*</span></label>
+                                <span class="validation-text" id="phoneValidationText" style="display: none;">Validation required</span>
+                            </div>
+                            <div class="input-icon-wrapper">
+                                <input type="tel" id="phone" class="form-control" placeholder="Enter phone number">
+                                <span class="material-symbols-outlined error-icon" id="phoneErrorIcon" style="display: none;">error</span>
+                            </div>
+                            <small class="error-message" id="phoneErrorMessage" style="display: none;">
+                                Please enter a valid phone number.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- EMPLOYMENT DETAILS -->
+                    <div class="employment-section">
+                        <div class="employment-header">
+                            <h3>
+                                <span class="material-symbols-outlined">badge</span>
+                                Employment Details (Read-Only)
+                            </h3>
+                            <span class="managed-badge">
+                                <span class="material-symbols-outlined">lock</span>
+                                Managed by Organization HR
+                            </span>
+                        </div>
+
+                        <!-- Employment Fields Grid -->
+                        <div class="row">
+                            <!-- Position -->
+                            <div class="col-md-6">
+                                <label for="position">Position</label>
+                                <div class="readonly-input">
+                                    <input type="text" id="position" placeholder="Loading..." readonly>
+                                    <span class="material-symbols-outlined">lock</span>
+                                </div>
+                                <small id="positionMeta"></small>
+                            </div>
+
+                            <!-- Department -->
+                            <div class="col-md-6">
+                                <label for="department">Department</label>
+                                <div class="readonly-input">
+                                    <input type="text" id="department" placeholder="Loading..." readonly>
+                                    <span class="material-symbols-outlined">lock</span>
+                                </div>
+                                <small id="departmentMeta"></small>
+                            </div>
+
+                            <!-- Email Address (Read-Only) -->
+                            <div class="col-md-6">
+                                <label for="email">Email Address</label>
+                                <div class="readonly-input">
+                                    <input type="email" id="email" placeholder="Loading..." readonly>
+                                    <span class="material-symbols-outlined">lock</span>
+                                </div>
+                                <small>Primary corporate inbox managed by HR.</small>
+                            </div>
+
+                            <!-- Employee ID -->
+                            <div class="col-md-6">
+                                <label for="employeeId">Employee ID</label>
+                                <div class="readonly-input">
+                                    <input type="text" id="employeeId" placeholder="Loading..." readonly>
+                                    <span class="material-symbols-outlined">fingerprint</span>
+                                </div>
+                                <small>Assigned internal system identifier.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="form-buttons">
+                        <button type="button" class="btn-cancel" id="btnCancel">Cancel</button>
+                        <button type="submit" class="btn-save" id="btnSave">
+                            <span class="material-symbols-outlined">check</span>
+                            Save Changes
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- PRIVACY NOTICE -->
+            <div class="privacy-notice">
+                <span class="material-symbols-outlined">shield</span>
+                <p>
+                    <strong>Data Privacy & Security:</strong>
+                    Changes to contact information are audited in compliance with organizational policy. If you need modifications to read-only employment parameters, please submit a service ticket to the Core System Administrator.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+
+
+
+
+
+
+
+
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="edit-profile.js?v=2"></script>
 </body>
 </html>

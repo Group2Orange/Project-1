@@ -1,15 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Tasks | HR System</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-  <link rel="stylesheet" href="my-tasks.css">
-</head>
-<body>
 
-  <script src="my-tasks.js"></script>
+  <title>My Tasks | HR System</title>
+
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+  >
+
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="my-tasks.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
+</head>
+
+<body class="has-footer">
+
+  <nav class="navbar" data-navbar="employee"></nav>
+
+  <main class="tasks-page">
+
+    <div class="tasks-layout">
+
+      <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="tasks" aria-label="Employee workspace"></aside>
+
+      <section class="tasks-content">
+
+        <header class="page-header">
+
+          <div>
+            <div class="title-row">
+              <h1>My Tasks & Workflows</h1>
+              <span class="quarter-badge">Quarter 4</span>
+            </div>
+
+            <p>
+              Manage your daily deliverables, onboarding milestones,
+              and departmental assignments.
+            </p>
+          </div>
+
+          <button class="filter-btn" id="toggleFiltersBtn" type="button">
+            <span class="material-symbols-outlined">filter_alt</span>
+            Filter
+          </button>
+
+        </header>
+
+        <p id="taskApiMessage" role="status" aria-live="polite" style="color:#b42318"></p>
+
+        <section class="summary-grid">
+
+          <article class="summary-card">
+            <span>Total Active</span>
+
+            <div class="summary-row">
+              <strong id="totalActiveCount">0</strong>
+
+              <span class="summary-icon blue">
+                <span class="material-symbols-outlined">assignment</span>
+              </span>
+            </div>
+
+            <small>tasks</small>
+          </article>
+
+          <article class="summary-card">
+            <span>Due Soon (48h)</span>
+
+            <div class="summary-row">
+              <strong id="dueSoonCount">0</strong>
+
+              <span class="summary-icon orange">
+                <span class="material-symbols-outlined">schedule</span>
+              </span>
+            </div>
+
+            <small>urgent</small>
+          </article>
+
+          <article class="summary-card">
+            <span>Completed</span>
+
+            <div class="summary-row">
+              <strong id="completedCount">0</strong>
+
+              <span class="summary-icon green">
+                <span class="material-symbols-outlined">check_circle</span>
+              </span>
+            </div>
+
+            <small>resolved</small>
+          </article>
+
+          <article class="summary-card">
+            <span>Compliance Status</span>
+
+            <div class="summary-row">
+              <strong>100%</strong>
+
+              <span class="summary-icon teal">
+                <span class="material-symbols-outlined">verified_user</span>
+              </span>
+            </div>
+
+            <small>on track</small>
+          </article>
+
+        </section>
+
+        <section class="toolbar">
+
+          <div class="task-tabs" id="categoryTabs">
+
+            <button class="tab active" data-category="all" type="button">
+              All Tasks
+            </button>
+
+            <button class="tab" data-category="sprint" type="button">
+              Sprint & Daily Work
+            </button>
+
+            <button class="tab" data-category="onboarding" type="button">
+              Onboarding & Compliance
+            </button>
+
+            <button class="tab" data-category="review" type="button">
+              Review & Sign-offs
+            </button>
+
+          </div>
+
+          <label class="search-box">
+            <span class="material-symbols-outlined">search</span>
+
+            <input
+              id="taskSearch"
+              type="search"
+              placeholder="Search my tasks..."
+              autocomplete="off"
+            >
+          </label>
+
+        </section>
+
+        <section class="filter-panel" id="filterPanel" hidden>
+
+          <label>
+            Priority
+
+            <select id="priorityFilter">
+              <option value="all">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Normal">Normal</option>
+              <option value="Routine">Routine</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </label>
+
+          <button id="clearFiltersBtn" type="button">
+            Clear Filters
+          </button>
+
+        </section>
+
+        <section class="kanban-board">
+
+          <article class="kanban-column">
+
+            <header class="column-header">
+              <span class="status-dot todo"></span>
+              <h2>To Do</h2>
+              <span class="column-count" data-count="todo">0</span>
+            </header>
+
+            <div class="drop-zone" data-status="todo"></div>
+
+          </article>
+
+          <article class="kanban-column">
+
+            <header class="column-header">
+              <span class="status-dot progress"></span>
+              <h2>In Progress</h2>
+              <span class="column-count" data-count="progress">0</span>
+            </header>
+
+            <div class="drop-zone" data-status="progress"></div>
+
+          </article>
+
+          <article class="kanban-column">
+
+            <header class="column-header">
+              <span class="status-dot review"></span>
+              <h2>Under Review</h2>
+              <span class="column-count" data-count="review">0</span>
+            </header>
+
+            <div class="drop-zone" data-status="review"></div>
+
+          </article>
+
+          <article class="kanban-column">
+
+            <header class="column-header">
+              <span class="status-dot completed"></span>
+              <h2>Completed</h2>
+              <span class="column-count" data-count="completed">0</span>
+            </header>
+
+            <div class="drop-zone" data-status="completed"></div>
+
+          </article>
+
+        </section>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <dialog class="task-dialog" id="taskDialog">
+
+    <div class="dialog-content">
+
+      <header class="dialog-header">
+
+        <div>
+          <span class="dialog-label">TASK DETAILS</span>
+          <h2 id="taskTitle">Task Title</h2>
+        </div>
+
+        <button class="close-btn" id="closeDialogBtn" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+      </header>
+
+      <div class="task-badges">
+        <span class="status-badge" id="taskStatus">To Do</span>
+        <span class="priority-badge" id="taskPriority">Normal</span>
+      </div>
+
+      <section class="description-box">
+        <h3>Description</h3>
+        <p id="taskDescription">No description.</p>
+      </section>
+
+      <section class="details-grid">
+
+        <div class="detail-item">
+          <span>Task ID</span>
+          <strong id="taskId">-</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Team</span>
+          <strong id="taskTeam">-</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Category</span>
+          <strong id="taskCategory">-</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Due Date</span>
+          <strong id="taskDueDate">-</strong>
+        </div>
+
+      </section>
+
+      <section class="attachment-section">
+
+        <div class="attachment-title">
+
+          <span class="material-symbols-outlined">picture_as_pdf</span>
+
+          <div>
+            <strong>PDF Attachment</strong>
+            <small>Attach a PDF file to this task.</small>
+          </div>
+
+        </div>
+
+        <div class="attachment-empty" id="noAttachment">
+          No PDF attached.
+        </div>
+
+        <div class="attachment-file" id="attachmentFile" hidden>
+
+          <div class="attachment-info">
+
+            <span class="material-symbols-outlined">description</span>
+
+            <div>
+              <strong id="attachmentName"></strong>
+              <small id="attachmentSize"></small>
+            </div>
+
+          </div>
+
+          <div class="attachment-actions">
+
+            <a id="openAttachment" href="#" target="_blank">
+              Open
+            </a>
+
+            <button id="removeAttachmentBtn" type="button">
+              Remove
+            </button>
+
+          </div>
+
+        </div>
+
+        <input
+          id="pdfInput"
+          type="file"
+          accept=".pdf,application/pdf"
+          hidden
+        >
+
+      </section>
+
+      <p class="dialog-message" id="dialogMessage"></p>
+
+      <footer class="dialog-actions">
+
+        <button class="secondary-btn" id="attachPdfBtn" type="button">
+          <span class="material-symbols-outlined">attach_file</span>
+          PDF Attachment
+        </button>
+
+        <button class="primary-btn" id="sendTaskBtn" type="button">
+          <span class="material-symbols-outlined">send</span>
+          Send Task
+        </button>
+
+      </footer>
+
+    </div>
+
+  </dialog>
+
+  <footer class="site-footer" data-footer></footer>
+
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/employee-sidebar.js?v=3"></script>
+  <script src="my-tasks.js?v=2"></script>
+
 </body>
+
 </html>

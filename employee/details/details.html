@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Employee Details | HR System</title>
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="details.css">
+  <link rel="stylesheet" href="../../shared/employee-sidebar.css">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+
+<body class="has-footer">
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar" data-navbar="employee"></nav>
+
+
+
+
+<!-- ================= MAIN LAYOUT ================= -->
+
+<div class="layout">
+
+
+  <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="details" aria-label="Employee workspace"></aside>
+
+  <!-- ================= CONTENT ================= -->
+
+  <main class="content">
+
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <div class="top-section">
+
+
+      <div>
+
+        <h1>
+          My Details
+        </h1>
+
+        <p>
+          View your personal and employment information.
+        </p>
+
+      </div>
+
+
+
+      <div class="top-actions">
+
+
+        <div class="status-card">
+
+          <span></span>
+
+          <div>
+
+            <b id="headerStatus">
+              Active Employee
+            </b>
+
+            <p>
+              Your current employment status.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- EDIT PAGE -->
+        <button onclick="window.location.href='../../common/edit-profile/edit-profile.html'">
+          <i class="fa-solid fa-pen"></i>
+          Edit Details
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ================= PROFILE CARD ================= -->
+
+    <section class="employee-card">
+
+
+      <div class="employee-info">
+
+
+        <div class="avatar big" id="mainAvatar">
+          MC
+        </div>
+
+
+        <div>
+
+
+          <h2 id="name">
+            Marcus Chen
+          </h2>
+
+
+          <h3 id="position">
+            Senior Frontend Engineer
+          </h3>
+
+
+          <p class="description">
+            Your employee profile and employment information.
+          </p>
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+      <div class="contact">
+
+
+        <p>
+
+          <i class="fa-solid fa-envelope"
+             style="color: rgb(0, 124, 134);"></i>
+
+          <span id="emailText">
+            email@example.com
+          </span>
+
+        </p>
+
+
+
+        <p>
+
+          <i class="fa-solid fa-phone-volume"
+             style="color: rgb(0, 124, 134);"></i>
+
+          <span id="phone">
+            +962790000000
+          </span>
+
+        </p>
+
+
+
+        <p>
+
+          <i class="fa-solid fa-location-dot"
+             style="color: rgb(0, 124, 134);"></i>
+
+          <span id="officeLocation">
+            Office Location
+          </span>
+
+        </p>
+
+
+
+        <p>
+
+          <i class="fa-sharp fa-regular fa-calendar"
+             style="color: rgb(0, 124, 134);"></i>
+
+          Joined
+
+          <span id="joinDate">
+            2024-01-01
+          </span>
+
+        </p>
+
+
+      </div>
+
+
+    </section>
+
+
+
+
+
+    <!-- ================= EMPLOYMENT DETAILS ================= -->
+
+    <section class="details-card">
+
+
+      <div class="card-header">
+
+
+        <h2>
+
+          <i class="fa-solid fa-user-tie"
+             style="color: rgb(0, 124, 134);"></i>
+
+          Employment Information
+
+        </h2>
+
+
+
+        <div class="info-message">
+
+          <i class="fa-solid fa-circle-info"></i>
+
+          This information is for viewing only.
+          To make changes, select <strong>Edit Details</strong>.
+
+        </div>
+
+
+      </div>
+
+
+
+
+      <div class="fields">
+
+
+
+        <!-- ================= NAME ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputName">
+              Name
+            </label>
+
+          
+
+          </div>
+
+          <input
+            id="inputName"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Full legal name as per official records.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= EMAIL ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputEmail">
+              Email
+            </label>
+
+         
+
+          </div>
+
+          <input
+            id="inputEmail"
+            type="email"
+            readonly
+          >
+
+          <small>
+            Official work email address.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= START DATE ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputDate">
+              Start Date
+            </label>
+
+
+          </div>
+
+          <input
+            id="inputDate"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Official employment start date.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= POSITION ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputPosition">
+              Position
+            </label>
+
+          </div>
+
+          <input
+            id="inputPosition"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Current job title or position.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= EMPLOYEE ID ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputID">
+              Emp ID
+            </label>
+
+
+          </div>
+
+          <input
+            id="inputID"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Unique employee identification number.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= DEPARTMENT ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputDepartment">
+              Department
+            </label>
+
+         
+
+          </div>
+
+          <input
+            id="inputDepartment"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Department or organizational team.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= SALARY ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputSalary">
+              Salary
+            </label>
+
+
+          </div>
+
+
+          <div class="salary">
+
+            <input
+              id="inputSalary"
+              type="text"
+              readonly
+            >
+
+            <span id="currency">
+              JOD
+            </span>
+
+          </div>
+
+
+          <small>
+            Monthly basic salary.
+          </small>
+
+        </div>
+
+
+
+
+        <!-- ================= STATUS ================= -->
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="inputStatus">
+              Employment Status
+            </label>
+
+           
+
+          </div>
+
+          <input
+            id="inputStatus"
+            type="text"
+            readonly
+          >
+
+          <small>
+            Current employment status.
+          </small>
+
+        </div>
+
+
+
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+</div>
+
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="site-footer" data-footer></footer>
+
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="../../shared/footer.js"></script>
+
+<script src="../../shared/navbar.js?v=2"></script>
+
+<script src="../../shared/employee-sidebar.js?v=3"></script>
+<script src="details.js"></script>
+
+
+</body>
+</html>

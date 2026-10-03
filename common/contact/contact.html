@@ -6,10 +6,383 @@
   <title>Contact Us and Submit Feedback | HR System</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="../../shared/shared.css">
+  <link rel="stylesheet" href="../../shared/footer.css">
   <link rel="stylesheet" href="contact.css">
+  <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body>
+<body class="has-footer">
+  <nav class="navbar" data-navbar="hr"></nav>
 
+  
+<main class="container">
+
+
+<!-- Header -->
+
+<section class="header-section">
+
+
+
+
+<div class="title-row">
+
+<div>
+
+<h1>
+Contact Us & Submit Feedback
+</h1>
+
+<p>
+Have a question, suggestion, or need HR support?
+Get in touch with our team or share your feedback directly below.
+</p>
+
+</div>
+
+
+<span class="badge">
+SUPPORT & FEEDBACK
+</span>
+
+
+</div>
+
+</section>
+
+
+<!-- Notice -->
+
+
+<div class="notice">
+
+<i class="fa-solid fa-circle-check"></i>
+
+<span>
+Notice: All employee feedback submissions are monitored during standard business hours.
+</span>
+
+<i class="fa-solid fa-xmark close"></i>
+
+</div>
+
+
+
+
+
+<section class="layout">
+
+
+
+<!-- LEFT COLUMN -->
+
+
+<div class="left-column">
+
+
+
+<div class="card">
+
+
+<h3>
+Get in Touch
+</h3>
+
+
+<p class="subtitle">
+People Operations & Corporate Desk
+</p>
+
+<div class="contact-item">
+
+<div class="icon">
+<i class="fa-solid fa-envelope"></i>
+</div>
+
+<div>
+<b>
+Support & People Operations
+</b>
+
+
+<p>
+support@teamspacehr.com
+</p>
+
+</div>
+
+</div>
+
+
+
+
+
+<div class="contact-item">
+
+<div class="icon">
+<i class="fa-solid fa-phone"></i>
+</div>
+
+
+<div>
+
+<b>
+Direct Phone Support
+</b>
+
+<p>
++1 (800) 555-TEAM
+</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<div class="contact-item">
+
+<div class="icon">
+<i class="fa-solid fa-location-dot"></i>
+</div>
+
+
+<div>
+
+<b>
+Global Headquarters
+</b>
+
+<p>
+450 Mission Street
+<br>
+San Francisco, CA 94105
+</p>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<div class="icon"><i class="fa-regular fa-calendar" style="color:#007C86"></i>
+</div>
+
+
+<div>
+
+<b>
+ Working Hours</b>
+
+<p>
+  Sun–Thu, 8:00 AM–4:00 PM
+
+</p>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="map-card" aria-labelledby="contact-map-title">
+  <h3 id="contact-map-title">Find our sample headquarters</h3>
+  <p>450 Mission Street, San Francisco, CA</p>
+  <a class="contact-map-preview" href="https://www.google.com/maps/search/?api=1&amp;query=450%20Mission%20Street%2C%20San%20Francisco" target="_blank" rel="noopener noreferrer" aria-label="Open sample headquarters location in Google Maps">
+    <svg viewBox="0 0 320 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <rect width="320" height="130" fill="#e9f1f6"/>
+      <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#fff" stroke-width="18"/>
+      <path d="M-12 12 332 106M-10 88 284-12M18 142 320 34" stroke="#c9d8e4" stroke-width="2"/>
+      <path d="M57-10 86 141M218-10 246 141" stroke="#fff" stroke-width="14"/>
+      <path d="M57-10 86 141M218-10 246 141" stroke="#c9d8e4" stroke-width="2"/>
+      <path d="M280-10 339 20 320 130 278 139Z" fill="#cae8e8" opacity=".85"/>
+      <circle cx="166" cy="67" r="18" fill="#fff" opacity=".85"/>
+      <path d="M166 45a15 15 0 0 0-15 15c0 11 15 26 15 26s15-15 15-26a15 15 0 0 0-15-15Z" fill="#008592"/>
+      <circle cx="166" cy="60" r="5" fill="#fff"/>
+    </svg>
+    <span>Open in Maps ↗</span>
+  </a>
+</section>
+
+
+</div>
+
+
+
+<!-- RIGHT COLUMN -->
+
+
+<div class="card form-card">
+
+
+<h2>
+Send us a Message
+</h2>
+
+
+<p class="subtitle">
+
+Your feedback shapes company culture, benefits,
+and workplace tools.
+
+</p>
+
+
+<div class="form-grid">
+
+
+<div>
+
+<label>
+Full Name *
+</label>
+
+<input type="text" id="fullName" readonly>
+</div>
+
+<div>
+
+<label>
+Work Email Address *
+</label>
+
+<input type="email" id="email" readonly>
+</div>
+
+
+</div>
+
+
+
+
+<label>
+Inquiry Type / Category *
+</label>
+
+
+<div class="tags">
+
+
+<button class="selected">
+General Feedback
+</button>
+
+
+<button>
+Feature Request
+</button>
+
+
+<button>
+Report Policy Issue
+</button>
+
+
+<button>
+HR Support
+</button>
+
+
+</div>
+
+
+
+
+<label>
+Subject Line *
+</label>
+
+<input placeholder="e.g. Question regarding hybrid work reimbursement policy...">
+
+
+
+
+
+<label>
+Message / Feedback Details *
+</label>
+
+
+<textarea placeholder="Please describe your suggestion, question, or inquiry in detail..."></textarea>
+
+
+
+
+
+<label>
+Supporting Documents or Screenshots (Optional)
+</label>
+
+
+<div class="upload">
+
+<i class="fa-solid fa-cloud-arrow-up"></i>
+
+<p>
+Click to upload files
+</p>
+
+<small>
+PNG, JPG, PDF or DOCX up to 10MB
+</small>
+
+</div>
+
+<div class="anonymous-option">
+
+    <input type="checkbox" id="anonymous" name="anonymous">
+
+    <label for="anonymous">
+        <strong>Submit anonymously</strong>
+
+        <span>
+            Your name and email will not be displayed with your feedback.
+        </span>
+    </label>
+
+</div>
+
+<div class="submit-row">
+
+
+<button class="submit">
+
+Send Feedback →
+
+</button>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+
+
+  <footer class="site-footer" data-footer></footer>
+  <script src="../../shared/footer.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
   <script src="contact.js"></script>
 </body>
 </html>

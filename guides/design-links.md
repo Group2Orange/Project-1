@@ -26,45 +26,34 @@ Paste the Figma / Stitch link of each screen here so everyone builds from the sa
 
 ## Team colors and fonts
 
-There is no shared CSS file. Everybody takes colors, fonts and sizes from the Figma design, so please use exactly these values.
-Wadea fills in the color values from the design.
+The team colors come from the **Calm Clarity HR** design system and live in `shared/shared.css` as CSS variables.
+Every screen already loads that file, so use the variables instead of typing color codes, e.g. `color: var(--color-primary);`.
+The full list with what each one is for is in [`shared/README.md`](../shared/README.md).
 
-| Thing | Value |
-|---|---|
-| Heading font | Space Grotesk |
-| Text font | Public Sans |
-| Icons | Material Symbols Outlined |
-| Main color (teal) | |
-| Main color, darker (hover) | |
-| Light teal (soft backgrounds) | |
-| Page background | |
-| Card / box background | |
-| Border color | |
-| Text color | |
-| Muted text color | |
+| Thing | Value | CSS variable |
+|---|---|---|
+| Heading font | Space Grotesk | `--font-heading` |
+| Text font | Public Sans | `--font-text` |
+| Icons | Material Symbols Outlined | |
+| Main color (teal) | `#0e7c86` | `--color-primary` |
+| Main color, darker (buttons, hover) | `#00626a` | `--color-primary-dark` |
+| Light teal (soft backgrounds) | `#d4eced` | `--color-primary-light` |
+| Secondary (slate) | `#4c6079` | `--color-secondary` |
+| Tertiary (green) | `#059669` | `--color-tertiary` |
+| Page background | `#f6f9fe` | `--color-page` |
+| Card / box background | `#ffffff` | `--color-card` |
+| Border color | `#dde3ed` | `--color-border` |
+| Text color | `#14181c` | `--color-text` |
+| Muted text color | `#4c6079` | `--color-text-muted` |
 
-## Navbar links
+## Navbar
 
-Every screen (except login) has a navbar. HR has more links than employees. This list is a proposal: Wadea adjusts it to match the design.
-Use the same names and order on every screen.
+The navbar is shared: it's already on every screen (except login), so nobody builds their own.
 
-| Navbar | Links (in order) |
-|---|---|
-| HR (screens in `hr/` and, for now, `common/`) | Home, Employees, Tasks, Requests, Feedback, Policies, About, Contact, Profile |
-| Employee (screens in `employee/`) | Home, My Tasks, My Requests, Policies, About, Contact, Profile |
+| Navbar | Shown on | Links (in order) | File |
+|---|---|---|---|
+| HR | screens in `hr/` and, for now, `common/` | Home, Employees, Tasks, Requests, Feedback, Policies, About, Contact | `shared/navbar-hr.html` |
+| Employee | screens in `employee/` | Home, My Tasks, My Requests, Policies, About, Contact | `shared/navbar-employee.html` |
 
-Where each link goes (from any screen, go up two folders):
-
-| Link | Path |
-|---|---|
-| Home | `../../common/home/home.html` |
-| Employees | `../../hr/employees/employees.html` |
-| Tasks | `../../hr/tasks/tasks.html` |
-| Requests | `../../hr/requests/requests.html` |
-| Feedback | `../../hr/feedback/feedback.html` |
-| My Tasks | `../../employee/my-tasks/my-tasks.html` |
-| My Requests | `../../employee/my-requests/my-requests.html` |
-| Policies | `../../common/policies/policies.html` |
-| About | `../../common/about/about.html` |
-| Contact | `../../common/contact/contact.html` |
-| Profile | `../../common/profile/profile.html` |
+Profile opens from the user's name and photo on the right, and Logout goes to the login screen.
+To change the navbar, see "Edit the navbar" in [`shared/README.md`](../shared/README.md).
