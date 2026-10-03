@@ -1,16 +1,27 @@
-// Profile edits are saved for the signed-in employee in this browser.
+// Read and update this employee directly through the local API.
+const API = 'http://127.0.0.1:3000';
 const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
 if (!user) location.replace('../login/login.html');
 
-const editKey = `profileEdits_${user?.id}`;
 const form = document.getElementById('editProfileForm');
 const fullName = document.getElementById('fullName');
 const phone = document.getElementById('phone');
 const photo = document.getElementById('profileImage');
 let newImage = null;
 
-function renderProfile() {
-  const current = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+async function renderProfile() {
+  let current;
+  try {
+    // OLD WAY: current = JSON.parse(localStorage.getItem('loggedUser'));
+    // NEW WAY: read the current employee from api/db.json through the API.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(user.id)}`);
+    if (!response.ok) throw new Error('Could not load profile.');
+    current = await response.json();
+  }
+  catch (error) {
+    document.getElementById('employeeName').textContent = error.message;
+    return;
+  }
   if (!current) return;
   document.getElementById('employeeName').textContent = current.name;
   fullName.value = current.name || '';
@@ -30,7 +41,7 @@ function showPhoneError(show) {
   document.getElementById('phoneValidationText').style.display = show ? 'inline' : 'none';
 }
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
   const name = fullName.value.trim();
   const number = phone.value.trim();
@@ -39,25 +50,43 @@ form.addEventListener('submit', event => {
   showPhoneError(invalidPhone);
   if (!name || invalidPhone) return;
 
-  const current = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-  const updated = { ...current, name, phone: number, ...(newImage ? { image: newImage } : {}) };
+  const changes = { name, phone: number, ...(newImage ? { image: newImage } : {}) };
   try {
-    localStorage.setItem(editKey, JSON.stringify({ name, phone: number, ...(newImage ? { image: newImage } : {}) }));
-    localStorage.setItem('loggedUser', JSON.stringify(updated));
+    // OLD WAY: localStorage.setItem(`profileEdits_${user.id}`, JSON.stringify(changes));
+    // NEW WAY: PATCH the employee record so a later visit loads these edits.
+    const response = await fetch(`${API}/employees/${encodeURIComponent(user.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(changes)
+    });
+    if (!response.ok) throw new Error('Could not update profile.');
+    const updated = await response.json();
+    const safeUser = {
+      id: updated.id,
+      role: updated.role,
+      name: updated.name,
+      email: updated.email,
+      department: updated.department,
+      position: updated.position,
+      employeeId: updated.employeeId,
+      image: updated.image
+    };
+    localStorage.setItem('loggedUser', JSON.stringify(safeUser));
+    localStorage.removeItem('currentUser');
     newImage = null;
-    renderProfile();
+    await renderProfile();
     window.dispatchEvent(new Event('teamspace:profile-changed'));
     alert('Profile updated successfully.');
   } catch (error) {
-    alert('Could not save the profile. Try a smaller photo.');
+    alert(error.message || 'Could not save the profile. Try a smaller photo.');
   }
 });
 
 document.getElementById('btnCancel').addEventListener('click', () => {
   newImage = null;
-  showPhoneError(false);
-  fullName.classList.remove('error-input');
-  renderProfile();
+  document.getElementById('photoInput').value = '';
+  // Leave the edit screen without saving any pending changes.
+  location.href = '../profile/profile.html';
 });
 
 document.getElementById('photoInput').addEventListener('change', event => {
@@ -76,4 +105,4 @@ document.getElementById('photoInput').addEventListener('change', event => {
 });
 
 phone.addEventListener('input', () => showPhoneError(false));
-renderProfile();
+if (user) renderProfile();

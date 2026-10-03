@@ -1,9 +1,4 @@
 const workspaceTaskList = document.getElementById('workspaceTaskList');
-const exampleTasks = [
-  { id: 'TASK-004', title: 'Complete Security Awareness Training V2', priority: 'High', team: 'Compliance', status: 'progress', dueDate: '' },
-  { id: 'TASK-005', title: 'Review Sprint 24 Pull Requests', priority: 'Normal', team: 'Engineering', status: 'progress', dueDate: '' },
-  { id: 'TASK-001', title: 'Submit Benefits Election Form', priority: 'Normal', team: 'HR Onboarding', status: 'todo', dueDate: '' }
-];
 
 const now = new Date();
 const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening';
@@ -18,15 +13,6 @@ document.getElementById('workspaceGreeting').textContent = `${greeting}, ${first
 document.getElementById('workspaceDate').textContent = now.toLocaleDateString(undefined, {
   weekday: 'long', month: 'long', day: 'numeric'
 });
-
-function readWorkspaceTasks() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('employeeTasks'));
-    return Array.isArray(saved) ? saved : null;
-  } catch {
-    return null;
-  }
-}
 
 function taskRow(task) {
   const row = document.createElement('a');
@@ -65,19 +51,28 @@ function taskRow(task) {
   return row;
 }
 
-function renderWorkspaceTasks() {
-  const saved = readWorkspaceTasks();
-  const tasks = saved || exampleTasks;
+async function renderWorkspaceTasks() {
+  let tasks = [];
+  try {
+    const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+    if (user?.id) {
+      const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);
+      if (!response.ok) throw new Error('Could not load your tasks.');
+      tasks = await response.json();
+    }
+  } catch (error) {
+    console.error(error);
+    document.getElementById('workspaceTasksNote').textContent = `${error.message} Start the API with npm run api.`;
+    return;
+  }
   const active = tasks.filter(task => task && task.status !== 'completed');
   const priorityOrder = { High: 0, Normal: 1, Routine: 2 };
   const preview = [...active].sort((a, b) => (priorityOrder[a.priority] ?? 3) - (priorityOrder[b.priority] ?? 3)).slice(0, 3);
 
-  document.getElementById('workspaceActiveTasks').textContent = saved ? String(active.length) : '—';
-  document.getElementById('workspaceTaskSummary').textContent = saved ? `${active.length} tasks in your task list` : 'Open My Tasks to load your task list';
-  document.getElementById('workspaceTasksNote').textContent = saved
-    ? 'Your top open tasks from My Tasks.'
-    : 'Example tasks. Open My Tasks to load your own list.';
-  document.getElementById('workspaceTasksLink').firstChild.textContent = saved ? `Go to My Tasks (${active.length}) ` : 'Go to My Tasks ';
+  document.getElementById('workspaceActiveTasks').textContent = String(active.length);
+  document.getElementById('workspaceTaskSummary').textContent = `${active.length} tasks in your task list`;
+  document.getElementById('workspaceTasksNote').textContent = 'Your top open tasks from My Tasks.';
+  document.getElementById('workspaceTasksLink').firstChild.textContent = `Go to My Tasks (${active.length}) `;
 
   workspaceTaskList.replaceChildren();
   if (!preview.length) {
@@ -91,8 +86,5 @@ function renderWorkspaceTasks() {
 }
 
 renderWorkspaceTasks();
-window.addEventListener('storage', event => {
-  if (event.key === 'employeeTasks') renderWorkspaceTasks();
-});
 window.addEventListener('teamspace:tasks-changed', renderWorkspaceTasks);
 window.addEventListener('pageshow', renderWorkspaceTasks);

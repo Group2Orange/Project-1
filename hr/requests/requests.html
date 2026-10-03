@@ -3,19 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave and Early-Departure Requests | HR System</title>
+  <title>Leave Requests | TeamSpace HR</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="../../shared/footer.css">
-  <link rel="stylesheet" href="requests.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css">
+  <link rel="stylesheet" href="../../shared/hr-layout.css">
+  <link rel="stylesheet" href="../employees/employees.css">
+  <style>
+    .actions .reject:hover:not(:disabled) { background: #ffeded; color: #b63742; }
+  </style>
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
-
+  <main class="hr-page-shell">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="requests" aria-label="HR workspace"></aside>
+    <div class="hr-page-content directory">
+      <header class="directory-heading">
+        <div>
+          <p class="eyebrow">PEOPLE OPERATIONS</p>
+          <h1>Leave Requests</h1>
+          <p>Review company leave and early-departure requests.</p>
+        </div>
+      </header>
+      
+      <p id="requestMessage" class="directory-message" role="status" aria-live="polite"></p>
+      
+      <div class="directory-panel">
+        <div class="directory-filters">
+          <label class="search-field" style="grid-column: 1 / span 2;">
+            <span class="visually-hidden">Search requests</span>
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <input id="requestSearch" type="search" placeholder="Search employee or type...">
+          </label>
+          <label>
+            <span class="visually-hidden">Status</span>
+            <select id="requestStatus">
+              <option value="">All statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </label>
+        </div>
+        
+        <div class="directory-table-wrap">
+          <table class="directory">
+            <thead>
+              <tr>
+                <th>EMPLOYEE & LEAVE TYPE</th>
+                <th>DATES & DURATION</th>
+                <th>REASON</th>
+                <th>STATUS</th>
+                <th style="text-align: right;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="requestList">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
-  <script src="../../shared/navbar.js"></script>
-  <script src="requests.js"></script>
+  <script src="../../shared/navbar.js?v=2"></script>
+  <script src="../../shared/hr-sidebar.js"></script>
+  <script src="requests.js?v=3"></script>
 </body>
 </html>

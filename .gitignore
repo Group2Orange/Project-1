@@ -1,0 +1,3 @@
+node_modules/
+api/db.json
+api/db.backup-*.json

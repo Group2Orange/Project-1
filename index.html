@@ -6,10 +6,12 @@
   <title>HR System | All Screens</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="stylesheet" href="shared/shared.css">
+  <script src="shared/theme-init.js"></script>
   <style>
-    body { margin: 0; font-family: "Public Sans", sans-serif; color: #1f2a2a; background: #f6f8f8; }
+    body { margin: 0; font-family: "Public Sans", sans-serif; color: var(--color-text); background: var(--color-page); }
     h1, h2 { font-family: "Space Grotesk", sans-serif; }
-    a { color: #0f766e; }
+    a { color: var(--color-primary-dark); }
     .group { margin-bottom: 24px; }
     .group ul { margin: 0; padding-left: 24px; }
   </style>
@@ -37,11 +39,11 @@
       <ul>
         <li><a href="hr/policies/policies.html">5. Company Policies (HR)</a></li>
         <li><a href="hr/employees/employees.html">8. Employee Management</a></li>
-        <li><a href="hr/employee-form/employee-form.html">9. Add or Edit Employee Account</a></li>
+        <li><a href="hr/employees/employees.html">9. Add or Edit Employee Account (directory dialog)</a></li>
         <li><a href="hr/employee-details/employee-details.html">10. Employee Details</a></li>
         <li><a href="hr/tasks/tasks.html">11. Task Management</a></li>
-        <li><a href="hr/task-form/task-form.html">12. Create or Edit and Assign Task</a></li>
-        <li><a href="hr/task-review/task-review.html">13. Task Submission Review</a></li>
+        <li><a href="hr/tasks/tasks.html">12. Assign Task</a></li>
+        <li><a href="hr/tasks/tasks.html?status=review">13. Task Submission Review</a></li>
         <li><a href="hr/requests/requests.html">14. Leave and Early-Departure Requests</a></li>
         <li><a href="hr/feedback/feedback.html">15. Employee Feedback Inbox</a></li>
       </ul>
@@ -53,9 +55,9 @@
         <li><a href="employee/MyWOrkSpace/MyWOrkSpace.html">My Workspace</a></li>
         <li><a href="employee/policies/EMPpolicies.html">5. Company Policies (Employee)</a></li>
         <li><a href="employee/my-tasks/my-tasks.html">16. My Tasks</a></li>
-        <li><a href="employee/task-details/task-details.html">17. Task Details and Submit Solution</a></li>
-        <li><a href="employee/new-request/new-request.html">18. Submit Leave or Early-Departure Request</a></li>
-        <li><a href="employee/my-requests/my-requests.html">19. My Leave and Early-Departure Requests</a></li>
+        <li><a href="employee/my-tasks/my-tasks.html">17. Task Details and Submit Solution</a></li>
+        <li><a href="employee/Leave&amp;TimeOff/Leave&amp;TimeOff.html#request-time-off">18. Submit Leave or Early-Departure Request</a></li>
+        <li><a href="employee/Leave&amp;TimeOff/Leave&amp;TimeOff.html">19. My Leave and Early-Departure Requests</a></li>
       </ul>
     </section>
   </main>

@@ -1,21 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Management | HR System</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Directory | TeamSpace HR</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-  <link rel="stylesheet" href="../../shared/shared.css">
-  <link rel="stylesheet" href="../../shared/footer.css">
-  <link rel="stylesheet" href="employees.css">
+  <link rel="stylesheet" href="../../shared/shared.css"><link rel="stylesheet" href="../../shared/footer.css">
+  <link rel="stylesheet" href="../../shared/hr-sidebar.css"><link rel="stylesheet" href="../../shared/hr-layout.css"><link rel="stylesheet" href="employees.css">
 </head>
 <body class="has-footer">
   <nav class="navbar" data-navbar="hr"></nav>
+  <main class="hr-page-shell">
+    <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="employees" aria-label="HR workspace"></aside>
+    <div class="hr-page-content directory">
+      <header class="directory-heading">
+        <div><p class="eyebrow">ORGANIZATION / STAFF DIRECTORY</p><h1>Employees Directory</h1><p>Manage employee records, roles, and account access.</p></div>
+        <div class="heading-actions"><button type="button" class="button button-light" id="exportButton"><span class="material-symbols-outlined">download</span>Export CSV</button><button type="button" class="button button-primary" id="addButton"><span class="material-symbols-outlined">person_add</span>Add New Employee</button></div>
+      </header>
+      <section class="directory-stats" aria-label="Directory summary">
+        <article><span>Total Employees</span><strong id="totalCount">—</strong><small>All company records</small><i class="material-symbols-outlined">groups</i></article>
+        <article><span>Departments</span><strong id="departmentCount">—</strong><small>Represented teams</small><i class="material-symbols-outlined">hub</i></article>
+        <article><span>New Hires This Month</span><strong id="newHireCount">—</strong><small>Recently joined</small><i class="material-symbols-outlined">person_add</i></article>
+        <article><span>Accounts Blocked</span><strong id="blockedCount">—</strong><small>Records are retained</small><i class="material-symbols-outlined">shield_lock</i></article>
+      </section>
+      <p class="retention-note"><span class="material-symbols-outlined">verified_user</span>Blocking an account stops sign-in and keeps the employee record. You can reactivate it later.</p>
+      <section class="directory-panel" aria-label="Company employees">
+        <div class="directory-filters">
+          <label class="search-field"><span class="material-symbols-outlined">search</span><input id="searchInput" type="search" placeholder="Search name, email, or department" aria-label="Search employees"></label>
+          <label><span class="visually-hidden">Department</span><select id="departmentFilter"><option value="">All Departments</option></select></label>
+          <label><span class="visually-hidden">Status</span><select id="statusFilter"><option value="">All Statuses</option><option>Active</option><option>Inactive</option><option>Blocked</option></select></label>
+          <label><span class="visually-hidden">Role</span><select id="roleFilter"><option value="">All Roles</option><option value="EMP">Employee</option><option value="HR">HR</option></select></label>
+          <label><span class="visually-hidden">Sort</span><select id="sortFilter"><option value="name">Name (A–Z)</option><option value="recent">Newest First</option></select></label>
+        </div>
+        <p id="directoryMessage" class="directory-message" role="status" aria-live="polite">Loading employees…</p>
+        <div class="directory-table-wrap"><table><thead><tr><th>EMPLOYEE IDENTITY</th><th>DEPARTMENT &amp; ROLE</th><th>STATUS</th><th>ACCESS</th><th>JOIN DATE</th><th>ACTIONS</th></tr></thead><tbody id="employeeRows"></tbody></table></div>
+        <div class="directory-bottom"><span id="resultCount">—</span><div><button type="button" id="prevPage" class="page-button">Previous</button><span id="pageLabel">1 / 1</span><button type="button" id="nextPage" class="page-button">Next</button></div></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="employeeDialog" class="directory-dialog" aria-labelledby="employeeDialogTitle">
+    <form id="employeeForm">
+      <div class="dialog-heading"><div><p class="eyebrow">EMPLOYEE ACCOUNT</p><h2 id="employeeDialogTitle">Add New Employee</h2><p id="employeeDialogHint">Create a record and set the initial password.</p></div><button type="button" class="icon-button" id="closeEmployeeDialog" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div>
+      <div class="dialog-grid">
+        <label>Full Name<input name="name" required autocomplete="name" maxlength="100"></label>
+        <label>Work Email<input name="email" type="email" required autocomplete="email" maxlength="150"></label>
+        <label>Department<select name="department" required><option value="">Select a department</option></select></label>
+        <label>Position<input name="position" required maxlength="100"></label>
+        <label>Phone<input name="phone" type="tel" maxlength="40"></label>
+        <label>Join Date <small>Assigned automatically</small><input name="joiningDate" type="date" required readonly></label>
+        <label>Employee ID <small>Assigned automatically</small><input name="employeeId" maxlength="30" readonly></label>
+        <label>Office Location<input name="officeLocation" maxlength="100"></label>
+        <label>Monthly Salary<input name="salaryAmount" type="number" min="0" step="0.01" placeholder="Optional"></label>
+        <label>Currency<input name="salaryCurrency" maxlength="8" value="JOD"></label>
+        <label>Role<select name="role"><option value="EMP">Employee</option><option value="HR">HR</option></select></label>
+        <label>Status<select name="status"><option>Active</option><option>Inactive</option><option>Blocked</option></select></label>
+        <label class="dialog-wide">Initial Password <small id="passwordHint">Required for new employees. Share it privately.</small><input name="password" type="text" minlength="8" autocomplete="off"></label>
+      </div>
+      <p id="formError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="button button-light" id="cancelEmployeeDialog">Cancel</button><button type="submit" class="button button-primary" id="saveEmployee">Save Employee</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="blockDialog" class="directory-dialog confirm-dialog" aria-labelledby="blockTitle">
+    <div class="confirm-icon"><span class="material-symbols-outlined">shield_lock</span></div><h2 id="blockTitle">Block employee?</h2><p id="blockMessage"></p>
+    <div class="dialog-actions"><button type="button" class="button button-light" id="cancelBlock">Cancel</button><button type="button" class="button button-danger" id="confirmBlock">Confirm</button></div>
+  </dialog>
 
   <footer class="site-footer" data-footer></footer>
-  <script src="../../shared/footer.js"></script>
-  <script src="../../shared/navbar.js"></script>
-  <script src="employees.js"></script>
+  <script src="../../shared/footer.js"></script><script src="../../shared/navbar.js?v=2"></script><script src="../../shared/hr-sidebar.js"></script><script src="employees.js?v=2"></script>
 </body>
 </html>

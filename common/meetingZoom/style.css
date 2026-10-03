@@ -1,0 +1,25 @@
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+.meeting-page { width: min(1400px, calc(100% - 48px)); margin: 24px auto; }
+.back-link { display: inline-block; margin-bottom: 18px; color: var(--color-primary-dark); font-size: 13px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.meeting-panel { overflow: hidden; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-card); }
+.meeting-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px; }
+.meeting-heading h1 { margin: 12px 0 6px; font-size: clamp(22px, 3vw, 30px); }
+.meeting-heading p { margin: 0; color: var(--color-secondary); font-size: 13px; line-height: 1.6; }
+.meeting-label { display: inline-block; padding: 6px 10px; border-radius: 8px; background: var(--color-primary-light); color: var(--color-primary-dark); font-size: 11px; font-weight: 700; }
+.meeting-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.meeting-actions button { padding: 11px 18px; border: 0; border-radius: 8px; background: var(--color-primary-dark); color: var(--color-on-primary); cursor: pointer; font: 600 13px var(--font-text); }
+.meeting-actions button:disabled { opacity: .6; cursor: wait; }
+.meeting-actions a { color: var(--color-primary-dark); font-size: 12px; font-weight: 600; }
+.meeting-notice { margin: 0; padding: 16px 24px; border-top: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-secondary); font-size: 13px; line-height: 1.6; }
+.meeting-notice.is-error { background: var(--color-danger-soft); color: var(--color-danger); }
+.meeting-frame { width: 100%; height: clamp(420px, 72vh, 850px); background: var(--color-surface); }
+.meeting-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+@media (max-width: 600px) {
+  .meeting-page { width: calc(100% - 24px); margin-top: 16px; }
+  .meeting-heading { flex-direction: column; align-items: flex-start; gap: 16px; padding: 18px; }
+  .meeting-notice { padding: 14px 18px; }
+  .meeting-frame { height: 70vh; min-height: 360px; }
+}

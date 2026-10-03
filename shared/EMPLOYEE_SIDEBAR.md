@@ -1,6 +1,6 @@
 # Employee sidebar
 
-`employee-sidebar.html`, `employee-sidebar.css`, and `employee-sidebar.js` form one sidebar shared by employee pages. My Workspace and My Tasks already use it.
+`employee-sidebar.html`, `employee-sidebar.css`, and `employee-sidebar.js` form one sidebar shared by employee pages.
 
 Add these to another employee page (adjust `../../` if its folder depth differs):
 
@@ -20,6 +20,6 @@ Load the script near the end of the body:
 <script src="../../shared/employee-sidebar.js"></script>
 ```
 
-Use `workspace`, `details`, `tasks`, `leave`, `policies`, `feedback`, or `helpdesk` for `data-sidebar-active`. The sidebar links are defined in one place, `employee-sidebar.html`. The Leave & Time Off link now opens the team's page. My Details and Helpdesk still need their final links when those teammate pages arrive.
+Use `workspace`, `details`, `tasks`, `leave`, `policies`, `feedback`, or `helpdesk` for `data-sidebar-active`. The sidebar links are defined in one place, `employee-sidebar.html`.
 
-The sidebar reads the `employeeTasks` localStorage key for the active-task count and progress. Pages that change tasks in the current tab can dispatch `window.dispatchEvent(new Event('teamspace:tasks-changed'))` after saving.
+The sidebar reads the signed-in employee's tasks from `GET /tasks?employeeId=...` on the local API. Pages that change tasks in the current tab can dispatch `window.dispatchEvent(new Event('teamspace:tasks-changed'))` to refresh its count and progress.
