@@ -2,6 +2,7 @@
 
 A local, educational HR web app built with **HTML, CSS, browser JavaScript, and `json-server`**. Employees can manage their work and requests; HR can manage employees, tasks, policies, feedback, leave, and helpdesk tickets. The app uses one JSON-backed API for its active data.
 
+Figma Link: https://www.figma.com/design/3zWfidyuAT7SUeZR03IaJ2/Orange_Design_Task?node-id=161-5&p=f&t=eYTXNI4vZMDLEzln-0
 > [!IMPORTANT]
 > Run **two servers**: one for the web pages (for example, VS Code Live Server on port 5500) and one for the JSON API (`npm run api` on port 3000). Opening an HTML file directly will break shared components and API flows.
 
