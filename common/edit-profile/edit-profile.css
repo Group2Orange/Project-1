@@ -253,6 +253,21 @@ label span {
     font-size: 11px;
 }
 
+
+.phone-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    color: #6b7280;
+    background: transparent;
+    pointer-events: none;
+}
+
+#phone {
+    padding-left: 55px;
+}
 /* ================= EMPLOYMENT DETAILS ================= */
 .employment-section {
     margin-top: 28px;

@@ -558,10 +558,10 @@ function renderDropdown() {
     var unpaidLeft = bal.unpaid.total - bal.unpaid.used;
 
     var sel = document.getElementById("leaveType");
-    sel.options[0].text = "Annual PTO — " + annualLeft + " days left";
-    sel.options[1].text = "Sick Leave — " + sickLeft + " days left";
-    sel.options[2].text = "Floating Holiday — " + fltLeft + " days left";
-    sel.options[3].text = "Unpaid — " + unpaidLeft + " days available";
+    sel.options[0].text = "Annual PTO " ;
+    sel.options[1].text = "Sick Leave ";
+    sel.options[2].text = "Floating Holiday ";
+    sel.options[3].text = "Unpaid ";
 }
 
 function toggleRequestKind() {
