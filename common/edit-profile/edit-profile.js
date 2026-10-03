@@ -25,7 +25,7 @@ async function renderProfile() {
   if (!current) return;
   document.getElementById('employeeName').textContent = current.name;
   fullName.value = current.name || '';
-  phone.value = current.phone || '';
+  phone.value = current.phone ? current.phone.replace("+962", "") : "";
   document.getElementById('position').value = current.position || '';
   document.getElementById('department').value = current.department || '';
   document.getElementById('email').value = current.email || '';
@@ -46,11 +46,12 @@ form.addEventListener('submit', async event => {
   const name = fullName.value.trim();
   const number = phone.value.trim();
   fullName.classList.toggle('error-input', !name);
-  const invalidPhone = number.replace(/\D/g, '').length < 7;
+  const phoneRegex = /^[0-9]{9}$/;
+  const invalidPhone = !phoneRegex.test(number);
   showPhoneError(invalidPhone);
   if (!name || invalidPhone) return;
 
-  const changes = { name, phone: number, ...(newImage ? { image: newImage } : {}) };
+  const changes = { name, phone: "+962" + number, ...(newImage ? { image: newImage } : {}) };
   try {
     // OLD WAY: localStorage.setItem(`profileEdits_${user.id}`, JSON.stringify(changes));
     // NEW WAY: PATCH the employee record so a later visit loads these edits.
@@ -69,6 +70,7 @@ form.addEventListener('submit', async event => {
       department: updated.department,
       position: updated.position,
       employeeId: updated.employeeId,
+      phone: updated.phone,
       image: updated.image
     };
     localStorage.setItem('loggedUser', JSON.stringify(safeUser));
