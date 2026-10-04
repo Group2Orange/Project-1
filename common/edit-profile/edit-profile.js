@@ -30,8 +30,11 @@ async function renderProfile() {
   document.getElementById('department').value = current.department || '';
   document.getElementById('email').value = current.email || '';
   document.getElementById('employeeId').value = current.id || '';
-  photo.style.backgroundImage = current.image?.startsWith('data:')
-    ? `url("${current.image}")` : 'url("../profile/assets/profile.svg")';
+  if (current.image && current.image.startsWith('data:')) {
+    photo.style.backgroundImage = `url("${current.image}")`;
+  } else {
+    photo.style.backgroundImage = 'url("../profile/assets/profile.svg")';
+  }
 }
 
 function showPhoneError(show) {
@@ -51,7 +54,9 @@ form.addEventListener('submit', async event => {
   showPhoneError(invalidPhone);
   if (!name || invalidPhone) return;
 
-  const changes = { name, phone: "+962" + number, ...(newImage ? { image: newImage } : {}) };
+  // Only send the photo when the user picked a new one.
+  const changes = { name: name, phone: "+962" + number };
+  if (newImage) changes.image = newImage;
   try {
     // OLD WAY: localStorage.setItem(`profileEdits_${user.id}`, JSON.stringify(changes));
     // NEW WAY: PATCH the employee record so a later visit loads these edits.
@@ -91,8 +96,9 @@ document.getElementById('btnCancel').addEventListener('click', () => {
   location.href = '../profile/profile.html';
 });
 
-document.getElementById('photoInput').addEventListener('change', event => {
-  const file = event.target.files[0];
+// "this" is the file input that changed.
+document.getElementById('photoInput').addEventListener('change', function () {
+  const file = this.files[0];
   if (!file || !file.type.startsWith('image/')) return;
   if (file.size > 1024 * 1024) {
     alert('Choose a photo smaller than 1 MB.');

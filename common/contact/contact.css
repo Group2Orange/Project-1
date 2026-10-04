@@ -26,7 +26,7 @@ body{
 margin:0;
 background:#F5F7FB;
 color:var(--text);
-font-family:"Public Sans",sans-serif;
+font-family:"Inter", "Public Sans",sans-serif;
 
 }
 
@@ -91,7 +91,7 @@ border-radius:50%;
 .profile small{
 
 display:block;
-font-size:11px;
+font-size:14px;
 color:var(--muted);
 
 }
@@ -115,7 +115,7 @@ padding:28px 0 18px;
 
 .breadcrumb{
 
-font-size:12px;
+font-size:15px;
 color:var(--muted);
 
 }
@@ -134,7 +134,7 @@ align-items:center;
 
 h1{
 
-font-size:28px;
+font-size:30px;
 margin:14px 0 8px;
 
 }
@@ -144,7 +144,7 @@ margin:14px 0 8px;
 .header-section p{
 
 color:var(--muted);
-font-size:14px;
+font-size:17px;
 max-width:650px;
 
 }
@@ -155,7 +155,7 @@ max-width:650px;
 background:#E6FFFA;
 color:var(--primary);
 
-font-size:11px;
+font-size:14px;
 padding:7px 14px;
 
 border-radius:20px;
@@ -184,7 +184,7 @@ padding:0 15px;
 
 color:#027A48;
 
-font-size:13px;
+font-size:16px;
 
 margin-bottom:18px;
 
@@ -230,14 +230,14 @@ max-width: 562px;
 
 .card h3{
 
-font-size:16px;
+font-size:19px;
 
 margin:0 0 5px;
 
 }
 .subtitle{
 
-font-size:12px;
+font-size:15px;
 color:var(--muted);
 
 }
@@ -278,7 +278,7 @@ border-radius:8px;
 
 margin:5px 0;
 
-font-size:12px;
+font-size:15px;
 color:var(--muted);
 
 }
@@ -302,7 +302,7 @@ margin-top:12px;
 
 .support-card b{
 
-font-size:13px;
+font-size:16px;
 
 }
 
@@ -310,7 +310,7 @@ font-size:13px;
 
 .support-card p{
 
-font-size:12px;
+font-size:15px;
 color:var(--muted);
 
 }
@@ -328,7 +328,7 @@ justify-content:center;
 
 color:var(--primary);
 
-font-size:18px;
+font-size:20px;
 
 gap:10px;
 
@@ -336,14 +336,14 @@ gap:10px;
 
 .map-card p{
 
-font-size:11px;
+font-size:14px;
 color:var(--muted);
 
 }
 
 .contact-map-preview { display: block; position: relative; overflow: hidden; margin-top: 12px; border-radius: 10px; background: #e9f1f6; }
 .contact-map-preview svg { display: block; width: 100%; height: 190px; }
-.contact-map-preview span { position: absolute; right: 10px; bottom: 10px; padding: 8px 11px; border-radius: 6px; background: white; color: var(--primary); font-size: 12px; font-weight: 700; box-shadow: 0 2px 8px rgb(30 63 83 / 12%); }
+.contact-map-preview span { position: absolute; right: 10px; bottom: 10px; padding: 8px 11px; border-radius: 6px; background: white; color: var(--primary); font-size: 15px; font-weight: 700; box-shadow: 0 2px 8px rgb(30 63 83 / 12%); }
 .contact-map-preview:hover span { background: var(--primary); color: white; }
 
 
@@ -351,7 +351,7 @@ color:var(--muted);
 
 margin-top:0;
 
-font-size:22px;
+font-size:24px;
 
 }
 
@@ -375,7 +375,7 @@ label{
 
 display:block;
 
-font-size:12px;
+font-size:15px;
 
 font-weight:600;
 
@@ -398,7 +398,7 @@ border-radius:8px;
 
 font-family:inherit;
 
-font-size:13px;
+font-size:16px;
 
 outline:none;
 
@@ -445,7 +445,7 @@ border:1px solid #D0D5DD;
 
 background:white;
 
-font-size:12px;
+font-size:15px;
 
 cursor:pointer;
 
@@ -500,7 +500,7 @@ color:var(--primary);
 
 margin:5px;
 
-font-size:13px;
+font-size:16px;
 
 }
 
@@ -508,7 +508,7 @@ font-size:13px;
 
 .upload small{
 
-font-size:11px;
+font-size:14px;
 
 }
 
@@ -534,7 +534,7 @@ align-items:center;
 
 gap:8px;
 
-font-size:12px;
+font-size:15px;
 
 }
 
@@ -599,7 +599,7 @@ padding:18px;
 
 .topic-card p{
 
-font-size:12px;
+font-size:15px;
 
 color:var(--muted);
 
@@ -623,7 +623,7 @@ color:var(--muted);
 
 .anonymous-option label {
     cursor: pointer;
-    font-size: 8px;
+    font-size: 12px;
     color: #6b7280;
     line-height: 1.4;
 }
@@ -631,7 +631,7 @@ color:var(--muted);
 .anonymous-option strong {
     display: block;
     color: #222;
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 2px;
 }
 
@@ -706,7 +706,7 @@ color:var(--muted);
 
 h1{
 
-    font-size:22px;
+    font-size:24px;
 
 }
 
@@ -714,7 +714,7 @@ h1{
 
 .header-section p{
 
-    font-size:13px;
+    font-size:16px;
 
 }
 
@@ -777,7 +777,7 @@ h1{
 
 .tags button{
 
-    font-size:11px;
+    font-size:14px;
     padding:7px 10px;
 
 }
@@ -826,7 +826,7 @@ textarea{
 
 .contact-item p{
 
-    font-size:11px;
+    font-size:14px;
 
 }
 
@@ -834,7 +834,7 @@ textarea{
 
 .anonymous-option label{
 
-    font-size:11px;
+    font-size:14px;
 
 }
 
@@ -842,7 +842,7 @@ textarea{
 
 .anonymous-option strong{
 
-    font-size:12px;
+    font-size:15px;
 
 }
 

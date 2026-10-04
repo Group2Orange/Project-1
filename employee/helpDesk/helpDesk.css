@@ -38,7 +38,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .helpdesk-header .eyebrow {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--color-secondary);
   letter-spacing: .08em;
@@ -48,12 +48,12 @@ button, input, select, textarea { font-family: inherit; }
 
 .helpdesk-header h1 {
   margin: 0 0 4px;
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .helpdesk-header > div > p {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--color-secondary);
 }
 
@@ -68,7 +68,7 @@ button, input, select, textarea { font-family: inherit; }
   padding: 9px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -107,12 +107,12 @@ button, input, select, textarea { font-family: inherit; }
 
 #requestHeader h2 {
   margin: 0 0 4px;
-  font-size: 16px;
+  font-size: 19px;
 }
 
 #requestHeader p {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--color-secondary);
 }
 
@@ -121,7 +121,7 @@ button, input, select, textarea { font-family: inherit; }
   background: var(--color-primary-light);
   color: var(--color-primary-dark);
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
@@ -133,7 +133,7 @@ button, input, select, textarea { font-family: inherit; }
 #requestCard label {
   display: block;
   margin: 14px 0 5px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -144,7 +144,7 @@ button, input, select, textarea { font-family: inherit; }
   padding: 9px 11px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
   font-family: inherit;
   background: var(--color-card);
   color: var(--color-text);
@@ -171,7 +171,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .field-error {
   display: block;
-  font-size: 11px;
+  font-size: 14px;
   color: var(--color-danger);
   margin-top: 3px;
   min-height: 15px;
@@ -208,19 +208,19 @@ button, input, select, textarea { font-family: inherit; }
 
 .type-option span {
   color: var(--color-primary);
-  font-size: 18px;
+  font-size: 20px;
   margin-top: 1px;
 }
 
 .type-option b {
   display: block;
-  font-size: 13px;
+  font-size: 16px;
   margin-bottom: 3px;
   color: var(--color-text);
 }
 
 .type-option small {
-  font-size: 12px;
+  font-size: 15px;
   color: var(--color-secondary);
 }
 
@@ -251,7 +251,7 @@ button, input, select, textarea { font-family: inherit; }
   border-radius: 8px;
   cursor: pointer;
   background: var(--color-card);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   transition: border-color .15s;
   color: var(--color-text);
@@ -278,7 +278,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .time-range-row > span {
   color: var(--color-secondary);
-  font-size: 18px;
+  font-size: 20px;
   padding-top: 22px;
 }
 
@@ -305,17 +305,17 @@ button, input, select, textarea { font-family: inherit; }
 
 #uploadBox span {
   color: var(--color-primary);
-  font-size: 22px;
+  font-size: 24px;
 }
 
 #uploadBox p {
   margin: 6px 0 2px;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 #uploadBox small {
   color: var(--color-secondary);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 /* =========================
@@ -332,7 +332,7 @@ button, input, select, textarea { font-family: inherit; }
   padding: 9px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   color: var(--color-text);
@@ -344,7 +344,7 @@ button, input, select, textarea { font-family: inherit; }
   padding: 9px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -358,7 +358,7 @@ button, input, select, textarea { font-family: inherit; }
 
 #message {
   margin-top: 10px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   min-height: 16px;
 }
@@ -388,7 +388,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .right-card-header h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -401,18 +401,18 @@ button, input, select, textarea { font-family: inherit; }
 ========================= */
 .meeting-empty {
   color: var(--color-secondary);
-  font-size: 13px;
+  font-size: 16px;
   text-align: center;
   padding: 12px 0;
   margin: 0;
 }
 
-.meeting-detail { font-size: 13px; }
+.meeting-detail { font-size: 16px; }
 
 .meeting-detail .meeting-subject {
   font-weight: 700;
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .meeting-meta {
@@ -427,7 +427,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .meeting-meta p {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -452,7 +452,7 @@ button, input, select, textarea { font-family: inherit; }
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -469,7 +469,7 @@ button, input, select, textarea { font-family: inherit; }
   display: inline-block;
   padding: 3px 10px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -497,13 +497,13 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .ticket-id {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--color-secondary);
   font-family: monospace;
 }
 
 .ticket-subject {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   margin: 3px 0;
 }
@@ -517,7 +517,7 @@ button, input, select, textarea { font-family: inherit; }
 .type-badge {
   padding: 2px 8px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -558,7 +558,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
 
 .dialog-header h2 {
   margin: 0;
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .dialog-close {
@@ -566,7 +566,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border: none;
   cursor: pointer;
   color: var(--color-secondary);
-  font-size: 20px;
+  font-size: 22px;
   padding: 4px;
   border-radius: 6px;
   line-height: 1;
@@ -584,7 +584,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .detail-label {
@@ -603,7 +603,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border-radius: 8px;
 }
 
-.hr-reply-box p { margin: 0; font-size: 13px; }
+.hr-reply-box p { margin: 0; font-size: 16px; }
 
 .reschedule-box {
   margin-top: 14px;
@@ -612,8 +612,8 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border-radius: 8px;
 }
 
-.reschedule-box h4 { margin: 0 0 8px; font-size: 13px; color: #1e40af; }
-.reschedule-box p  { margin: 0; font-size: 13px; }
+.reschedule-box h4 { margin: 0 0 8px; font-size: 16px; color: #1e40af; }
+.reschedule-box p  { margin: 0; font-size: 16px; }
 
 .dialog-actions {
   display: flex;
@@ -634,7 +634,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -647,7 +647,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   color: var(--color-text);
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .btn-secondary:hover { background: var(--color-surface); }
@@ -659,7 +659,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -672,7 +672,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -708,7 +708,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
 }
 
 .helpdesk-header h1 {
-  font: 700 clamp(25px, 3vw, 34px) var(--font-heading);
+  font: 700 clamp(27px, 3vw, 37px) var(--font-heading);
   color: var(--color-text);
 }
 
@@ -742,7 +742,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
 .right-card-header h3 {
   margin: 0;
   color: var(--color-text);
-  font: 700 13px var(--font-heading);
+  font: 700 16px var(--font-heading);
 }
 
 #meetingCardContent,
@@ -785,7 +785,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   justify-content: center;
   gap: 7px;
   border-radius: 8px;
-  font: 650 12px var(--font-text);
+  font: 650 15px var(--font-text);
   cursor: pointer;
   transition: background .16s ease, border-color .16s ease, transform .16s ease;
 }
@@ -816,7 +816,7 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   color: var(--color-primary-dark);
 }
 
-.btn-compact { min-height: 32px; padding: 6px 10px; font-size: 11px; }
+.btn-compact { min-height: 32px; padding: 6px 10px; font-size: 14px; }
 .btn-danger { border: 1px solid var(--color-danger); background: var(--color-danger-soft); color: var(--color-danger); }
 .btn-success { border: 1px solid var(--color-tertiary); background: color-mix(in srgb, var(--color-tertiary) 12%, var(--color-card)); color: var(--color-tertiary); }
 
@@ -878,10 +878,10 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
   border-radius: 8px;
   background: var(--color-card);
   color: var(--color-text);
-  font: 13px var(--font-text);
+  font: 16px var(--font-text);
 }
 
-.dialog-field-label { display: block; margin: 12px 0 5px; font-size: 12px; font-weight: 600; }
+.dialog-field-label { display: block; margin: 12px 0 5px; font-size: 15px; font-weight: 600; }
 .required { color: var(--color-danger); }
 
 @media (max-width: 820px) {

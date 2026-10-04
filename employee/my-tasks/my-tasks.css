@@ -55,20 +55,20 @@
   border-radius: 50%;
   background: #dce6f3;
   color: #3e5771;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .employee-card h2 {
   margin: 0;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .employee-card p {
   margin: 3px 0 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .progress-header {
@@ -76,7 +76,7 @@
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .progress-header strong {
@@ -101,7 +101,7 @@
 
 .sidebar-title {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -121,7 +121,7 @@
   border-radius: 7px;
   color: #455465;
   text-decoration: none;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .sidebar-nav .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .nav-count {
@@ -145,7 +145,7 @@
   border-radius: 50px;
   background: var(--primary);
   color: white;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .tasks-content {
@@ -168,13 +168,13 @@
   margin: 0;
   color: var(--text);
   font-family: "Space Grotesk", sans-serif;
-  font-size: 26px;
+  font-size: 28px;
 }
 
 .page-header p {
   margin: 7px 0 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .quarter-badge {
@@ -182,7 +182,7 @@
   border-radius: 50px;
   background: #e7ebf0;
   color: #667281;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -215,7 +215,7 @@
 
 .summary-card > span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -228,12 +228,12 @@
 
 .summary-row strong {
   font-family: "Space Grotesk", sans-serif;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .summary-card small {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .summary-icon {
@@ -245,7 +245,7 @@
 }
 
 .summary-icon .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .summary-icon.blue {
@@ -295,7 +295,7 @@
   color: #5e6b79;
   cursor: pointer;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -318,7 +318,7 @@
 
 .search-box .material-symbols-outlined {
   color: #8a98a8;
-  font-size: 16px;
+  font-size: 19px;
 }
 
 .search-box input {
@@ -327,7 +327,7 @@
   outline: 0;
   background: transparent;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .filter-panel {
@@ -347,7 +347,7 @@
 
 .filter-panel label {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .filter-panel select,
@@ -358,7 +358,7 @@
   border-radius: 6px;
   background: white;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .kanban-board {
@@ -387,7 +387,7 @@
 .column-header h2 {
   margin: 0;
   color: #354353;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .status-dot {
@@ -420,7 +420,7 @@
   border-radius: 50px;
   background: #e3e8ee;
   color: #647181;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .drop-zone {
@@ -475,7 +475,7 @@
 .priority {
   padding: 4px 7px;
   border-radius: 50px;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -502,20 +502,20 @@
 
 .drag-icon {
   color: #a4afbb;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .task-card h3 {
   margin: 9px 0 5px;
   color: #222c36;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .task-card p {
   margin: 0;
   color: #677586;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -533,7 +533,7 @@
   border-radius: 4px;
   background: #f1f4f7;
   color: #637181;
-  font-size: 7px;
+  font-size: 11px;
 }
 
 .due-date {
@@ -541,11 +541,11 @@
   align-items: center;
   gap: 3px;
   color: #758190;
-  font-size: 7px;
+  font-size: 11px;
 }
 
 .due-date .material-symbols-outlined {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .overdue-badge {
@@ -555,7 +555,7 @@
   border-radius: 50px;
   background: #feeceb;
   color: var(--danger);
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -563,7 +563,7 @@
   width: fit-content;
   margin-top: 8px;
   color: #b13b32;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -596,7 +596,7 @@
 
 .dialog-label {
   color: var(--primary);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
 }
@@ -604,7 +604,7 @@
 .dialog-header h2 {
   margin: 5px 0 0;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 21px;
+  font-size: 23px;
 }
 
 .close-btn {
@@ -630,7 +630,7 @@
 .priority-badge {
   padding: 5px 9px;
   border-radius: 50px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -659,13 +659,13 @@
 
 .description-box h3 {
   margin: 0 0 8px;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .description-box p {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -686,14 +686,14 @@
 .detail-item span {
   display: block;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .detail-item strong {
   display: block;
   margin-top: 6px;
   color: var(--text);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .attachment-section {
@@ -711,7 +711,7 @@
 
 .attachment-title > .material-symbols-outlined {
   color: #c53b31;
-  font-size: 23px;
+  font-size: 25px;
 }
 
 .attachment-title strong,
@@ -720,13 +720,13 @@
 }
 
 .attachment-title strong {
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .attachment-title small {
   margin-top: 3px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .attachment-empty {
@@ -735,7 +735,7 @@
   border-radius: 7px;
   background: #f6f8fa;
   color: #7c8996;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .attachment-file {
@@ -775,13 +775,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .attachment-info small {
   margin-top: 3px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .attachment-actions {
@@ -797,7 +797,7 @@
   align-items: center;
   border-radius: 6px;
   font-family: inherit;
-  font-size: 8px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -818,7 +818,7 @@
   min-height: 18px;
   margin: 10px 0 0;
   color: var(--success);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .dialog-actions {
@@ -840,7 +840,7 @@
   gap: 6px;
   border-radius: 7px;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }

@@ -1,12 +1,12 @@
 <aside class="employee-sidebar" aria-label="Employee workspace">
   <div class="employee-sidebar-profile">
-    <div class="employee-sidebar-person">
+    <a class="employee-sidebar-person" href="../../common/profile/profile.html" title="View my profile details">
       <span class="employee-sidebar-avatar" aria-hidden="true">MC</span>
       <div>
         <strong>Marcus Chen</strong>
         <small>Engineering Dept</small>
       </div>
-    </div>
+    </a>
     <div class="employee-sidebar-progress-label">
       <span>Task progress</span>
       <strong id="weeklyProgressText">0%</strong>
@@ -28,9 +28,13 @@
       <a data-sidebar-link="details" href="../../employee/details/details.html"><span class="material-symbols-outlined" aria-hidden="true">badge</span>My Details</a>
       <a data-sidebar-link="tasks" href="../../employee/my-tasks/my-tasks.html"><span class="material-symbols-outlined" aria-hidden="true">task_alt</span>My Tasks<span class="employee-sidebar-count" id="sidebarTaskCount">0</span></a>
       <a data-sidebar-link="leave" href="../../employee/Leave&amp;TimeOff/Leave&amp;TimeOff.html"><span class="material-symbols-outlined" aria-hidden="true">event_available</span>Leave &amp; Time Off</a>
-      <!-- <a data-sidebar-link="policies" href="../../employee/policies/EMPpolicies.html"><span class="material-symbols-outlined" aria-hidden="true">description</span>Policies &amp; Docs</a> -->
-      <!-- <a data-sidebar-link="feedback" href="../../common/contact/contact.html"><span class="material-symbols-outlined" aria-hidden="true">forum</span>Feedback &amp; Surveys</a> -->
+      <a data-sidebar-link="policies" href="../../employee/policies/EMPpolicies.html"><span class="material-symbols-outlined" aria-hidden="true">description</span>Policies &amp; Docs</a>
+      <a data-sidebar-link="feedback" href="../../common/contact/contact.html"><span class="material-symbols-outlined" aria-hidden="true">forum</span>Feedback</a>
       <a data-sidebar-link="helpdesk" href="../../employee/helpDesk/helpDesk.html"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span>Helpdesk Support</a>
     </nav>
+    <div class="employee-sidebar-footer">
+      <a class="employee-sidebar-footer-link" href="../../common/home/home.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Home</a>
+      <button class="employee-sidebar-footer-link employee-sidebar-footer-logout" type="button" id="employeeSidebarLogout"><span class="material-symbols-outlined" aria-hidden="true">logout</span>Logout</button>
+    </div>
   </div>
 </aside>

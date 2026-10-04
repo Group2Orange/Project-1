@@ -6,8 +6,15 @@ const categoryFilter = document.getElementById('categoryFilter');
 const sort = document.getElementById('sortFeedback');
 let feedbackItems = [];
 
-const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const initials = name => String(name || '?').trim().split(/\s+/).map(word => word[0]).slice(0, 2).join('').toUpperCase();
+function escapeHtml(value) {
+  if (value === undefined || value === null) return '';
+  const characters = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(value).replace(/[&<>"']/g, char => characters[char]);
+}
+
+function initials(name) {
+  return String(name || '?').trim().split(/\s+/).map(word => word[0]).slice(0, 2).join('').toUpperCase();
+}
 
 async function loadFeedback() {
   message.textContent = 'Loading feedback…';
@@ -20,23 +27,26 @@ async function loadFeedback() {
     render();
   } catch (error) {
     feedbackItems = [];
-    list.replaceChildren();
+    list.innerHTML = '';
     message.textContent = `${error.message} Make sure the API is running.`;
   }
 }
 
 function fillCategories() {
   const current = categoryFilter.value;
-  const categories = ['General Feedback', 'Feature Request', 'HR Support', 'Report Policy Issue' ];
-  categoryFilter.replaceChildren(new Option('All categories', ''), ...categories.map(value => new Option(value, value)));
+  const categories = ['General Feedback', 'Feature Request', 'HR Support', 'Report Policy Issue'];
+  categoryFilter.innerHTML = '';
+  categoryFilter.appendChild(new Option('All categories', ''));
+  categories.forEach(value => categoryFilter.appendChild(new Option(value, value)));
   categoryFilter.value = categories.includes(current) ? current : '';
 }
 
 function filteredFeedback() {
   const query = search.value.trim().toLowerCase();
   const filtered = feedbackItems.filter(item => {
-    const matchesQuery = [item.name, item.email, item.subject, item.message, item.category]
-      .some(value => String(value || '').toLowerCase().includes(query));
+    const fields = [item.name, item.email, item.subject, item.message, item.category];
+    const matchingFields = fields.filter(value => String(value || '').toLowerCase().includes(query));
+    const matchesQuery = matchingFields.length > 0;
     return matchesQuery && (!categoryFilter.value || item.category === categoryFilter.value);
   });
   return filtered.sort((a, b) => {
@@ -46,7 +56,7 @@ function filteredFeedback() {
 }
 
 function attachmentMarkup(attachment) {
-  if (!attachment?.name || !attachment?.data) return '';
+  if (!attachment || !attachment.name || !attachment.data) return '';
   return `<a class="feedback-attachment" href="${escapeHtml(attachment.data)}" download="${escapeHtml(attachment.name)}"><span class="material-symbols-outlined" aria-hidden="true">attach_file</span>${escapeHtml(attachment.name)}</a>`;
 }
 
@@ -97,19 +107,29 @@ async function updateFeedback(id, changes) {
   render();
 }
 
+// The cards are rebuilt on every render, so one listener on the list handles all of them.
 list.addEventListener('change', async event => {
-  if (event.target.dataset.action !== 'priority') return;
-  const card = event.target.closest('[data-id]');
-  try { await updateFeedback(card.dataset.id, { priority: event.target.value || null }); }
-  catch (error) { message.textContent = error.message; }
+  const select = event.target;
+  if (select.dataset.action !== 'priority') return;
+  const card = select.closest('[data-id]');
+  try {
+    await updateFeedback(card.dataset.id, { priority: select.value || null });
+  } catch (error) {
+    message.textContent = error.message;
+  }
 });
+
 list.addEventListener('click', async event => {
   const button = event.target.closest('button[data-action="read"]');
   if (!button) return;
   const card = button.closest('[data-id]');
-  try { await updateFeedback(card.dataset.id, { read: true }); }
-  catch (error) { message.textContent = error.message; }
+  try {
+    await updateFeedback(card.dataset.id, { read: true });
+  } catch (error) {
+    message.textContent = error.message;
+  }
 });
+
 search.addEventListener('input', render);
 categoryFilter.addEventListener('change', render);
 sort.addEventListener('change', render);

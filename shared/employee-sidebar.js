@@ -49,6 +49,13 @@
           activeLink.setAttribute('aria-current', 'page');
         }
 
+        sidebar.querySelector('#employeeSidebarLogout').addEventListener('click', () => {
+          localStorage.removeItem('loggedUser');
+          localStorage.removeItem('currentUserId');
+          localStorage.removeItem('currentUser');
+          window.location.href = '../../common/login/login.html';
+        });
+
         const toggle = sidebar.querySelector('.employee-sidebar-toggle');
         toggle.addEventListener('click', () => {
           const open = sidebar.classList.toggle('is-open');

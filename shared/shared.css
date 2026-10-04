@@ -9,11 +9,12 @@
 */
 
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("theme.css");
 
 :root {
   --font-heading: "Space Grotesk", sans-serif;
-  --font-text: "Public Sans", sans-serif;
+  --font-text: "Inter", "Public Sans", sans-serif;
 }
 
 /* ---------- Base (fonts and page) ---------- */
@@ -33,10 +34,13 @@ h1, h2, h3 {
 .navbar, .navbar * { box-sizing: border-box; }
 
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
   display: flex;
   align-items: center;
   gap: 28px;
-  min-height: 64px;
+  min-height: 76px;
   padding: 0 28px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-card);
@@ -49,7 +53,7 @@ h1, h2, h3 {
   gap: 12px;
   color: var(--color-primary-dark);
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -58,14 +62,14 @@ h1, h2, h3 {
 .navbar-logo {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border: 1px solid var(--color-primary-light);
   border-radius: 8px;
   background: var(--color-primary);
   color: var(--color-on-primary);
 }
-.navbar-logo .material-symbols-outlined { font-size: 23px; }
+.navbar-logo .material-symbols-outlined { font-size: 28px; }
 
 .navbar-links {
   display: flex;
@@ -82,7 +86,7 @@ h1, h2, h3 {
   flex-shrink: 0;
   min-height: 48px;
   color: var(--color-secondary);
-  font-size: 13px;
+  font-size: 18px;
   font-weight: 500;
   white-space: nowrap;
   text-decoration: none;
@@ -108,9 +112,9 @@ h1, h2, h3 {
 }
 .navbar-logout:hover { background: var(--color-surface); }
 .navbar [hidden] { display: none !important; }
-.navbar-login { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 6px 12px; border: 1px solid var(--color-border); border-radius: 7px; color: var(--color-primary-dark); font-size: 12px; font-weight: 700; text-decoration: none; }
+.navbar-login { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 6px 14px; border: 1px solid var(--color-border); border-radius: 7px; color: var(--color-primary-dark); font-size: 17px; font-weight: 700; text-decoration: none; }
 .navbar-login:hover { background: var(--color-primary-light); }
-.navbar-login .material-symbols-outlined { font-size: 17px; }
+.navbar-login .material-symbols-outlined { font-size: 21px; }
 .navbar-user {
   display: flex;
   align-items: center;
@@ -125,12 +129,12 @@ h1, h2, h3 {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--color-primary-light);
   color: var(--color-primary-dark);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
 }
 .navbar-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
@@ -146,22 +150,22 @@ h1, h2, h3 {
   background: var(--color-tertiary);
 }
 .navbar-user-text { display: flex; flex-direction: column; gap: 2px; line-height: 1.3; white-space: nowrap; }
-.navbar-user-name { font-size: 12px; font-weight: 500; }
-.navbar-user-role { font-size: 11px; color: var(--color-secondary); }
+.navbar-user-name { font-size: 17px; font-weight: 500; }
+.navbar-user-role { font-size: 15px; color: var(--color-secondary); }
 .navbar-logout {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 32px;
-  padding: 6px 12px;
+  min-height: 36px;
+  padding: 6px 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   color: var(--color-secondary);
-  font-size: 12px;
+  font-size: 17px;
   text-decoration: none;
 }
-.navbar-logout .material-symbols-outlined { font-size: 17px; }
+.navbar-logout .material-symbols-outlined { font-size: 21px; }
 .navbar a:focus-visible, .navbar button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -171,7 +175,7 @@ h1, h2, h3 {
 /* Keep smaller laptops on one row with tighter spacing. */
 @media (min-width: 1101px) and (max-width: 1280px) {
   .navbar { gap: 18px; padding-inline: 22px; }
-  .navbar-brand { font-size: 18px; gap: 10px; }
+  .navbar-brand { font-size: 20px; gap: 10px; }
   .navbar-links { gap: 18px; }
   .navbar-right { gap: 12px; }
   .navbar-user { padding-left: 12px; }
@@ -195,7 +199,7 @@ h1, h2, h3 {
 
 @media (max-width: 1100px) {
   .navbar { flex-wrap: wrap; padding: 10px 16px; gap: 0 12px; }
-  .navbar-brand { font-size: 18px; gap: 8px; }
+  .navbar-brand { font-size: 20px; gap: 8px; }
   .navbar-logo { width: 32px; height: 32px; }
   .navbar-toggle { display: inline-flex; }
   .navbar-links, .navbar-right { display: none; }
@@ -210,7 +214,7 @@ h1, h2, h3 {
     border-top: 1px solid var(--color-border);
     overflow: visible;
   }
-  .navbar-links a { min-height: 44px; padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+  .navbar-links a { min-height: 44px; padding: 10px 12px; border-radius: 6px; font-size: 17px; }
   .navbar-links a:hover, .navbar-links a.active { background: var(--color-surface); }
   .navbar-links a.active::after { top: 10px; bottom: 10px; left: 0; right: auto; width: 3px; height: auto; }
   .navbar.is-open .navbar-right {

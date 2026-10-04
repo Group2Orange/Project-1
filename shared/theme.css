@@ -40,4 +40,4 @@
 .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 .theme-toggle { display: inline-grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; padding: 0; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-card); color: var(--color-secondary); cursor: pointer; }
 .theme-toggle:hover { background: var(--color-surface); color: var(--color-primary-dark); }
-.theme-toggle .material-symbols-outlined { font-size: 19px; }
+.theme-toggle .material-symbols-outlined { font-size: 21px; }

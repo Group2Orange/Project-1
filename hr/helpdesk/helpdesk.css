@@ -16,7 +16,7 @@
   padding: 9px 11px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 15px;
   font-family: var(--font-text);
   background: white;
   color: var(--color-text);
@@ -33,7 +33,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: #6b8595;
-  font-size: 17px;
+  font-size: 20px;
   pointer-events: none;
 }
 .search-field input {
@@ -41,7 +41,7 @@
   padding: 9px 11px 9px 34px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 15px;
   font-family: var(--font-text);
   background: white;
   color: var(--color-text);
@@ -55,7 +55,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 13px 15px;
-  font-size: 11px;
+  font-size: 14px;
   color: var(--color-secondary);
   border-top: 1px solid var(--color-border);
 }
@@ -64,7 +64,7 @@
   align-items: center;
   gap: 10px;
 }
-.directory-bottom span:last-of-type { font-weight: 600; font-size: 12px; color: var(--color-text); }
+.directory-bottom span:last-of-type { font-weight: 600; font-size: 15px; color: var(--color-text); }
 .page-button {
   display: inline-flex;
   align-items: center;
@@ -77,7 +77,7 @@
   background: white;
   color: #3f5263;
   cursor: pointer;
-  font: 600 11px var(--font-text);
+  font: 600 14px var(--font-text);
 }
 .page-button:hover:not(:disabled) { background: #e8f4f5; }
 .page-button:disabled { opacity: .4; cursor: not-allowed; }
@@ -87,7 +87,7 @@
 .status-pending    { background: #fef3c7; color: #92400e; }
 
 /* ── Field errors in dialogs ─────────────────────────────────────────────────── */
-.field-error { display: block; font-size: 11px; color: #dc2626; margin-top: 3px; min-height: 14px; }
+.field-error { display: block; font-size: 14px; color: #dc2626; margin-top: 3px; min-height: 14px; }
 
 /* ── Dialog layout — extends directory-dialog from employees.css ────────────── */
 .dialog-head {
@@ -98,8 +98,8 @@
   padding: 20px 22px 14px;
   border-bottom: 1px solid var(--color-border);
 }
-.dialog-head h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; font-family: var(--font-heading); }
-.dialog-eyebrow { margin: 0 0 4px; font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--color-primary-dark); text-transform: uppercase; }
+.dialog-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; font-family: var(--font-heading); }
+.dialog-eyebrow { margin: 0 0 4px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--color-primary-dark); text-transform: uppercase; }
 .dialog-x {
   display: inline-grid;
   place-items: center;
@@ -122,7 +122,7 @@
 }
 
 /* Dialog inputs */
-dialog label { display: block; margin: 10px 0 4px; font-size: 12px; font-weight: 600; }
+dialog label { display: block; margin: 10px 0 4px; font-size: 15px; font-weight: 600; }
 dialog input[type="date"],
 dialog input[type="time"],
 dialog input[type="url"],
@@ -131,7 +131,7 @@ dialog textarea {
   padding: 9px 11px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
   font-family: inherit;
   background: var(--color-card);
   color: var(--color-text);
@@ -141,9 +141,9 @@ dialog textarea { resize: vertical; min-height: 80px; }
 dialog input:focus, dialog textarea:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* ── View dialog detail rows ────────────────────────────────────────────────── */
-.detail-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border); font-size: 13px; }
+.detail-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border); font-size: 16px; }
 .detail-row:last-child { border-bottom: none; }
-.detail-label { flex: 0 0 130px; font-weight: 600; color: var(--color-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+.detail-label { flex: 0 0 130px; font-weight: 600; color: var(--color-secondary); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
 .detail-value { flex: 1; color: var(--color-text); word-break: break-word; }
 .detail-reply .detail-value  { background: var(--color-surface); border-left: 3px solid var(--color-primary); border-radius: 0 6px 6px 0; padding: 8px 10px; }
 .detail-reschedule .detail-value { background: #dbeafe; border-left: 3px solid #3b82f6; border-radius: 0 6px 6px 0; padding: 8px 10px; color: #1e40af; }
@@ -164,10 +164,10 @@ dialog input:focus, dialog textarea:focus { outline: 2px solid var(--color-prima
 .actions button:hover:not(:disabled) { background: #e8f4f5; color: var(--color-primary-dark); }
 .actions button:disabled { opacity: .35; cursor: not-allowed; }
 .actions button[data-action="reject"]:hover { background: #ffeded; color: #b63742; }
-.actions .material-symbols-outlined { font-size: 17px; }
+.actions .material-symbols-outlined { font-size: 20px; }
 
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 8px 13px; border-radius: 8px; cursor: pointer; font: 600 11px var(--font-text); }
-.button .material-symbols-outlined { font-size: 17px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 8px 13px; border-radius: 8px; cursor: pointer; font: 600 14px var(--font-text); }
+.button .material-symbols-outlined { font-size: 20px; }
 .button-primary { border: 1px solid var(--color-primary-dark); background: var(--color-primary-dark); color: white; }
 .button-primary:hover { background: #006d74; }
 .button-light { border: 1px solid var(--color-border); background: white; color: #3f5263; }
@@ -177,9 +177,9 @@ dialog input:focus, dialog textarea:focus { outline: 2px solid var(--color-prima
 /* ── Stats Pattern (mirrored from employees.css) ───────────────────────────── */
 .directory-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
 .directory-stats article { position: relative; min-height: 110px; padding: 17px; border: 1px solid var(--color-border); border-radius: 11px; background: white; }
-.directory-stats span, .directory-stats small { display: block; color: var(--color-secondary); font-size: 10px; }
-.directory-stats strong { display: block; margin: 10px 0 7px; font: 700 27px var(--font-heading); color: #1a3039; }
-.directory-stats i { position: absolute; right: 15px; top: 16px; display: grid; place-items: center; width: 31px; height: 31px; border-radius: 8px; background: #e9f5f6; color: var(--color-primary-dark); font-style: normal; font-size: 19px; }
+.directory-stats span, .directory-stats small { display: block; color: var(--color-secondary); font-size: 13px; }
+.directory-stats strong { display: block; margin: 10px 0 7px; font: 700 29px var(--font-heading); color: #1a3039; }
+.directory-stats i { position: absolute; right: 15px; top: 16px; display: grid; place-items: center; width: 31px; height: 31px; border-radius: 8px; background: #e9f5f6; color: var(--color-primary-dark); font-style: normal; font-size: 21px; }
 
 @media (max-width: 1180px) {
   .directory-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -204,7 +204,7 @@ body { background: var(--color-page); }
 .directory-heading .eyebrow {
   margin: 0 0 6px;
   color: var(--color-primary-dark);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 750;
   letter-spacing: .1em;
 }
@@ -212,13 +212,13 @@ body { background: var(--color-page); }
 .directory-heading h1 {
   margin: 0 0 6px;
   color: var(--color-text);
-  font: 700 clamp(26px, 3vw, 34px) var(--font-heading);
+  font: 700 clamp(28px, 3vw, 37px) var(--font-heading);
 }
 
 .directory-heading p:last-child {
   margin: 0;
   color: var(--color-secondary);
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .directory-stats article,
@@ -264,7 +264,7 @@ table.directory {
   min-width: 860px;
   border-collapse: collapse;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 table.directory th {
@@ -272,7 +272,7 @@ table.directory th {
   border-bottom: 1px solid var(--color-border);
   background: color-mix(in srgb, var(--color-surface) 58%, var(--color-card));
   color: var(--color-secondary);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
   letter-spacing: .075em;
   text-align: left;
@@ -302,7 +302,7 @@ table.directory tbody tr:last-child td { border-bottom: 0; }
   min-height: 24px;
   padding: 4px 9px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -372,7 +372,7 @@ table.directory tbody tr:last-child td { border-bottom: 0; }
 .dialog-foot { background: var(--color-card); }
 .dialog-body { background: var(--color-card); }
 .dialog-body > p { color: var(--color-secondary); line-height: 1.55; }
-.dialog-helper { margin-top: 0; font-size: 13px; }
+.dialog-helper { margin-top: 0; font-size: 16px; }
 .time-input-row { display: flex; gap: 12px; margin-top: 10px; }
 .time-input-row > div { flex: 1; min-width: 0; }
 
@@ -402,7 +402,7 @@ table.directory tbody tr:last-child td { border-bottom: 0; }
   .directory-heading { align-items: flex-start; }
   .directory-stats { grid-template-columns: 1fr 1fr; gap: 9px; }
   .directory-stats article { min-height: 104px; padding: 14px; }
-  .directory-stats strong { font-size: 23px; }
+  .directory-stats strong { font-size: 25px; }
   .directory-filters select { min-width: 0; width: 100%; }
   .directory-bottom { align-items: flex-start; flex-direction: column; }
   .directory-dialog { width: min(100% - 20px, 580px); }

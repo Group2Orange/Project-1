@@ -10,9 +10,10 @@ const API = 'http://127.0.0.1:3000';
    Auth guard
 --------------------------------------------------------- */
 const loggedUser = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-const employeeId = loggedUser?.role === 'EMP' && loggedUser.id != null
-  ? String(loggedUser.id)
-  : null;
+let employeeId = null;
+if (loggedUser && loggedUser.role === 'EMP' && loggedUser.id !== undefined && loggedUser.id !== null) {
+  employeeId = String(loggedUser.id);
+}
 if (!employeeId) window.location.replace('../../common/login/login.html');
 
 /* ---------------------------------------------------------
@@ -62,11 +63,17 @@ const rescheduleDate      = document.getElementById('rescheduleDate');
 const rescheduleFrom      = document.getElementById('rescheduleFrom');
 const rescheduleTo        = document.getElementById('rescheduleTo');
 
+// Constraint validation: the date pickers grey out days before today
+// (function declarations like todayISO() are hoisted, so it's safe to call here).
+meetingDateInput.min = todayISO();
+rescheduleDate.min = todayISO();
+
 /* ---------------------------------------------------------
    Helpers
 --------------------------------------------------------- */
 function escapeHtml(str) {
-  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  if (str === undefined || str === null) str = '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function formatDate(str) {
@@ -108,18 +115,19 @@ function nowHHMM() {
 async function loadHelpdeskData() {
   if (!employeeId) return;
   try {
-    const [reqRes, draftRes] = await Promise.all([
-      fetch(`${API}/helpdeskRequests?employeeId=${encodeURIComponent(employeeId)}`),
-      fetch(`${API}/helpdeskDrafts?employeeId=${encodeURIComponent(employeeId)}`)
-    ]);
-    if (!reqRes.ok || !draftRes.ok) throw new Error('Could not load helpdesk data.');
+    const requestsResponse = await fetch(`${API}/helpdeskRequests?employeeId=${encodeURIComponent(employeeId)}`);
+    const draftsResponse   = await fetch(`${API}/helpdeskDrafts?employeeId=${encodeURIComponent(employeeId)}`);
+    if (!requestsResponse.ok || !draftsResponse.ok) throw new Error('Could not load helpdesk data.');
 
-    helpdeskRequests = await reqRes.json();
+    // Newest request first.
+    helpdeskRequests = await requestsResponse.json();
     helpdeskRequests.sort((a, b) =>
       String(b.createdAt || '').localeCompare(String(a.createdAt || ''))
     );
 
-    helpdeskDraft = (await draftRes.json())[0] || null;
+    // Each employee has at most one saved draft.
+    const drafts = await draftsResponse.json();
+    helpdeskDraft = drafts[0] || null;
 
     loadDraft();
     renderTickets();
@@ -139,13 +147,9 @@ typeOptionBtns.forEach(btn => {
     typeOptionBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
     requestType = btn.dataset.type;
 
-    if (requestType === 'meeting') {
-      meetingBox.hidden = false;
-      submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">send</span> Submit Request';
-    } else {
-      meetingBox.hidden = true;
-      submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">send</span> Submit Request';
-    }
+    // The meeting fields only show for a meeting request.
+    meetingBox.hidden = requestType !== 'meeting';
+    submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:19px;">send</span> Submit Request';
   });
 });
 
@@ -269,8 +273,8 @@ submitBtn.addEventListener('click', async () => {
   if (!validateForm()) return;
 
   const request = {
-    employeeId,
-    ticket:    'TKT-' + Math.floor(1000 + Math.random() * 9000),
+    employeeId: employeeId,
+    ticket:   'TKT-' + Math.floor(1000 + Math.random() * 9000),
     type:      requestType,
     platform:  requestType === 'meeting' ? selectedPlatform : null,
     category:  category.value,
@@ -318,8 +322,8 @@ submitBtn.addEventListener('click', async () => {
 --------------------------------------------------------- */
 draftBtn.addEventListener('click', async () => {
   const draft = {
-    employeeId,
-    type:      requestType,
+    employeeId: employeeId,
+    type:     requestType,
     platform:  selectedPlatform,
     category:  category.value,
     subject:   subject.value,
@@ -331,10 +335,15 @@ draftBtn.addEventListener('click', async () => {
   };
 
   try {
-    const url    = helpdeskDraft ? `${API}/helpdeskDrafts/${encodeURIComponent(helpdeskDraft.id)}` : `${API}/helpdeskDrafts`;
-    const method = helpdeskDraft ? 'PATCH' : 'POST';
-    const res    = await fetch(url, {
-      method,
+    // Update the existing draft (PATCH) or create a new one (POST).
+    let url    = `${API}/helpdeskDrafts`;
+    let method = 'POST';
+    if (helpdeskDraft) {
+      url    = `${API}/helpdeskDrafts/${encodeURIComponent(helpdeskDraft.id)}`;
+      method = 'PATCH';
+    }
+    const res = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(draft)
     });
@@ -442,12 +451,20 @@ function renderTickets() {
   `).join('');
 
   recentTicketsList.querySelectorAll('.ticket-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const id = item.dataset.id;
+    item.addEventListener('click', function () {
+      // "this" is the .ticket-item that was clicked.
+      const id = this.dataset.id;
       const ticket = helpdeskRequests.find(t => String(t.id) === String(id));
       if (ticket) openDetailModal(ticket);
     });
   });
+}
+
+// Meeting status order for the meeting card (lower number shows first).
+function meetingStatusRank(status) {
+  const order = { Approved: 0, Confirmed: 0, 'Reschedule Requested': 1, Pending: 2, 'In Review': 2 };
+  const rank = order[status];
+  return rank === undefined ? 3 : rank;
 }
 
 /* ---------------------------------------------------------
@@ -458,12 +475,9 @@ function renderTickets() {
 --------------------------------------------------------- */
 function renderMeetingCard() {
   // Priority: Approved meetings first
-  const meeting = helpdeskRequests
-    .filter(t => t.type === 'meeting')
-    .sort((a, b) => {
-      const order = { Approved: 0, Confirmed: 0, 'Reschedule Requested': 1, Pending: 2, 'In Review': 2 };
-      return (order[a.status] ?? 3) - (order[b.status] ?? 3);
-    })[0] || null;
+  const meetings = helpdeskRequests.filter(t => t.type === 'meeting');
+  meetings.sort((a, b) => meetingStatusRank(a.status) - meetingStatusRank(b.status));
+  const meeting = meetings[0] || null;
 
   if (!meeting) {
     meetingStatusBadge.hidden = true;
@@ -479,7 +493,7 @@ function renderMeetingCard() {
   const meetingLink = HelpdeskMeetings.joinLink(meeting);
   const joinBtn = meetingLink && ['Approved', 'Confirmed'].includes(meeting.status)
     ? `<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meetingLink)}">
-         <span class="material-symbols-outlined" style="font-size:16px;">videocam</span> Join
+         <span class="material-symbols-outlined" style="font-size:19px;">videocam</span> Join
        </button>`
     : '';
 
@@ -487,16 +501,20 @@ function renderMeetingCard() {
     <div class="meeting-detail">
       <div class="meeting-subject">${escapeHtml(meeting.subject)}</div>
       <div class="meeting-meta">
-        <p><span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span> ${escapeHtml(formatDate(meeting.date))}</p>
-        <p><span class="material-symbols-outlined" style="font-size:16px;">schedule</span> ${escapeHtml(meeting.timeFrom || meeting.time || '—')}${meeting.timeTo ? ` – ${escapeHtml(meeting.timeTo)}` : ''}</p>
-        <p><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> ${escapeHtml(HelpdeskMeetings.platformLabel(meeting))}</p>
+        <p><span class="material-symbols-outlined" style="font-size:19px;">calendar_today</span> ${escapeHtml(formatDate(meeting.date))}</p>
+        <p><span class="material-symbols-outlined" style="font-size:19px;">schedule</span> ${escapeHtml(meeting.timeFrom || meeting.time || '—')}${meeting.timeTo ? ` – ${escapeHtml(meeting.timeTo)}` : ''}</p>
+        <p><span class="material-symbols-outlined" style="font-size:19px;">videocam</span> ${escapeHtml(HelpdeskMeetings.platformLabel(meeting))}</p>
       </div>
       ${joinBtn ? `<div class="meeting-btns">${joinBtn}</div>` : ''}
     </div>
   `;
-  meetingCardContent.querySelector('[data-meeting-link]')?.addEventListener('click', event => {
-    openMeeting(event.currentTarget.dataset.meetingLink);
-  });
+  const cardJoinBtn = meetingCardContent.querySelector('[data-meeting-link]');
+  if (cardJoinBtn) {
+    cardJoinBtn.addEventListener('click', function () {
+      // "this" is the Join button that was clicked.
+      openMeeting(this.dataset.meetingLink);
+    });
+  }
 }
 
 /* ---------------------------------------------------------
@@ -506,6 +524,8 @@ function openDetailModal(ticket) {
   currentTicket = ticket;
   ticketDetailBody.innerHTML = buildDetailBody(ticket);
   ticketDetailActions.innerHTML = buildDetailActions(ticket);
+  // The action buttons were just created, so give them their click handlers now.
+  attachDetailActions(ticket);
   ticketDetailModal.showModal();
 }
 
@@ -531,7 +551,7 @@ function buildDetailBody(t) {
   if (t.hrReply) {
     html += `
       <div class="hr-reply-box">
-        <strong style="font-size:12px;color:var(--color-primary);">HR Reply</strong>
+        <strong style="font-size:15px;color:var(--color-primary);">HR Reply</strong>
         <p>${escapeHtml(t.hrReply)}</p>
       </div>
     `;
@@ -557,21 +577,21 @@ function buildDetailActions(t) {
   // Join button (Approved meeting with link)
   const meetingLink = HelpdeskMeetings.joinLink(t);
   if (t.type === 'meeting' && meetingLink && ['Approved', 'Confirmed'].includes(t.status)) {
-    actions.push(`<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meetingLink)}"><span class="material-symbols-outlined" style="font-size:16px;">videocam</span> Join</button>`);
+    actions.push(`<button type="button" class="btn-join" data-meeting-link="${escapeHtml(meetingLink)}"><span class="material-symbols-outlined" style="font-size:19px;">videocam</span> Join</button>`);
   }
 
   // Reschedule Requested: Accept or Propose new time
-  if (t.status === 'Reschedule Requested' && t.rescheduleRequest?.proposedBy === 'HR') {
-    actions.push(`<button class="btn-success" id="acceptRescheduleBtn">Accept</button>`);
-    actions.push(`<button class="btn-secondary" id="proposeNewTimeBtn">Propose New Time</button>`);
+  if (t.status === 'Reschedule Requested' && t.rescheduleRequest && t.rescheduleRequest.proposedBy === 'HR') {
+    actions.push(`<button type="button" class="btn-success" id="acceptRescheduleBtn">Accept</button>`);
+    actions.push(`<button type="button" class="btn-secondary" id="proposeNewTimeBtn">Propose New Time</button>`);
   }
 
   // Withdraw (only if Pending)
   if (t.status === 'Pending' || t.status === 'In Review') {
-    actions.push(`<button class="btn-danger" id="withdrawBtn">Withdraw</button>`);
+    actions.push(`<button type="button" class="btn-danger" id="withdrawBtn">Withdraw</button>`);
   }
 
-  actions.push(`<button class="btn-secondary" id="closeDetailBtn">Close</button>`);
+  actions.push(`<button type="button" class="btn-secondary" id="closeDetailBtn">Close</button>`);
 
   return actions.join('');
 }
@@ -579,8 +599,9 @@ function buildDetailActions(t) {
 function attachDetailActions(ticket) {
   const joinBtn = ticketDetailActions.querySelector('[data-meeting-link]');
   if (joinBtn) {
-    joinBtn.addEventListener('click', event => {
-      openMeeting(event.currentTarget.dataset.meetingLink);
+    joinBtn.addEventListener('click', function () {
+      // "this" is the Join button that was clicked.
+      openMeeting(this.dataset.meetingLink);
     }, { once: true });
   }
 
@@ -609,17 +630,20 @@ function attachDetailActions(ticket) {
     acceptBtn.addEventListener('click', async () => {
       const rr = ticket.rescheduleRequest;
       try {
+        const changes = {
+          status:   'Approved',
+          date:     rr.date,
+          timeFrom: rr.timeFrom,
+          timeTo:   rr.timeTo,
+          rescheduleRequest: null
+        };
+        // Add the meeting room fields (if this meeting needs one) to the same object.
+        Object.assign(changes, HelpdeskMeetings.roomPatch(ticket));
+
         const res = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(ticket.id)}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...HelpdeskMeetings.roomPatch(ticket),
-            status: 'Approved',
-            date:   rr.date,
-            timeFrom: rr.timeFrom,
-            timeTo:   rr.timeTo,
-            rescheduleRequest: null
-          })
+          body: JSON.stringify(changes)
         });
         if (!res.ok) throw new Error('Could not accept reschedule.');
         const updated = await res.json();
@@ -641,12 +665,6 @@ function attachDetailActions(ticket) {
     });
   }
 }
-
-// Attach actions whenever modal opens
-const detailObserver = new MutationObserver(() => {
-  if (currentTicket) attachDetailActions(currentTicket);
-});
-detailObserver.observe(ticketDetailActions, { childList: true });
 
 closeDetailModal.addEventListener('click', () => ticketDetailModal.close());
 ticketDetailModal.addEventListener('click', e => {
@@ -743,7 +761,7 @@ viewAllBtn.addEventListener('click', () => {
   if (helpdeskRequests.length === 0) return;
   // If there are more than 6, just render all in a quick list in the detail modal
   ticketDetailBody.innerHTML = `
-    <p style="font-size:13px;color:var(--color-secondary);margin:0 0 12px;">All ${helpdeskRequests.length} request(s)</p>
+    <p style="font-size:16px;color:var(--color-secondary);margin:0 0 12px;">All ${helpdeskRequests.length} request(s)</p>
     ${helpdeskRequests.map(t => `
       <div class="ticket-item" data-id="${escapeHtml(t.id)}" style="cursor:pointer;">
         <div class="ticket-id">${escapeHtml(t.ticket)}</div>
@@ -755,14 +773,18 @@ viewAllBtn.addEventListener('click', () => {
       </div>
     `).join('')}
   `;
-  ticketDetailActions.innerHTML = `<button class="btn-secondary" id="closeDetailBtn">Close</button>`;
+  ticketDetailActions.innerHTML = `<button type="button" class="btn-secondary" id="closeDetailBtn">Close</button>`;
+  ticketDetailActions.querySelector('#closeDetailBtn').addEventListener('click', function () {
+    ticketDetailModal.close();
+  });
   currentTicket = null;
   ticketDetailModal.showModal();
 
   // Attach item click handlers
   ticketDetailBody.querySelectorAll('.ticket-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const id = item.dataset.id;
+    item.addEventListener('click', function () {
+      // "this" is the .ticket-item that was clicked.
+      const id = this.dataset.id;
       const ticket = helpdeskRequests.find(t => String(t.id) === String(id));
       if (ticket) {
         ticketDetailModal.close();

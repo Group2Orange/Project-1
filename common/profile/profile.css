@@ -24,7 +24,7 @@
     --footer-bg: #f3f6fa;
 
     --headline-font: "Space Grotesk", sans-serif;
-    --body-font: "Public Sans", sans-serif;
+    --body-font: "Inter", "Public Sans", sans-serif;
 
     --radius-sm: 6px;
     --radius-md: 9px;
@@ -85,7 +85,7 @@ button {
     gap: 10px;
 
     font-family: var(--headline-font);
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--primary);
 
@@ -105,7 +105,7 @@ button {
     background: var(--primary);
     color: var(--white);
 
-    font-size: 15px;
+    font-size: 18px;
 }
 
 
@@ -120,7 +120,7 @@ button {
 .main-nav a {
     position: relative;
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--secondary);
 
@@ -153,7 +153,7 @@ button {
     color: var(--secondary);
     cursor: pointer;
 
-    font-size: 16px;
+    font-size: 19px;
 }
 
 .notification-dot {
@@ -193,13 +193,13 @@ button {
 }
 
 .navbar-user-info strong {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--dark);
 }
 
 .navbar-user-info span {
-    font-size: 9px;
+    font-size: 12px;
     color: var(--text-secondary);
 }
 
@@ -217,7 +217,7 @@ button {
     border: 1px solid #cbd5df;
     border-radius: 5px;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 500;
 
     color: var(--secondary);
@@ -241,7 +241,7 @@ button {
     background: transparent;
 
     color: var(--dark);
-    font-size: 25px;
+    font-size: 27px;
 
     cursor: pointer;
 }
@@ -267,7 +267,7 @@ button {
 
     margin-bottom: 9px;
 
-    font-size: 10px;
+    font-size: 13px;
     color: var(--text-secondary);
 }
 
@@ -291,7 +291,7 @@ button {
 
 .page-heading h1 {
     font-family: var(--headline-font);
-    font-size: 25px;
+    font-size: 27px;
     line-height: 1.1;
     font-weight: 700;
     letter-spacing: -0.6px;
@@ -302,7 +302,7 @@ button {
 }
 
 .page-heading p {
-    font-size: 11px;
+    font-size: 14px;
     color: var(--text-secondary);
 }
 
@@ -324,7 +324,7 @@ button {
 
     color: var(--dark);
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
 
     transition: 0.2s ease;
@@ -422,7 +422,7 @@ button {
 .name-row h2 {
     font-family: var(--headline-font);
 
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     letter-spacing: -0.3px;
 
@@ -442,7 +442,7 @@ button {
 
     background: var(--success-light);
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
 
     color: var(--success);
@@ -461,7 +461,7 @@ button {
     align-items: center;
     gap: 7px;
 
-    font-size: 10px;
+    font-size: 13px;
     color: var(--secondary);
 }
 
@@ -496,13 +496,13 @@ button {
 }
 
 .section-title i {
-    font-size: 14px;
+    font-size: 17px;
     color: var(--primary);
 }
 
 .section-title h3 {
     font-family: var(--headline-font);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -526,7 +526,7 @@ button {
 
     margin-bottom: 9px;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 500;
 
     color: var(--text-secondary);
@@ -539,7 +539,7 @@ button {
 
     padding-bottom: 10px;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 500;
 
     color: var(--dark);
@@ -547,7 +547,7 @@ button {
 
 .info-value i {
     color: #60717e;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 
@@ -562,7 +562,7 @@ button {
 
 .status-row > i {
     color: #60717e;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .employment-badge {
@@ -578,7 +578,7 @@ button {
 
     color: var(--success);
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -613,17 +613,17 @@ button {
 
     color: var(--text-secondary);
 
-    font-size: 8px;
+    font-size: 12px;
 }
 
 .security-message i {
     color: var(--primary);
-    font-size: 11px;
+    font-size: 14px;
 }
 
 .last-modified {
     font-family: monospace;
-    font-size: 8px;
+    font-size: 12px;
 
     letter-spacing: 0.7px;
 
@@ -660,14 +660,14 @@ button {
 .footer-left strong {
     font-family: var(--headline-font);
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
 
     color: var(--primary);
 }
 
 .footer-left span {
-    font-size: 8px;
+    font-size: 12px;
     color: var(--text-secondary);
 }
 
@@ -678,7 +678,7 @@ button {
 }
 
 .footer-links a {
-    font-size: 8px;
+    font-size: 12px;
     color: var(--text-secondary);
 
     transition: 0.2s ease;
@@ -815,7 +815,7 @@ button {
 
 
     .name-row h2 {
-        font-size: 19px;
+        font-size: 21px;
     }
 
 

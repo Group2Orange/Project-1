@@ -499,6 +499,9 @@ function buildHistoryRow(req) {
     badgeIcon.textContent = req.status === "Approved" ? "check_circle" : "cancel";
     badge.appendChild(badgeIcon);
     badge.appendChild(document.createTextNode(req.status));
+    if (req.status === "Rejected" && req.rejectionReason) {
+        badge.title = "Reason: " + req.rejectionReason;
+    }
     tdStatus.appendChild(badge);
     tr.appendChild(tdStatus);
 

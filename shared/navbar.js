@@ -25,8 +25,13 @@
   themeStyles.href = new URL('theme.css', document.currentScript.src).href;
   document.head.append(themeStyles);
 
-  // The empty <nav class="navbar" data-navbar="..."> in the screen
-  const placeholder = document.querySelector(".navbar[data-navbar]");
+  // A screen shows one of two things:
+  //   <nav class="navbar" data-navbar="...">        the full navbar (renders a bar)
+  //   <div data-navbar-guard="...">                 login/role protection only, no visible bar
+  // Both carry the expected role ("hr" or "employee") so the guard below works either way.
+  const barPlaceholder = document.querySelector(".navbar[data-navbar]");
+  const guardPlaceholder = document.querySelector("[data-navbar-guard]");
+  const placeholder = barPlaceholder || guardPlaceholder;
 
   if (placeholder) {
     let user = null;
@@ -39,7 +44,8 @@
 
     const path = location.pathname;
     const protectedPage = path.includes('/hr/') || path.includes('/employee/');
-    const expectedRole = placeholder.dataset.navbar === 'employee' ? 'EMP' : 'HR';
+    const navbarType = barPlaceholder ? barPlaceholder.dataset.navbar : guardPlaceholder.dataset.navbarGuard;
+    const expectedRole = navbarType === 'employee' ? 'EMP' : 'HR';
     // HR can read the employee policy page from the main navbar. The HR sidebar
     // still opens the separate policy management page.
     const hrReadingPolicies = user?.role === 'HR' && path.endsWith('/employee/policies/EMPpolicies.html');
@@ -49,11 +55,13 @@
       location.replace(user.role === 'EMP'
         ? '../../employee/MyWOrkSpace/MyWOrkSpace.html'
         : user.role === 'HR' ? '../../hr/workspace/workspace.html' : '../../common/login/login.html');
+    } else if (!barPlaceholder) {
+      // Guard-only screen (the dashboards): login/role check passed, there is no bar to render.
     } else {
     // Shared public pages use the navbar that matches the signed-in role.
     const type = hrReadingPolicies ? 'hr'
       : path.includes('/common/') && user?.role === 'EMP'
-        ? 'employee' : placeholder.dataset.navbar;
+        ? 'employee' : barPlaceholder.dataset.navbar;
     const file = new URL(`navbar-${type}.html`, document.currentScript.src);
 
     fetch(file)

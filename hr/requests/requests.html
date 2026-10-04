@@ -13,10 +13,13 @@
   <link rel="stylesheet" href="../employees/employees.css">
   <style>
     .actions .reject:hover:not(:disabled) { background: #ffeded; color: #b63742; }
+    /* Reject dialog textarea: same look as the .dialog-grid inputs in employees.css */
+    .directory-dialog .dialog-grid textarea { box-sizing: border-box; width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 7px; background: white; color: #243840; font: 15px var(--font-text); resize: vertical; }
+    .directory-dialog .dialog-grid textarea:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
   </style>
 </head>
 <body class="has-footer">
-  <nav class="navbar" data-navbar="hr"></nav>
+  <div data-navbar-guard="hr" hidden></div>
   <main class="hr-page-shell">
     <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="requests" aria-label="HR workspace"></aside>
     <div class="hr-page-content directory">
@@ -67,9 +70,32 @@
     </div>
   </main>
   <footer class="site-footer" data-footer></footer>
+
+  <dialog id="rejectDialog" class="directory-dialog" aria-labelledby="rejectTitle">
+    <form id="rejectForm">
+      <div class="confirm-icon"><span class="material-symbols-outlined" aria-hidden="true">cancel</span></div>
+      <div class="dialog-heading">
+        <div>
+          <h2 id="rejectTitle">Reject leave request?</h2>
+          <p id="rejectContext"></p>
+        </div>
+      </div>
+      <div class="dialog-grid">
+        <label class="dialog-wide">Reason for rejection <small>The employee will see this reason. Maximum 300 characters.</small>
+          <textarea id="rejectReason" name="reason" rows="4" maxlength="300" required placeholder="Explain why this request is rejected"></textarea>
+        </label>
+      </div>
+      <p id="rejectError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="button button-light" id="cancelReject">Cancel</button>
+        <button type="submit" class="button button-danger" id="confirmReject">Reject Request</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
   <script src="../../shared/hr-sidebar.js?v=3"></script>
-  <script src="requests.js?v=3"></script>
+  <script src="requests.js?v=4"></script>
 </body>
 </html>

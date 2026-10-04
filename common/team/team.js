@@ -1,5 +1,5 @@
 (() => {
-  const units = [...document.querySelectorAll('.unit')];
+  const units = Array.from(document.querySelectorAll('.unit'));
   const fronts = units.map(u => u.querySelector('.front'));
 
   function setOpen(unit, open) {
@@ -25,13 +25,16 @@
 
   // Hide broken photos so the "Add Photo" placeholder shows
   document.querySelectorAll('.photo img').forEach(img => {
-    img.addEventListener('error', () => img.removeAttribute('src'));
+    // "this" is the <img> that failed to load.
+    img.addEventListener('error', function () {
+      this.removeAttribute('src');
+    });
   });
 
   // Cables: SVG patch cables that plug into drawer fronts and follow them as drawers open
   const NS = 'http://www.w3.org/2000/svg';
   const rack = document.querySelector('.rack');
-  const el = (name, attrs = {}, parent) => {
+  const el = (name, attrs, parent) => {
     const n = document.createElementNS(NS, name);
     for (const k in attrs) n.setAttribute(k, attrs[k]);
     if (parent) parent.appendChild(n);
@@ -41,7 +44,12 @@
 
   const svg = el('svg', { class: 'cables', 'aria-hidden': 'true' }, rack);
   const grad = el('linearGradient', { id: 'plugMetal', x1: 0, y1: 0, x2: 0, y2: 1 }, el('defs', {}, svg));
-  [['0', '#eef3f7'], ['.5', '#aab9c6'], ['1', '#6f8396']].forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, grad));
+  const stops = [
+    { offset: '0', color: '#eef3f7' },
+    { offset: '.5', color: '#aab9c6' },
+    { offset: '1', color: '#6f8396' }
+  ];
+  stops.forEach(stop => el('stop', { offset: stop.offset, 'stop-color': stop.color }, grad));
 
   const makePlug = parent => {
     const g = el('g', { class: 'plug' }, parent);
@@ -65,13 +73,13 @@
       }
       return p;
     });
-    return { dir, paths, plugA: makePlug(g), plugB: makePlug(g) };
+    return { dir: dir, paths: paths, plugA: makePlug(g), plugB: makePlug(g) };
   });
 
   const offsetIn = node => { // position relative to the rack, ignoring CSS transforms
     let x = 0, y = 0;
     while (node && node !== rack) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent; }
-    return { x, y };
+    return { x: x, y: y };
   };
 
   function renderCables() {
@@ -79,7 +87,8 @@
     svg.setAttribute('width', rack.clientWidth);
     svg.setAttribute('height', rack.clientHeight);
     svg.style.setProperty('--w', 6 * s);
-    cables.forEach(({ dir, paths, plugA, plugB }, i) => {
+    cables.forEach((cable, i) => {
+      const dir = cable.dir;
       const a = fronts[i], b = fronts[i + 1];
       const pa = offsetIn(a), pb = offsetIn(b);
       const edge = dir > 0 ? pa.x + a.offsetWidth : pa.x;
@@ -89,9 +98,9 @@
       const reach = (24 + Math.min(26, (y1 - y0) * 0.05)) * s * 1.33;
       const xc = xs + dir * reach;
       const d = `M${xs},${y0} C${xc},${y0 + 4} ${xc},${y1 - 4} ${xs},${y1}`;
-      paths.forEach(p => p.setAttribute('d', d));
-      plugA.setAttribute('transform', `translate(${edge},${y0}) scale(${dir * s},${s})`);
-      plugB.setAttribute('transform', `translate(${edge},${y1}) scale(${dir * s},${s})`);
+      cable.paths.forEach(p => p.setAttribute('d', d));
+      cable.plugA.setAttribute('transform', `translate(${edge},${y0}) scale(${dir * s},${s})`);
+      cable.plugB.setAttribute('transform', `translate(${edge},${y1}) scale(${dir * s},${s})`);
     });
   }
   new ResizeObserver(renderCables).observe(rack.querySelector('.units')); // fires while drawers animate
@@ -105,8 +114,8 @@
     setTimeout(() => setOpen(units[0], true), 900 + units.length * 90);
   };
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { io.disconnect(); reveal(); }
+    const io = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { io.disconnect(); reveal(); }
     }, { threshold: 0.15 });
     io.observe(rack);
   } else {

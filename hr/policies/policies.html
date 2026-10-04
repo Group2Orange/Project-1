@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="policies.css">
 </head>
 <body class="has-footer">
-  <nav class="navbar" data-navbar="hr"></nav>
+  <div data-navbar-guard="hr" hidden></div>
   <main class="hr-page-shell">
     <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="policies" aria-label="HR workspace"></aside>
     <div class="hr-page-content policies-page">
@@ -24,9 +24,6 @@
           <div><h1>Company Policies</h1><p>Workplace regulations, security, and company standards.</p></div>
           <div id="editControls">
             <button id="addBtn" type="button"><i class="bi bi-plus-lg" aria-hidden="true"></i> Add New Policy</button>
-            <button id="editBtn" type="button"><i class="bi bi-pencil-square" aria-hidden="true"></i> Edit Policies</button>
-            <button id="saveBtn" type="button" class="hidden"><i class="bi bi-check-lg" aria-hidden="true"></i> Save</button>
-            <button id="cancelBtn" type="button" class="hidden">Cancel</button>
           </div>
         </div>
       </header>
@@ -48,13 +45,21 @@
   </main>
   <dialog id="policyDialog" class="policy-dialog" aria-labelledby="policyDialogTitle">
     <form id="policyForm">
-      <div class="policy-dialog-heading"><div><p class="eyebrow">HR GUIDANCE</p><h2 id="policyDialogTitle">Add New Policy</h2><p>Create a policy that employees can read.</p></div><button id="closePolicyDialog" type="button" class="policy-close" aria-label="Close">×</button></div>
+      <div class="policy-dialog-heading"><div><p class="eyebrow">HR GUIDANCE</p><h2 id="policyDialogTitle">Add New Policy</h2><p id="policyDialogHint">Create a policy that employees can read.</p></div><button id="closePolicyDialog" type="button" class="policy-close" aria-label="Close">×</button></div>
       <label for="policyTitle">Policy title</label><input id="policyTitle" name="title" maxlength="120" required>
-      <label for="policyCategory">Category</label><input id="policyCategory" name="category" maxlength="60" placeholder="e.g. Security" required>
+      <label for="policyCategory">Category</label><input id="policyCategory" name="category" maxlength="60" size="30" placeholder="e.g. Security" required>
       <label for="policyDescription">Description</label><textarea id="policyDescription" name="description" rows="6" maxlength="3000" required></textarea>
       <p id="policyFormError" class="policy-form-error" role="alert" hidden></p>
       <div class="policy-dialog-actions"><button id="cancelPolicyDialog" type="button">Cancel</button><button id="createPolicy" type="submit">Add Policy</button></div>
     </form>
+  </dialog>
+
+  <!-- Block / unblock confirmation popup -->
+  <dialog id="policyBlockDialog" class="policy-dialog confirm-dialog" aria-labelledby="policyBlockTitle">
+    <div class="confirm-icon" id="policyBlockIcon"><i class="bi bi-slash-circle" aria-hidden="true"></i></div>
+    <h2 id="policyBlockTitle">Block policy?</h2>
+    <p id="policyBlockMessage">Blocked policies stay on record but are hidden from employees.</p>
+    <div class="policy-dialog-actions"><button type="button" id="cancelPolicyBlock">Cancel</button><button type="button" id="confirmPolicyBlock" class="policy-block-confirm">Block Policy</button></div>
   </dialog>
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>

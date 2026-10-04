@@ -32,7 +32,7 @@ html {
 body {
     margin: 0;
 
-    font-family: "Public Sans", sans-serif;
+    font-family: "Inter", "Public Sans", sans-serif;
 
     color: var(--neutral);
 
@@ -70,7 +70,7 @@ a {
 
     color: var(--primary);
 
-    font-size: 13px;
+    font-size: 16px;
 }
 
 
@@ -84,7 +84,7 @@ a {
 
     margin: 20px 0 8px;
 
-    font-size: 32px;
+    font-size: 35px;
 
     color: var(--neutral);
 }
@@ -96,7 +96,7 @@ a {
 
     color: var(--secondary);
 
-    font-size: 14px;
+    font-size: 17px;
 }
 
 
@@ -147,7 +147,7 @@ a {
 
     color: var(--secondary);
 
-    font-size: 14px;
+    font-size: 17px;
 
     line-height: 1.7;
 
@@ -199,7 +199,7 @@ a {
     color: var(--tertiary);
 
 
-    font-size: 12px;
+    font-size: 15px;
 
     font-weight: 600;
 
@@ -218,7 +218,7 @@ a {
     color: var(--neutral);
 
 
-    font-size: 18px;
+    font-size: 20px;
 }
 
 
@@ -232,7 +232,7 @@ a {
     color: var(--secondary);
 
 
-    font-size: 14px;
+    font-size: 17px;
 
     line-height: 1.7;
 }
@@ -327,7 +327,7 @@ a {
     color: var(--secondary);
 
 
-    font-size: 13px;
+    font-size: 16px;
 
 
     border-radius: 6px;
@@ -360,7 +360,7 @@ a {
     border-radius: 50%;
 
 
-    font-size: 12px;
+    font-size: 15px;
 
     font-weight: 600;
 }
@@ -417,7 +417,7 @@ a {
 
     color: var(--secondary);
 
-    font-size: 12px;
+    font-size: 15px;
 
     line-height: 1.6;
 }
@@ -427,7 +427,7 @@ a {
 
     color: var(--primary);
 
-    font-size: 12px;
+    font-size: 15px;
 
     font-weight: 600;
 }
@@ -457,7 +457,7 @@ a {
 
     color: var(--secondary);
 
-    font-size: 12px;
+    font-size: 15px;
 }
 
 
@@ -514,7 +514,7 @@ a {
     background-color: var(--white);
 
 
-    font-size: 11px;
+    font-size: 14px;
 }
 
 

@@ -239,11 +239,11 @@ body.feedback-success-open {
 }
 
 .feedback-success.is-sending .feedback-route-line-one::after {
-  animation: feedbackPacket .72s .18s cubic-bezier(.22, 1, .36, 1) forwards;
+  animation: feedbackPacket 1.1s .25s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 
 .feedback-success.is-sending .feedback-route-line-two::after {
-  animation: feedbackPacket .72s .78s cubic-bezier(.22, 1, .36, 1) forwards;
+  animation: feedbackPacket 1.1s 1.5s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 
 .feedback-success.is-delivered .feedback-route-node .material-symbols-outlined {
@@ -274,7 +274,7 @@ body.feedback-success-open {
 }
 
 .feedback-success.is-sending .feedback-success-progress span {
-  animation: feedbackProgress 1.55s cubic-bezier(.22, 1, .36, 1) forwards;
+  animation: feedbackProgress 2.8s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 
 .feedback-success.is-delivered .feedback-success-progress span {

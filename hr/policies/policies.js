@@ -1,18 +1,24 @@
 const API = 'http://127.0.0.1:3000';
 const container = document.getElementById('policiesContainer');
 const links = document.getElementById('policyLinks');
-const editBtn = document.getElementById('editBtn');
-const saveBtn = document.getElementById('saveBtn');
-const cancelBtn = document.getElementById('cancelBtn');
 const addBtn = document.getElementById('addBtn');
 const dialog = document.getElementById('policyDialog');
+const dialogTitle = document.getElementById('policyDialogTitle');
+const dialogHint = document.getElementById('policyDialogHint');
 const form = document.getElementById('policyForm');
 const formError = document.getElementById('policyFormError');
+const createPolicyBtn = document.getElementById('createPolicy');
 const pageMessage = document.getElementById('policyMessage');
+const blockDialog = document.getElementById('policyBlockDialog');
 let policies = [];
-let editing = false;
+let editingId = null;
+let blockingId = null;
 
-const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+function escapeHtml(value) {
+  if (value === undefined || value === null) return '';
+  const characters = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(value).replace(/[&<>"']/g, character => characters[character]);
+}
 
 function showMessage(text) {
   pageMessage.textContent = text;
@@ -20,12 +26,11 @@ function showMessage(text) {
 }
 
 function showPolicies() {
-  container.replaceChildren();
-  links.replaceChildren();
+  container.innerHTML = '';
+  links.innerHTML = '';
   const empty = policies.length === 0;
   document.getElementById('main').classList.toggle('is-empty', empty);
   document.getElementById('rightSide').hidden = empty;
-  editBtn.disabled = empty;
   document.getElementById('pdf').disabled = empty;
 
   if (empty) {
@@ -36,18 +41,28 @@ function showPolicies() {
 
   for (const policy of policies) {
     const id = encodeURIComponent(policy.id);
+    const blocked = policy.blocked === true;
     const card = document.createElement('article');
-    card.className = 'policy';
+    card.className = `policy${blocked ? ' is-blocked' : ''}`;
     card.id = `policy-${id}`;
     card.dataset.id = policy.id;
-    card.innerHTML = `<p class="category editable">${escapeHtml(policy.category)}</p><h3 class="title editable">${escapeHtml(policy.title)}</h3><p class="description editable">${escapeHtml(policy.description)}</p>`;
-    container.append(card);
+    card.innerHTML = `
+      <div class="policy-card-top">
+        <p class="category">${escapeHtml(policy.category)}${blocked ? '<span class="policy-blocked-badge">Blocked</span>' : ''}</p>
+        <div class="policy-card-actions">
+          <button type="button" class="policy-card-btn" data-action="edit" aria-label="Edit ${escapeHtml(policy.title)}" title="Edit policy"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
+          <button type="button" class="policy-card-btn${blocked ? ' is-unblock' : ' is-block'}" data-action="block" aria-label="${blocked ? 'Unblock' : 'Block'} ${escapeHtml(policy.title)}" title="${blocked ? 'Unblock policy' : 'Block policy'}"><i class="bi ${blocked ? 'bi-unlock' : 'bi-slash-circle'}" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <h3 class="title">${escapeHtml(policy.title)}</h3>
+      <p class="description">${escapeHtml(policy.description)}</p>`;
+    container.appendChild(card);
 
     const link = document.createElement('a');
     link.className = 'policy-link';
     link.href = `#policy-${id}`;
     link.innerHTML = `<span>${escapeHtml(policy.id)}</span>${escapeHtml(policy.title)}`;
-    links.append(link);
+    links.appendChild(link);
   }
 }
 
@@ -67,32 +82,35 @@ async function loadPolicies() {
   }
 }
 
-function setEditing(enabled) {
-  editing = enabled;
-  editBtn.classList.toggle('hidden', enabled);
-  saveBtn.classList.toggle('hidden', !enabled);
-  cancelBtn.classList.toggle('hidden', !enabled);
-  addBtn.disabled = enabled;
-  if (enabled) {
-    container.querySelectorAll('.editable').forEach(item => {
-      item.contentEditable = 'true';
-      item.classList.add('editing');
-    });
-  } else {
-    showPolicies();
-  }
-}
-
 function openAddDialog() {
+  editingId = null;
   form.reset();
   formError.hidden = true;
+  dialogTitle.textContent = 'Add New Policy';
+  dialogHint.textContent = 'Create a policy that employees can read.';
+  createPolicyBtn.textContent = 'Add Policy';
+  dialog.showModal();
+  form.elements.title.focus();
+}
+
+function openEditDialog(policy) {
+  editingId = policy.id;
+  form.reset();
+  formError.hidden = true;
+  form.elements.title.value = policy.title || '';
+  form.elements.category.value = policy.category || '';
+  form.elements.description.value = policy.description || '';
+  dialogTitle.textContent = 'Edit Policy';
+  dialogHint.textContent = 'Update this policy for employees.';
+  createPolicyBtn.textContent = 'Save Changes';
   dialog.showModal();
   form.elements.title.focus();
 }
 
 addBtn.addEventListener('click', openAddDialog);
-document.getElementById('pdf').addEventListener('click', async () => {
-  const button = document.getElementById('pdf');
+
+document.getElementById('pdf').addEventListener('click', async function () {
+  const button = this; // the "pdf" download button that was clicked
   button.disabled = true;
   try {
     // Read again so the download includes the latest policies in api/db.json.
@@ -106,7 +124,7 @@ document.getElementById('pdf').addEventListener('click', async () => {
     const link = document.createElement('a');
     link.href = url;
     link.download = 'Connectra-Policies.html';
-    document.body.append(link);
+    document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -117,10 +135,9 @@ document.getElementById('pdf').addEventListener('click', async () => {
     button.disabled = policies.length === 0;
   }
 });
+
 document.getElementById('closePolicyDialog').addEventListener('click', () => dialog.close());
 document.getElementById('cancelPolicyDialog').addEventListener('click', () => dialog.close());
-editBtn.addEventListener('click', () => setEditing(true));
-cancelBtn.addEventListener('click', () => { setEditing(false); showMessage(''); });
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
@@ -130,63 +147,98 @@ form.addEventListener('submit', async event => {
     description: form.elements.description.value.trim()
   };
   if (!policy.title || !policy.category || !policy.description) {
-    formError.textContent = 'Complete all fields before adding the policy.';
+    formError.textContent = 'Complete all fields before saving the policy.';
     formError.hidden = false;
     return;
   }
-  const button = document.getElementById('createPolicy');
-  button.disabled = true;
+  createPolicyBtn.disabled = true;
   formError.hidden = true;
   try {
-    const response = await fetch(`${API}/policies`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(policy)
-    });
-    if (!response.ok) throw new Error('Could not add the policy.');
-    policies.push(await response.json());
+    if (editingId) {
+      const response = await fetch(`${API}/policies/${encodeURIComponent(editingId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(policy)
+      });
+      if (!response.ok) throw new Error('Could not save the policy.');
+      const updated = await response.json();
+      policies = policies.map(item => String(item.id) === String(editingId) ? updated : item);
+      showMessage('Policy updated.');
+    } else {
+      const response = await fetch(`${API}/policies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(policy)
+      });
+      if (!response.ok) throw new Error('Could not add the policy.');
+      policies.push(await response.json());
+      showMessage('Policy added. Employees can now see it on their Policies page.');
+    }
+    editingId = null;
     dialog.close();
     showPolicies();
-    showMessage('Policy added. Employees can now see it on their Policies page.');
   } catch (error) {
     formError.textContent = `${error.message} Make sure the API is running.`;
     formError.hidden = false;
   } finally {
-    button.disabled = false;
+    createPolicyBtn.disabled = false;
   }
 });
 
-saveBtn.addEventListener('click', async () => {
-  const changes = [...container.querySelectorAll('.policy')].map(card => ({
-    id: card.dataset.id,
-    title: card.querySelector('.title').innerText.trim(),
-    category: card.querySelector('.category').innerText.trim(),
-    description: card.querySelector('.description').innerText.trim()
-  }));
-  if (changes.some(policy => !policy.title || !policy.category || !policy.description)) {
-    showMessage('Every policy needs a title, category, and description.');
+// The cards are rebuilt on every render, so one listener on the container handles every Edit / Block button.
+container.addEventListener('click', event => {
+  const button = event.target.closest('button[data-action]');
+  if (!button) return;
+  const card = button.closest('.policy');
+  if (!card) return;
+  const policy = policies.find(item => String(item.id) === String(card.dataset.id));
+  if (!policy) return;
+
+  if (button.dataset.action === 'edit') {
+    openEditDialog(policy);
     return;
   }
-  saveBtn.disabled = true;
+
+  if (button.dataset.action === 'block') {
+    blockingId = policy.id;
+    const blocked = policy.blocked === true;
+    document.getElementById('policyBlockTitle').textContent = blocked ? 'Unblock policy?' : 'Block policy?';
+    document.getElementById('policyBlockMessage').textContent = blocked
+      ? `Unblock "${policy.title}" so employees can see it again.`
+      : `Block "${policy.title}"? It stays on record but is hidden from employees.`;
+    document.getElementById('confirmPolicyBlock').textContent = blocked ? 'Unblock Policy' : 'Block Policy';
+    blockDialog.showModal();
+  }
+});
+
+document.getElementById('cancelPolicyBlock').addEventListener('click', () => {
+  blockingId = null;
+  blockDialog.close();
+});
+
+document.getElementById('confirmPolicyBlock').addEventListener('click', async function () {
+  const policy = policies.find(item => String(item.id) === String(blockingId));
+  if (!policy) return;
+  const nextBlocked = !(policy.blocked === true);
+  const button = this; // the "confirmPolicyBlock" button that was clicked
+  button.disabled = true;
   try {
-    for (const change of changes) {
-      const previous = policies.find(item => String(item.id) === String(change.id));
-      if (previous.title === change.title && previous.category === change.category && previous.description === change.description) continue;
-      const response = await fetch(`${API}/policies/${encodeURIComponent(change.id)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: change.title, category: change.category, description: change.description })
-      });
-      if (!response.ok) throw new Error('Could not save all policy changes.');
-      const updated = await response.json();
-      policies = policies.map(item => String(item.id) === String(change.id) ? updated : item);
-    }
-    setEditing(false);
-    showMessage('Policies saved.');
+    const response = await fetch(`${API}/policies/${encodeURIComponent(policy.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocked: nextBlocked })
+    });
+    if (!response.ok) throw new Error('Could not update the policy.');
+    const updated = await response.json();
+    policies = policies.map(item => String(item.id) === String(policy.id) ? updated : item);
+    blockingId = null;
+    blockDialog.close();
+    showPolicies();
+    showMessage(nextBlocked ? 'Policy blocked.' : 'Policy unblocked.');
   } catch (error) {
     showMessage(`${error.message} Make sure the API is running.`);
   } finally {
-    saveBtn.disabled = false;
+    button.disabled = false;
   }
 });
 

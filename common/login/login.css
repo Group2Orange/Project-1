@@ -30,7 +30,7 @@ body {
   margin: 0;
   overflow-x: hidden;
   background: var(--bg);
-  font-family: "Public Sans", sans-serif;
+  font-family: "Inter", "Public Sans", sans-serif;
 }
 
 button,
@@ -2465,7 +2465,7 @@ body::after {
 
 .fiber-print {
   fill: rgba(220, 244, 246, .42);
-  font-family: "Public Sans", sans-serif;
+  font-family: "Inter", "Public Sans", sans-serif;
   font-size: 7px;
   font-weight: 600;
   letter-spacing: 1.6px;

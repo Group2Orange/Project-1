@@ -10,16 +10,18 @@ localStorage.removeItem('loggedUser');
 localStorage.removeItem('currentUserId');
 localStorage.removeItem('currentUser');
 
-passwordToggle.addEventListener('click', () => {
+// "this" is the toggle button that was clicked.
+passwordToggle.addEventListener('click', function () {
   const showPassword = passwordInput.type === 'password';
   passwordInput.type = showPassword ? 'text' : 'password';
-  passwordToggle.setAttribute('aria-pressed', String(showPassword));
-  passwordToggle.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
-  passwordToggle.querySelector('span').textContent = showPassword ? 'visibility_off' : 'visibility';
+  this.setAttribute('aria-pressed', String(showPassword));
+  this.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
+  this.querySelector('span').textContent = showPassword ? 'visibility_off' : 'visibility';
 });
 
-function setLoginError(message = '') {
-  window.LoginMotion?.error(message);
+function setLoginError(message) {
+  message = message || '';
+  if (window.LoginMotion) window.LoginMotion.error(message);
   document.querySelector('#login-error').hidden = !message;
   if (message) {
     document.querySelector('#login-error-message').textContent = message;
@@ -40,10 +42,11 @@ loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   setLoginError();
   submitButton.disabled = true;
-  window.LoginMotion?.start();
+  if (window.LoginMotion) window.LoginMotion.start();
 
   try {
     const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
     // OLD WAY (JSON + localStorage), kept here to compare with the API call below:
     // const response = await fetch('../../Data/employee.json');
     // const data = await response.json();
@@ -53,8 +56,8 @@ loginForm.addEventListener('submit', async (event) => {
     // This read the bundled file; changes to it were not shared between browsers.
 
     // NEW WAY: ask json-server for matching employees in api/db.json.
-    const query = new URLSearchParams({ email, password: passwordInput.value });
-    const response = await fetch(`${API}/employees?${query}`);
+    const url = `${API}/employees?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
+    const response = await fetch(url);
     if (!response.ok) throw new Error('Could not check your account.');
     const matches = await response.json();
     const employee = matches[0];
@@ -88,7 +91,7 @@ loginForm.addEventListener('submit', async (event) => {
     localStorage.removeItem('currentUser');
     localStorage.setItem('currentUserId', String(employee.id));
 
-    await window.LoginMotion?.success();
+    if (window.LoginMotion) await window.LoginMotion.success();
 
     if (employee.firstAttend === true) {
       window.location.href = '../reset-password/reset-password.html';

@@ -57,7 +57,7 @@
 
   async function runSuccessAnimation(feedback) {
     openSuccessAnimation();
-    await wait(1650);
+    await wait(2800);
     showDelivered(feedback);
   }
 

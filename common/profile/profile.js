@@ -24,15 +24,12 @@ const elements = {
    HELPERS
 ===================================================== */
 
-function setText(element, value, fallback = "-") {
+// Show the value, or the fallback text ("-" if none is given) when it is empty.
+function setText(element, value, fallback) {
     if (!element) return;
 
-    element.textContent =
-        value !== undefined &&
-        value !== null &&
-        value !== ""
-            ? value
-            : fallback;
+    const hasValue = value !== undefined && value !== null && value !== "";
+    element.textContent = hasValue ? value : (fallback || "-");
 }
 
 
@@ -54,13 +51,13 @@ async function getEmployeeFromJson() {
     if (!response.ok) throw new Error('Could not load employee profile.');
     const employee = await response.json();
     if (!employee) throw new Error('Employee not found.');
-    return {
-        ...employee,
-        employeeId: employee.employeeId || employee.id,
-        fullName: employee.name,
-        employmentStatus: employee.status,
-        officeLocation: employee.officeLocation || '—'
-    };
+
+    // Add the extra fields the profile page shows.
+    employee.employeeId = employee.employeeId || employee.id;
+    employee.fullName = employee.name;
+    employee.employmentStatus = employee.status;
+    employee.officeLocation = employee.officeLocation || '—';
+    return employee;
 }
 
 
@@ -70,83 +67,32 @@ async function getEmployeeFromJson() {
 
 function displayEmployee(employee) {
     /* Profile header */
-
-    setText(
-        elements.profileName,
-        employee.fullName,
-        "Employee"
-    );
-
-    setText(
-        elements.employeeId,
-        employee.employeeId
-    );
-
-    setText(
-        elements.profilePosition,
-        employee.position
-    );
-
-    setText(
-        elements.profileDepartment,
-        employee.department
-    );
-
+    setText(elements.profileName, employee.fullName, "Employee");
+    setText(elements.employeeId, employee.employeeId);
+    setText(elements.profilePosition, employee.position);
+    setText(elements.profileDepartment, employee.department);
 
     /* Personal & Employment Information */
-
-    setText(
-        elements.fullName,
-        employee.fullName
-    );
-
-    setText(
-        elements.email,
-        employee.email
-    );
-
-    setText(
-        elements.phone,
-        employee.phone
-    );
-
-    setText(
-        elements.position,
-        employee.position
-    );
-
-    setText(
-        elements.department,
-        employee.department
-    );
-
-    setText(
-        elements.joiningDate,
-        employee.joiningDate
-    );
-
-    setText(
-        elements.employmentStatus,
-        employee.employmentStatus,
-        "Active"
-    );
-
-    setText(
-        elements.officeLocation,
-        employee.officeLocation
-    );
-
+    setText(elements.fullName, employee.fullName);
+    setText(elements.email, employee.email);
+    setText(elements.phone, employee.phone);
+    setText(elements.position, employee.position);
+    setText(elements.department, employee.department);
+    setText(elements.joiningDate, employee.joiningDate);
+    setText(elements.employmentStatus, employee.employmentStatus, "Active");
+    setText(elements.officeLocation, employee.officeLocation);
 
     /* Profile image */
-
     if (elements.profileImage) {
-        elements.profileImage.src =
-            employee.image?.startsWith('data:') ? employee.image : "assets/profile.svg";
+        if (employee.image && employee.image.startsWith('data:')) {
+            elements.profileImage.src = employee.image;
+        } else {
+            elements.profileImage.src = "assets/profile.svg";
+        }
 
-        elements.profileImage.alt =
-            employee.fullName ||
-            "Employee profile";
+        elements.profileImage.alt = employee.fullName || "Employee profile";
 
+        // "this" is the <img> that failed to load.
         elements.profileImage.onerror = function () {
             this.onerror = null;
             this.src = "assets/profile.svg";
@@ -161,18 +107,12 @@ function displayEmployee(employee) {
 
 async function loadProfile() {
     try {
-        displayEmployee(await getEmployeeFromJson());
-
+        const employee = await getEmployeeFromJson();
+        displayEmployee(employee);
     } catch (error) {
-        console.error(
-            "Profile could not be loaded:",
-            error
-        );
+        console.error("Profile could not be loaded:", error);
     }
 }
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadProfile
-);
+document.addEventListener("DOMContentLoaded", loadProfile);

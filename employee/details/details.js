@@ -1,14 +1,19 @@
 // My Details reads the signed-in employee directly from the local API.
 const API = 'http://127.0.0.1:3000';
-(async function showEmployeeDetails() {
+
+async function showEmployeeDetails() {
   let session;
   try {
     session = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('loggedUser'));
-  } catch {
+  } catch (error) {
     session = null;
   }
   if (!session || session.role !== 'EMP') {
-    window.location.replace(session?.role === 'HR' ? '../../hr/workspace/workspace.html' : '../../common/login/login.html');
+    if (session && session.role === 'HR') {
+      window.location.replace('../../hr/workspace/workspace.html');
+    } else {
+      window.location.replace('../../common/login/login.html');
+    }
     return;
   }
 
@@ -20,42 +25,63 @@ const API = 'http://127.0.0.1:3000';
     const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`);
     if (!response.ok) throw new Error('Could not load employee details.');
     user = await response.json();
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
-    document.querySelector('.content').prepend(Object.assign(document.createElement('p'), { textContent: error.message }));
+    const message = document.createElement('p');
+    message.textContent = error.message;
+    document.querySelector('.content').prepend(message);
     return;
   }
   if (!user) return;
 
   const name = user.name || user.fullName || 'Employee';
   const parts = name.trim().split(/\s+/);
-  const initials = `${parts[0][0] || ''}${parts.length > 1 ? parts.at(-1)[0] : ''}`.toUpperCase();
+  const lastPart = parts[parts.length - 1];
+  const initials = `${parts[0][0] || ''}${parts.length > 1 ? lastPart[0] : ''}`.toUpperCase();
   const status = user.status || user.employmentStatus || '—';
-  const value = (item) => item === undefined || item === null || item === '' ? '—' : String(item);
-  const text = (id, item) => { document.getElementById(id).textContent = value(item); };
-  const field = (id, item) => { document.getElementById(id).value = item ?? ''; };
+
+  // Show a dash when a value is missing.
+  function value(item) {
+    if (item === undefined || item === null || item === '') return '—';
+    return String(item);
+  }
+
+  // Put text into a normal element (span, p, h1).
+  function text(id, item) {
+    document.getElementById(id).textContent = value(item);
+  }
+
+  // Put a value into a form input (empty when missing).
+  function field(id, item) {
+    if (item === undefined || item === null) item = '';
+    document.getElementById(id).value = item;
+  }
 
   const avatar = document.getElementById('mainAvatar');
   const fallbackImage = '../../common/profile/assets/profile.svg';
-  const imageSource = typeof user.image === 'string' && user.image.startsWith('data:image/')
-    ? user.image
-    : typeof user.image === 'string' && user.image.startsWith('assets/')
-      ? new URL(`../../${user.image}`, document.baseURI).href
-      : fallbackImage;
+  let imageSource = fallbackImage;
+  if (typeof user.image === 'string' && user.image.startsWith('data:image/')) {
+    imageSource = user.image;
+  } else if (typeof user.image === 'string' && user.image.startsWith('assets/')) {
+    imageSource = new URL(`../../${user.image}`, document.baseURI).href;
+  }
+
   const avatarImage = document.createElement('img');
   avatarImage.alt = `${name}'s profile photo`;
-  avatarImage.addEventListener('error', () => {
-    if (avatarImage.dataset.usingFallback === 'true') {
-      avatarImage.remove();
+  avatarImage.addEventListener('error', function () {
+    // "this" is the <img> that failed to load.
+    if (this.dataset.usingFallback === 'true') {
+      this.remove();
       avatar.textContent = initials;
       return;
     }
-    avatarImage.dataset.usingFallback = 'true';
-    avatarImage.src = fallbackImage;
+    this.dataset.usingFallback = 'true';
+    this.src = fallbackImage;
   });
   avatarImage.src = imageSource;
-  avatar.replaceChildren(avatarImage);
+  avatar.innerHTML = '';
+  avatar.appendChild(avatarImage);
+
   text('name', name);
   text('position', user.position);
   text('emailText', user.email);
@@ -70,7 +96,9 @@ const API = 'http://127.0.0.1:3000';
   field('inputPosition', user.position);
   field('inputID', user.employeeId || user.id);
   field('inputDepartment', user.department);
-  field('inputSalary', user.salary?.amount);
-  text('currency', user.salary?.currency || '');
+  field('inputSalary', user.salary ? user.salary.amount : '');
+  text('currency', (user.salary && user.salary.currency) || '');
   field('inputStatus', status);
-})();
+}
+
+showEmployeeDetails();

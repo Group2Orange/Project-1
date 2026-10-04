@@ -1,8 +1,9 @@
 (() => {
   'use strict';
   const SCRIPT_SRC = document.currentScript && document.currentScript.src;
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  // $ finds one element, $$ finds all matches as a real array (optionally inside "r").
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   const isSmall = () => innerWidth <= 640;
@@ -16,14 +17,19 @@
       if (!el || reduce.matches || !root.classList.contains('intro-pending')) {
         clearTimeout(window.teamspaceIntroFallback);
         root.classList.remove('intro-pending', 'intro-leaving');
-        el?.remove(); resolve(); return;
+        if (el) el.remove();
+        resolve(); return;
       }
       const skip = $('#skipIntro');
       const background = $$('main, nav.navbar, [data-footer], #backgroundMotion');
-      const original = background.map(node => [node, node.inert]);
-      original.forEach(([node]) => { node.inert = true; });
+      const originalInert = background.map(node => node.inert);
+      background.forEach(node => { node.inert = true; });
       let finished = false, closing = false, closeTimer, finishTimer;
-      const restore = () => original.forEach(([node, inert]) => { node.inert = inert; });
+      const restore = () => background.forEach((node, i) => { node.inert = originalInert[i]; });
+      const focusMain = () => {
+        const main = $('#mainContent');
+        if (main) main.focus({ preventScroll: true });
+      };
       const finish = () => {
         if (finished) return;
         finished = true;
@@ -36,7 +42,7 @@
         document.removeEventListener('keydown', key);
         document.removeEventListener('teamspace:intro-ready', finish);
         reduce.removeEventListener('change', preference);
-        if (hadFocus) $('#mainContent')?.focus({ preventScroll: true });
+        if (hadFocus) focusMain();
         resolve();
       };
       const leave = () => {
@@ -46,7 +52,7 @@
         root.classList.remove('intro-pending');
         root.classList.add('intro-leaving');
         restore();
-        if (el.contains(document.activeElement)) $('#mainContent')?.focus({ preventScroll: true });
+        if (el.contains(document.activeElement)) focusMain();
         resolve();
         finishTimer = setTimeout(finish, reduce.matches ? 0 : 850);
       };
@@ -97,15 +103,17 @@
       $$('.reveal', group).forEach((el, i) => el.style.setProperty('--delay', `${(i % Math.max(1, columns)) * .1}s`));
     });
     const targets = $$('.reveal');
-    const timers = new WeakMap();
+    // timers[i] holds the pending "settled" timer for targets[i].
+    const timers = [];
     const show = el => {
-      clearTimeout(timers.get(el));
+      const i = targets.indexOf(el);
+      clearTimeout(timers[i]);
       el.classList.add('is-in');
-      timers.set(el, setTimeout(() => el.classList.add('settled'), 1200));
+      timers[i] = setTimeout(() => el.classList.add('settled'), 1200);
     };
     let observer;
     const configure = () => {
-      observer?.disconnect();
+      if (observer) observer.disconnect();
       if (reduce.matches || !('IntersectionObserver' in window)) {
         root.classList.remove('motion-ready');
         targets.forEach(show); return;
@@ -115,7 +123,7 @@
           if (e.isIntersecting && e.intersectionRatio >= .06) show(e.target);
           // Reset only once completely outside; small scroll reversals never flicker.
           else if (!e.isIntersecting && !e.target.contains(document.activeElement)) {
-            clearTimeout(timers.get(e.target));
+            clearTimeout(timers[targets.indexOf(e.target)]);
             e.target.classList.remove('is-in', 'settled');
           }
         });
@@ -204,7 +212,7 @@
 
     slider.addEventListener("keydown", (event) => {
       const card = event.target.closest(".testimonial");
-      if (!card || !["Enter", " "].includes(event.key)) return;
+      if (!card || (event.key !== "Enter" && event.key !== " ")) return;
       event.preventDefault();
       selectCard(card);
     });
@@ -252,8 +260,9 @@
       b.addEventListener("click", () => { tr.scrollTo({ left: i * step(), behavior: reduce.matches ? "auto" : "smooth" }); play(); });
       dots.appendChild(b);
     });
-    $("#companyPrev")?.addEventListener("click", () => { move(-1); play(); });
-    $("#companyNext")?.addEventListener("click", () => { move(1); play(); });
+    const prevButton = $("#companyPrev"), nextButton = $("#companyNext");
+    if (prevButton) prevButton.addEventListener("click", () => { move(-1); play(); });
+    if (nextButton) nextButton.addEventListener("click", () => { move(1); play(); });
     tr.addEventListener("scroll", () => requestAnimationFrame(mark), { passive: true });
     car.addEventListener("mouseenter", stop);
     car.addEventListener("mouseleave", play);
@@ -268,12 +277,13 @@
     const vids = $$('[data-company-video]');
     if (!vids.length) return;
 
-    const visible = new WeakMap();
-    const canPlay = (video) => !reduce.matches && !document.hidden && visible.get(video);
+    // visible[i] is true while vids[i] is on screen enough to play.
+    const visible = [];
+    const canPlay = (video) => !reduce.matches && !document.hidden && visible[vids.indexOf(video)];
 
     const sync = (video) => {
       const media = video.closest('.company-media');
-      if (video.readyState >= 2) media?.classList.add('is-ready');
+      if (video.readyState >= 2 && media) media.classList.add('is-ready');
       if (canPlay(video)) video.play().catch(() => {});
       else video.pause();
     };
@@ -282,25 +292,36 @@
       const media = video.closest('.company-media');
       video.muted = true;
       video.playsInline = true;
-      video.addEventListener('loadeddata', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); sync(video); });
-      video.addEventListener('canplay', () => { media?.classList.add('is-ready'); media?.classList.remove('has-error'); });
-      video.addEventListener('error', () => { media?.classList.add('has-error'); media?.classList.remove('is-ready'); });
-      if (video.readyState >= 2) media?.classList.add('is-ready');
+      video.addEventListener('loadeddata', () => {
+        if (media) { media.classList.add('is-ready'); media.classList.remove('has-error'); }
+        sync(video);
+      });
+      video.addEventListener('canplay', () => {
+        if (media) { media.classList.add('is-ready'); media.classList.remove('has-error'); }
+      });
+      video.addEventListener('error', () => {
+        if (media) { media.classList.add('has-error'); media.classList.remove('is-ready'); }
+      });
+      if (video.readyState >= 2 && media) media.classList.add('is-ready');
     });
 
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => { visible.set(entry.target, entry.isIntersecting && entry.intersectionRatio >= .35); sync(entry.target); });
+        entries.forEach((entry) => {
+          visible[vids.indexOf(entry.target)] = entry.isIntersecting && entry.intersectionRatio >= .35;
+          sync(entry.target);
+        });
       }, { threshold: [0, .35, .65] });
       vids.forEach((video) => io.observe(video));
     } else {
-      vids.forEach((video) => { visible.set(video, true); sync(video); });
+      vids.forEach((video, i) => { visible[i] = true; sync(video); });
     }
 
     const syncAll = () => vids.forEach(sync);
     document.addEventListener('visibilitychange', syncAll);
     reduce.addEventListener('change', syncAll);
-    $('#companyCarousel')?.addEventListener('company:active-change', syncAll);
+    const companyCarousel = $('#companyCarousel');
+    if (companyCarousel) companyCarousel.addEventListener('company:active-change', syncAll);
   }
 
   /* A lightweight 2D-canvas renderer of a rotating 3D globe. All artwork is local. */
@@ -333,7 +354,7 @@
     const inside = (x, y, poly) => {
       let hit = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const [xi, yi] = poly[i], [xj, yj] = poly[j];
+        const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
         if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit;
       }
       return hit;
@@ -342,7 +363,8 @@
     for (let lat = -57; lat < 83; lat += 2.15) {
       const step = 2.15 / Math.max(.25, Math.cos(lat * rad));
       for (let lon = -178; lon < 180; lon += step) {
-        if (continents.some(poly => inside(lon, lat, poly))) land.push([lat * rad, lon * rad]);
+        const onLand = continents.find(poly => inside(lon, lat, poly)) !== undefined;
+        if (onLand) land.push([lat * rad, lon * rad]);
       }
     }
     const stars = Array.from({ length: 72 }, (_, i) => ({ x: 28 + (i * 137.51) % 744, y: 28 + (i * 83.7) % 548, r: i % 7 === 0 ? 1.5 : .7 }));
@@ -387,8 +409,8 @@
       ctx.strokeStyle = '#81dfd61d'; ctx.lineWidth = .65;
       const line = points => {
         ctx.beginPath(); let pen = false;
-        points.forEach(([a, b]) => {
-          const p = project(a, b, spin);
+        points.forEach(point => {
+          const p = project(point[0], point[1], spin);
           if (p.z > .01) { if (pen) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); pen = true; }
           else pen = false;
         });
@@ -397,7 +419,7 @@
       for (let lat = -60; lat <= 60; lat += 20) line(Array.from({ length: 121 }, (_, i) => [lat * rad, i * TAU / 120]));
       for (let lon = 0; lon < 360; lon += 30) line(Array.from({ length: 61 }, (_, i) => [(-90 + i * 3) * rad, lon * rad]));
       // Batch front and limb dots into two paths instead of thousands of fills.
-      const points = land.map(([a, b]) => project(a, b, spin)).filter(p => p.z > 0);
+      const points = land.map(dot => project(dot[0], dot[1], spin)).filter(p => p.z > 0);
       [false, true].forEach(bright => {
         ctx.beginPath();
         points.forEach(p => {
@@ -536,7 +558,7 @@
     viewport.addEventListener('pointerleave', () => { pointer = { x: 0, y: 0 }; });
     if ('ResizeObserver' in window) new ResizeObserver(resize).observe(viewport);
     else addEventListener('resize', resize);
-    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0 }).observe(viewport);
+    if ('IntersectionObserver' in window) new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); }, { threshold: 0 }).observe(viewport);
     else { visible = true; sync(); }
     reduce.addEventListener('change', sync); document.addEventListener('visibilitychange', sync);
     addEventListener('pagehide', () => { cancelAnimationFrame(raf); raf = 0; });
@@ -557,7 +579,7 @@
     const draw = () => {
       if (!api || lost) return;
       try {
-        const still = reduce.matches, phaseName = api.update({ elapsed: still ? 3 : elapsed, px, py, scroll: scrollView, still, cycle: cycleDuration });
+        const still = reduce.matches, phaseName = api.update({ elapsed: still ? 3 : elapsed, px: px, py: py, scroll: scrollView, still: still, cycle: cycleDuration });
         api.render();
         if (world.dataset.phase !== phaseName) world.dataset.phase = phaseName;
       } catch (error) { fail(error); }
@@ -565,7 +587,7 @@
     const fail = error => {
       console.warn('TeamSpace: 3D background unavailable', error);
       cancelAnimationFrame(raf); raf = 0; world.classList.remove('is-ready'); toggle.hidden = true;
-      try { api?.dispose(); } catch (e) { /* ignore */ } api = null;
+      try { if (api) api.dispose(); } catch (e) { /* ignore */ } api = null;
     };
     const frame = now => {
       raf = 0; if (!running()) return;
@@ -576,7 +598,7 @@
         const t0 = performance.now(); draw(); lastDraw = now;
         // Adaptive quality: sustained slow frames reduce resolution, then shadows.
         if (++frames > 20) { slow += performance.now() - t0 > 20 ? 1 : -1; slow = Math.max(0, slow);
-          if (slow > 25) { slow = 0; if (dprCap > 1) { dprCap = Math.max(1, dprCap - .25); resize(); } else api?.setShadows(false); } }
+          if (slow > 25) { slow = 0; if (dprCap > 1) { dprCap = Math.max(1, dprCap - .25); resize(); } else if (api) api.setShadows(false); } }
       }
       raf = requestAnimationFrame(frame);
     };
@@ -602,7 +624,7 @@
       s.onload = ok; s.onerror = () => no(new Error('Could not load vendor/signal-world-3d.js')); document.head.appendChild(s);
     });
     load().then(() => {
-      api = window.TeamSpaceSignalWorld3D.create(canvas, { weak });
+      api = window.TeamSpaceSignalWorld3D.create(canvas, { weak: weak });
       canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); lost = true; cancelAnimationFrame(raf); raf = 0; world.classList.remove('is-ready'); });
       canvas.addEventListener('webglcontextrestored', () => { lost = false; resize(); world.classList.add('is-ready'); sync(); });
       resize(); world.classList.add('is-ready'); toggle.hidden = false;

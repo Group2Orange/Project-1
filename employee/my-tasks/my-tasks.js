@@ -2,7 +2,8 @@ const API = "http://127.0.0.1:3000";
 const MAX_PDF_SIZE = 1024 * 1024;
 
 let tasks = [];
-let persistedTasks = new Map();
+// Last saved JSON text of every task, keyed by task id, e.g. { "1": "<task as JSON text>" }
+let persistedTasks = {};
 let taskSaveQueue = Promise.resolve();
 let selectedTaskId = null;
 let draggedTaskId = null;
@@ -23,12 +24,15 @@ function clone(data) {
 
 async function initializeTasks() {
   const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-  if (!user?.id || user.role !== 'EMP') return;
+  if (!user || !user.id || user.role !== 'EMP') return;
   try {
     const response = await fetch(`${API}/tasks?employeeId=${encodeURIComponent(user.id)}`);
     if (!response.ok) throw new Error('Could not load tasks. Start the API with npm run api.');
     tasks = await response.json();
-    persistedTasks = new Map(tasks.map(task => [String(task.id), JSON.stringify(task)]));
+    persistedTasks = {};
+    tasks.forEach(task => {
+      persistedTasks[String(task.id)] = JSON.stringify(task);
+    });
   } catch (error) {
     console.error(error);
     document.getElementById('taskApiMessage').textContent = error.message;
@@ -40,8 +44,12 @@ async function initializeTasks() {
   window.dispatchEvent(new Event('teamspace:tasks-changed'));
 }
 
+// Send only the tasks that changed since the last save.
+// Saves run one after another (each waits for the previous promise).
 function saveTasks() {
-  const changed = tasks.filter(task => persistedTasks.get(String(task.id)) !== JSON.stringify(task)).map(clone);
+  const changed = tasks
+    .filter(task => persistedTasks[String(task.id)] !== JSON.stringify(task))
+    .map(clone);
   taskSaveQueue = taskSaveQueue.then(async () => {
     for (const task of changed) {
       const response = await fetch(`${API}/tasks/${encodeURIComponent(task.id)}`, {
@@ -50,7 +58,7 @@ function saveTasks() {
         body: JSON.stringify(task)
       });
       if (!response.ok) throw new Error('Could not save task changes.');
-      persistedTasks.set(String(task.id), JSON.stringify(task));
+      persistedTasks[String(task.id)] = JSON.stringify(task);
     }
     window.dispatchEvent(new Event('teamspace:tasks-changed'));
   }).catch(error => {
@@ -64,7 +72,8 @@ function getTask(id) {
   return tasks.find(task => task.id === id);
 }
 
-function escapeHtml(value = "") {
+function escapeHtml(value) {
+  if (value === undefined) value = "";
   return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -212,7 +221,7 @@ function renderTasks() {
         `.drop-zone[data-status="${task.status}"]`
       );
 
-      zone?.appendChild(createTaskCard(task));
+      if (zone) zone.appendChild(createTaskCard(task));
     });
 
   updateStats();
@@ -477,7 +486,7 @@ pdfInput.addEventListener("change", () => {
       renderTasks();
 
       message.textContent = "PDF attached successfully.";
-    } catch {
+    } catch (error) {
       delete task.attachment;
       message.textContent = "Unable to save the PDF.";
     }
@@ -514,7 +523,7 @@ document.getElementById("removeAttachmentBtn").addEventListener(
   () => {
     const task = getTask(selectedTaskId);
 
-    if (!task?.attachment) return;
+    if (!task || !task.attachment) return;
 
     delete task.attachment;
 

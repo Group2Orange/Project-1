@@ -34,7 +34,7 @@ body {
       #ffffff 100%
     );
   color: var(--home-text);
-  font-family: "Public Sans", sans-serif;
+  font-family: "Inter", "Public Sans", sans-serif;
 }
 main {
   overflow: clip;
@@ -196,21 +196,21 @@ button:focus-visible,
   border-radius: 999px;
   background: rgba(5, 50, 57, 0.55);
   color: #eafffd;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.25px;
   backdrop-filter: blur(10px);
 }
 .hero-badge .material-symbols-outlined {
   color: #60e0d8;
-  font-size: 18px;
+  font-size: 20px;
 }
 .hero-title {
   max-width: 760px;
   margin: 0;
   color: #ffffff;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(50px, 5.8vw, 78px);
+  font-size: clamp(54px, 5.8vw, 84px);
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -3px;
@@ -236,7 +236,7 @@ button:focus-visible,
   margin: 27px 0 0;
   color: #f5fbfb;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(19px, 2vw, 24px);
+  font-size: clamp(21px, 2vw, 26px);
   font-weight: 500;
   line-height: 1.4;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.25);
@@ -245,7 +245,7 @@ button:focus-visible,
   max-width: 620px;
   margin: 16px 0 0;
   color: rgba(238, 248, 249, 0.78);
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.8;
 }
 .hero-sequence {
@@ -272,7 +272,7 @@ button:focus-visible,
   padding: 0 23px;
   border: 1px solid transparent;
   border-radius: 11px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   text-decoration: none;
   transform: translate3d(var(--mag-x), var(--mag-y), 0);
@@ -287,7 +287,7 @@ button:focus-visible,
     scale(1.015);
 }
 .home-btn .material-symbols-outlined {
-  font-size: 19px;
+  font-size: 21px;
 }
 .home-btn-primary {
   background: var(--home-teal-bright);
@@ -334,19 +334,19 @@ button:focus-visible,
   backdrop-filter: blur(8px);
 }
 .hero-stat-icon .material-symbols-outlined {
-  font-size: 21px;
+  font-size: 23px;
 }
 .hero-stat strong {
   display: block;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.2;
 }
 .hero-stat span {
   display: block;
   margin-top: 3px;
   color: rgba(238, 249, 250, 0.68);
-  font-size: 12px;
+  font-size: 15px;
 }
 .hero-scroll {
   position: absolute;
@@ -450,20 +450,20 @@ button:focus-visible,
   border-radius: 999px;
   background: #f0faf9;
   color: #007f7c;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 .company-intro-label .material-symbols-outlined {
-  font-size: 18px;
+  font-size: 20px;
 }
 .company-intro-copy h2 {
   max-width: 580px;
   margin: 0;
   color: #172d35;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(38px, 4.2vw, 58px);
+  font-size: clamp(41px, 4.2vw, 63px);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -2px;
@@ -477,13 +477,13 @@ button:focus-visible,
   max-width: 545px;
   margin: 27px 0 0;
   color: #5f737c;
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.85;
 }
 .company-intro-description-secondary {
   margin-top: 13px;
   color: #7c8c93;
-  font-size: 12px;
+  font-size: 15px;
 }
 .company-intro-highlights {
   display: flex;
@@ -496,12 +496,12 @@ button:focus-visible,
   align-items: center;
   gap: 7px;
   color: #415961;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
 }
 .company-intro-highlight .material-symbols-outlined {
   color: #00a49e;
-  font-size: 18px;
+  font-size: 20px;
 }
 .company-capabilities {
   display: grid;
@@ -565,7 +565,7 @@ button:focus-visible,
     capabilityPulse 4.8s var(--ease-soft) infinite;
 }
 .capability-icon .material-symbols-outlined {
-  font-size: 25px;
+  font-size: 27px;
 }
 .capability-number {
   position: absolute;
@@ -573,7 +573,7 @@ button:focus-visible,
   right: 23px;
   color: #c1ced2;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -581,12 +581,12 @@ button:focus-visible,
   margin: 0 0 10px;
   color: #213840;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 17px;
+  font-size: 20px;
 }
 .capability-card p {
   margin: 0;
   color: #73858c;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.75;
 }
 .capability-card-cloud::before {
@@ -663,14 +663,14 @@ button:focus-visible,
   display: block;
   color: var(--home-teal);
   font-family: "Space Grotesk", sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
 }
 .company-intro-stats span {
   display: block;
   margin-top: 4px;
   color: #7a8c93;
-  font-size: 12px;
+  font-size: 15px;
 }
 /* ========================================
    04. SHARED SECTION HEADING
@@ -691,7 +691,7 @@ button:focus-visible,
 .home-section-label {
   margin: 0 0 8px;
   color: var(--home-teal);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1.35px;
   text-transform: uppercase;
@@ -701,14 +701,14 @@ button:focus-visible,
   margin: 0;
   color: #182a32;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(30px, 3.4vw, 44px);
+  font-size: clamp(32px, 3.4vw, 48px);
   line-height: 1.15;
   letter-spacing: -1.4px;
 }
 .home-section-description {
   margin: 0;
   color: #6c7d85;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.75;
 }
 /* ========================================
@@ -834,13 +834,13 @@ button:focus-visible,
     testimonialFloat 4.3s var(--ease-soft) infinite;
 }
 .testimonial-icon .material-symbols-outlined {
-  font-size: 21px;
+  font-size: 23px;
 }
 .testimonial p {
   flex: 1;
   margin: 0 0 24px;
   color: #52666f;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.78;
 }
 .employee {
@@ -861,18 +861,18 @@ button:focus-visible,
     avatarFloat 5s var(--ease-soft) -1s infinite;
 }
 .employee-avatar .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 22px;
 }
 .employee strong {
   display: block;
   color: #263b43;
-  font-size: 12px;
+  font-size: 15px;
 }
 .employee div > span {
   display: block;
   margin-top: 2px;
   color: #89969b;
-  font-size: 11px;
+  font-size: 14px;
 }
 /* ========================================
    06. TECHNOLOGY VISION
@@ -967,7 +967,7 @@ button:focus-visible,
   border-radius: 999px;
   background: rgba(17, 84, 88, 0.28);
   color: #9af0ea;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -986,7 +986,7 @@ button:focus-visible,
   margin: 0;
   color: #ffffff;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(42px, 5vw, 68px);
+  font-size: clamp(45px, 5vw, 73px);
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -2.8px;
@@ -1009,7 +1009,7 @@ button:focus-visible,
   max-width: 700px;
   margin: 28px auto 0;
   color: rgba(223, 239, 242, 0.72);
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.85;
 }
 .purpose-stage {
@@ -1135,16 +1135,16 @@ button:focus-visible,
 .purpose-core > .material-symbols-outlined {
   margin-bottom: 8px;
   color: #5be3da;
-  font-size: 34px;
+  font-size: 37px;
 }
 .purpose-core strong {
   font-family: "Space Grotesk", sans-serif;
-  font-size: 14px;
+  font-size: 17px;
 }
 .purpose-core small {
   margin-top: 4px;
   color: rgba(215, 236, 238, 0.56);
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.35px;
 }
 .purpose-orbit {
@@ -1188,7 +1188,7 @@ button:focus-visible,
     purposeCounterSpin 15s linear infinite;
 }
 .purpose-node .material-symbols-outlined {
-  font-size: 22px;
+  font-size: 24px;
 }
 .orbit-two .purpose-node {
   background: rgba(24, 43, 78, 0.92);
@@ -1254,7 +1254,7 @@ button:focus-visible,
   right: 20px;
   color: rgba(209, 233, 235, 0.26);
   font-family: "Space Grotesk", sans-serif;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   opacity: 0;
   transform: translate3d(0, -12px, 0);
@@ -1277,18 +1277,18 @@ button:focus-visible,
   color: #5be0d7;
 }
 .purpose-feature-icon .material-symbols-outlined {
-  font-size: 23px;
+  font-size: 25px;
 }
 .purpose-feature h3 {
   margin: 0 0 9px;
   color: #ffffff;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 15px;
+  font-size: 18px;
 }
 .purpose-feature p {
   margin: 0;
   color: rgba(218, 236, 238, 0.6);
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.75;
 }
 .purpose-footer {
@@ -1317,7 +1317,7 @@ button:focus-visible,
 .purpose-footer p {
   margin: 0;
   color: rgba(218, 237, 239, 0.58);
-  font-size: 12px;
+  font-size: 15px;
 }
 .purpose-footer p span {
   color: #74e2dc;
@@ -1328,7 +1328,7 @@ button:focus-visible,
   align-items: center;
   gap: 8px;
   color: rgba(220, 239, 240, 0.6);
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -1420,7 +1420,7 @@ button:focus-visible,
     rotate(-3deg);
 }
 .module-icon .material-symbols-outlined {
-  font-size: 22px;
+  font-size: 24px;
 }
 .module-icon-teal {
   background: #e5f7f5;
@@ -1450,13 +1450,13 @@ button:focus-visible,
   margin: 0 0 9px;
   color: #24383f;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 16px;
+  font-size: 19px;
 }
 .module-card p {
   min-height: 63px;
   margin: 0 0 18px;
   color: #74848b;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.72;
 }
 .module-card > a {
@@ -1464,12 +1464,12 @@ button:focus-visible,
   align-items: center;
   gap: 6px;
   color: var(--home-teal);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   text-decoration: none;
 }
 .module-card > a .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 20px;
   transition:
     transform var(--motion-fast) var(--ease-out);
 }
@@ -1564,7 +1564,7 @@ button:focus-visible,
   display: block;
   margin-bottom: 7px;
   color: var(--home-teal);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.9px;
   text-transform: uppercase;
@@ -1573,12 +1573,12 @@ button:focus-visible,
   margin: 0 0 8px;
   color: #21363e;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 17px;
+  font-size: 20px;
 }
 .company-slide-content p {
   margin: 0;
   color: #74858c;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.68;
 }
 .company-control {
@@ -1610,7 +1610,7 @@ button:focus-visible,
   right: -22px;
 }
 .company-control .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 22px;
 }
 .company-carousel-status {
   display: flex;
@@ -1958,23 +1958,23 @@ button:focus-visible,
   .hero-badge {
     margin-bottom: 18px;
     padding: 7px 11px;
-    font-size: 11px;
+    font-size: 14px;
   }
   .hero-title {
     max-width: 100%;
-    font-size: clamp(39px, 12vw, 54px);
+    font-size: clamp(42px, 12vw, 58px);
     line-height: 1.04;
     letter-spacing: -1.8px;
   }
   .hero-subtitle {
     max-width: 100%;
     margin-top: 20px;
-    font-size: 17px;
+    font-size: 20px;
   }
   .hero-description {
     max-width: 100%;
     margin-top: 14px;
-    font-size: 12px;
+    font-size: 15px;
   }
   .hero-buttons {
     width: 100%;
@@ -2003,10 +2003,10 @@ button:focus-visible,
     height: 35px;
   }
   .hero-stat strong {
-    font-size: 15px;
+    font-size: 18px;
   }
   .hero-stat span {
-    font-size: 11px;
+    font-size: 14px;
   }
   .hero-scroll {
     display: none;
@@ -2018,15 +2018,15 @@ button:focus-visible,
     gap: 42px;
   }
   .company-intro-copy h2 {
-    font-size: clamp(34px, 10vw, 46px);
+    font-size: clamp(37px, 10vw, 50px);
     letter-spacing: -1.5px;
   }
   .company-intro-description {
     margin-top: 21px;
-    font-size: 13px;
+    font-size: 16px;
   }
   .company-intro-description-secondary {
-    font-size: 12px;
+    font-size: 15px;
   }
   .company-intro-highlights {
     flex-direction: column;
@@ -2071,11 +2071,11 @@ button:focus-visible,
     margin-bottom: 56px;
   }
   .purpose-heading h2 {
-    font-size: clamp(36px, 11vw, 49px);
+    font-size: clamp(39px, 11vw, 53px);
     letter-spacing: -1.8px;
   }
   .purpose-heading > p {
-    font-size: 12px;
+    font-size: 15px;
   }
   .purpose-system {
     width: min(100%, 340px);
@@ -2085,7 +2085,7 @@ button:focus-visible,
     height: 118px;
   }
   .purpose-core > .material-symbols-outlined {
-    font-size: 27px;
+    font-size: 29px;
   }
   .purpose-features {
     grid-template-columns: 1fr;

@@ -7,7 +7,7 @@ const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'G
 let firstName = 'Marcus';
 try {
   const user = JSON.parse(localStorage.getItem('loggedUser'));
-  if (user?.name) firstName = user.name.trim().split(/\s+/)[0];
+  if (user && user.name) firstName = user.name.trim().split(/\s+/)[0];
 } catch (error) {
   console.warn('Could not read the logged-in user for My Workspace:', error);
 }
@@ -74,7 +74,9 @@ function formatMeetingTime(value) {
 }
 
 function meetingMinutes(value) {
-  const normalized = window.HelpdeskMeetings?.normaliseTime(value) || String(value || '');
+  let normalized = '';
+  if (window.HelpdeskMeetings) normalized = window.HelpdeskMeetings.normaliseTime(value);
+  if (!normalized) normalized = String(value || '');
   const match = normalized.match(/^(\d{1,2}):(\d{2})$/);
   return match ? Number(match[1]) * 60 + Number(match[2]) : Number.POSITIVE_INFINITY;
 }
@@ -99,11 +101,14 @@ function meetingRow(meeting) {
   title.textContent = meeting.subject || 'Helpdesk meeting';
 
   const details = document.createElement('span');
-  const platform = window.HelpdeskMeetings?.platformLabel(meeting) || meeting.platform || meeting.channel || 'Meeting';
+  let platform = '';
+  if (window.HelpdeskMeetings) platform = window.HelpdeskMeetings.platformLabel(meeting);
+  if (!platform) platform = meeting.platform || meeting.channel || 'Meeting';
   details.textContent = `${platform} · ${meeting.status}`;
   item.append(time, title, details);
 
-  const joinUrl = window.HelpdeskMeetings?.joinLink(meeting);
+  let joinUrl = '';
+  if (window.HelpdeskMeetings) joinUrl = window.HelpdeskMeetings.joinLink(meeting);
   if (joinUrl && ['Approved', 'Confirmed', 'Reschedule Requested'].includes(meeting.status)) {
     const join = document.createElement('a');
     join.href = joinUrl;
@@ -119,7 +124,8 @@ function showMeetingMessage(message) {
   const item = document.createElement('li');
   item.className = 'workspace-meeting-empty';
   item.textContent = message;
-  workspaceMeetingList.replaceChildren(item);
+  workspaceMeetingList.innerHTML = '';
+  workspaceMeetingList.appendChild(item);
 }
 
 async function renderWorkspaceAgenda() {
@@ -128,21 +134,30 @@ async function renderWorkspaceAgenda() {
   const summary = document.getElementById('workspaceMeetingSummary');
   try {
     const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-    if (!user?.id) throw new Error('Sign in to see your meetings.');
+    if (!user || !user.id) throw new Error('Sign in to see your meetings.');
 
-    const query = new URLSearchParams({ employeeId: String(user.id), type: 'meeting' });
-    const response = await fetch(`${API}/helpdeskRequests?${query}`);
+    const response = await fetch(`${API}/helpdeskRequests?employeeId=${encodeURIComponent(user.id)}&type=meeting`);
     if (!response.ok) throw new Error('Could not load your meetings.');
+    const allMeetings = await response.json();
 
     const now = new Date();
     const today = localDateString(now);
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    const upcomingMeetings = (await response.json())
-      .filter(meeting => String(meeting.employeeId) === String(user.id) &&
-        meeting.type === 'meeting' && meeting.date >= today && isScheduledMeeting(meeting) &&
-        (meeting.date > today || meetingMinutes(meeting.timeTo || meeting.time || meeting.timeFrom) >= currentMinutes))
-      .sort((left, right) => left.date.localeCompare(right.date) ||
-        meetingMinutes(left.timeFrom || left.time) - meetingMinutes(right.timeFrom || right.time));
+
+    // Keep only this employee's scheduled meetings that have not finished yet.
+    const upcomingMeetings = allMeetings.filter(meeting => {
+      const isMine = String(meeting.employeeId) === String(user.id);
+      const notPastDate = meeting.date >= today;
+      const notFinishedYet = meeting.date > today ||
+        meetingMinutes(meeting.timeTo || meeting.time || meeting.timeFrom) >= currentMinutes;
+      return isMine && meeting.type === 'meeting' && notPastDate && isScheduledMeeting(meeting) && notFinishedYet;
+    });
+
+    // Earliest date first, then earliest start time.
+    upcomingMeetings.sort((left, right) => {
+      if (left.date !== right.date) return left.date.localeCompare(right.date);
+      return meetingMinutes(left.timeFrom || left.time) - meetingMinutes(right.timeFrom || right.time);
+    });
     const meetings = upcomingMeetings.slice(0, 3);
 
     total.textContent = String(upcomingMeetings.length);
@@ -156,7 +171,10 @@ async function renderWorkspaceAgenda() {
       showMeetingMessage('No upcoming approved or confirmed meetings.');
       return;
     }
-    workspaceMeetingList.replaceChildren(...meetings.map(meetingRow));
+    workspaceMeetingList.innerHTML = '';
+    meetings.forEach(meeting => {
+      workspaceMeetingList.appendChild(meetingRow(meeting));
+    });
   } catch (error) {
     console.error('Could not load the workspace agenda:', error);
     total.textContent = '—';
@@ -170,8 +188,8 @@ async function renderWorkspaceTasks() {
   let tasks = [];
   try {
     const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-    if (user?.id) {
-      const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);
+    if (user && user.id) {
+      const response = await fetch(`${API}/tasks?employeeId=${encodeURIComponent(user.id)}`);
       if (!response.ok) throw new Error('Could not load your tasks.');
       tasks = await response.json();
     }
@@ -182,22 +200,29 @@ async function renderWorkspaceTasks() {
   }
   const active = tasks.filter(task => task && task.status !== 'completed');
   const priorityOrder = { High: 0, Normal: 1, Routine: 2 };
-  const preview = [...active].sort((a, b) => (priorityOrder[a.priority] ?? 3) - (priorityOrder[b.priority] ?? 3)).slice(0, 3);
+  // Unknown priorities go to the end of the list.
+  function priorityRank(task) {
+    const rank = priorityOrder[task.priority];
+    return rank === undefined ? 3 : rank;
+  }
+  const preview = active.slice().sort((a, b) => priorityRank(a) - priorityRank(b)).slice(0, 3);
 
   document.getElementById('workspaceActiveTasks').textContent = String(active.length);
   document.getElementById('workspaceTaskSummary').textContent = `${active.length} tasks in your task list`;
   document.getElementById('workspaceTasksNote').textContent = 'Your top open tasks from My Tasks.';
   document.getElementById('workspaceTasksLink').firstChild.textContent = `Go to My Tasks (${active.length}) `;
 
-  workspaceTaskList.replaceChildren();
-  if (!preview.length) {
+  workspaceTaskList.innerHTML = '';
+  if (preview.length === 0) {
     const empty = document.createElement('p');
     empty.className = 'workspace-task-empty';
     empty.textContent = 'No open tasks right now.';
-    workspaceTaskList.append(empty);
+    workspaceTaskList.appendChild(empty);
     return;
   }
-  workspaceTaskList.append(...preview.map(taskRow));
+  preview.forEach(task => {
+    workspaceTaskList.appendChild(taskRow(task));
+  });
 }
 
 renderWorkspaceTasks();

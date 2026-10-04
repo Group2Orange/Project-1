@@ -3,12 +3,12 @@ const API = 'http://127.0.0.1:3000';
 
 // Auth guard
 const session = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-const hasHrAccess = session?.role === 'HR';
+const hasHrAccess = session !== null && session.role === 'HR';
 if (!hasHrAccess) location.replace('../../common/login/login.html');
 
 // State
 let allTickets = [];
-let employeeMap = new Map(); // id -> employee object
+let allEmployees = [];
 let page = 1;
 const pageSize = 15;
 let actionTicketId = null; // ID of ticket currently being acted on
@@ -28,34 +28,62 @@ const rescheduleDialog = document.getElementById('rescheduleDialog');
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function escapeHtml(str) {
-  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  if (str === null || str === undefined) str = '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function formatDate(str) {
   if (!str) return '—';
   const d = new Date(str);
-  return isNaN(d.getTime()) ? str : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  if (isNaN(d.getTime())) return str;
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 function formatTime(str) {
   if (!str) return '—';
   const normalised = HelpdeskMeetings.normaliseTime(str);
   if (!normalised) return str;
-  const [h, m] = normalised.split(':');
-  const hour = parseInt(h, 10);
+  const parts = normalised.split(':');
+  const hour = parseInt(parts[0], 10);
+  const minutes = parts[1];
   const ampm = hour >= 12 ? 'PM' : 'AM';
-  return `${hour % 12 || 12}:${m} ${ampm}`;
+  return `${hour % 12 || 12}:${minutes} ${ampm}`;
 }
 
 function todayIso() {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
+// Name of the employee with this id, or '' when they are not found.
+function employeeName(employeeId) {
+  const employee = allEmployees.find(person => String(person.id) === String(employeeId));
+  if (employee && employee.name) return employee.name;
+  return '';
+}
+
+// "Confirmed" is shown as "Approved" and "In Review" is shown as "Pending".
+function displayStatus(status) {
+  if (status === 'Confirmed') return 'Approved';
+  if (status === 'In Review') return 'Pending';
+  return status;
+}
+
+// Puts the updated ticket from the API into our list in place of the old one.
+function replaceTicket(updatedTicket) {
+  allTickets = allTickets.map(ticket => (ticket.id === actionTicketId ? updatedTicket : ticket));
 }
 
 // ── Status badge ─────────────────────────────────────────────────────────────
 
 function getStatusBadge(status) {
-  const map = {
+  const classes = {
     'Approved': 'status-active',
     'Confirmed': 'status-active',
     'Rejected': 'status-blocked',
@@ -63,23 +91,30 @@ function getStatusBadge(status) {
     'In Review': 'status-pending',
     'Reschedule Requested': 'status-reschedule'
   };
-  const cls = map[status] || 'status-inactive';
-  const label = status === 'Confirmed' ? 'Approved' : status === 'In Review' ? 'Pending' : status;
-  return `<span class="status ${cls}">${escapeHtml(label)}</span>`;
+  const cls = classes[status] || 'status-inactive';
+  return `<span class="status ${cls}">${escapeHtml(displayStatus(status))}</span>`;
 }
 
 // ── Action buttons ────────────────────────────────────────────────────────────
 
-function buildActions(t) {
+function buildActions(ticket) {
   let html = `<button type="button" data-action="view" aria-label="View ticket"><span class="material-symbols-outlined">visibility</span></button>`;
-  if (HelpdeskMeetings.canApprove(t)) {
-    const setupMeeting = ['Approved', 'Confirmed'].includes(t.status);
-    html += `<button type="button" data-action="approve" aria-label="${setupMeeting ? 'Set up meeting' : 'Approve'}" title="${setupMeeting ? 'Set up the approved Jitsi demo meeting' : 'Approve request'}"><span class="material-symbols-outlined">${setupMeeting ? 'videocam' : 'check_circle'}</span></button>`;
+
+  if (HelpdeskMeetings.canApprove(ticket)) {
+    const setupMeeting = ['Approved', 'Confirmed'].includes(ticket.status);
+    const label = setupMeeting ? 'Set up meeting' : 'Approve';
+    const title = setupMeeting ? 'Set up the approved Jitsi demo meeting' : 'Approve request';
+    const icon = setupMeeting ? 'videocam' : 'check_circle';
+    html += `<button type="button" data-action="approve" aria-label="${label}" title="${title}"><span class="material-symbols-outlined">${icon}</span></button>`;
   }
-  if (['Pending', 'In Review'].includes(t.status) || (t.status === 'Reschedule Requested' && t.rescheduleRequest?.proposedBy !== 'HR')) {
+
+  const proposedByHr = ticket.rescheduleRequest && ticket.rescheduleRequest.proposedBy === 'HR';
+  const isWaiting = ['Pending', 'In Review'].includes(ticket.status);
+  if (isWaiting || (ticket.status === 'Reschedule Requested' && !proposedByHr)) {
     html += `<button type="button" data-action="reject" aria-label="Reject"><span class="material-symbols-outlined">cancel</span></button>`;
   }
-  if (HelpdeskMeetings.canReschedule(t)) {
+
+  if (HelpdeskMeetings.canReschedule(ticket)) {
     html += `<button type="button" data-action="reschedule" aria-label="Reschedule" title="Propose a new meeting time"><span class="material-symbols-outlined">event_repeat</span></button>`;
   }
   return html;
@@ -89,40 +124,36 @@ function buildActions(t) {
 
 async function loadData() {
   try {
-    const [ticketsRes, employeesRes] = await Promise.all([
-      fetch(`${API}/helpdeskRequests`),
-      fetch(`${API}/employees`)
-    ]);
-    if (!ticketsRes.ok || !employeesRes.ok) throw new Error('Could not load data.');
-    allTickets = await ticketsRes.json();
-    const employees = await employeesRes.json();
-    employeeMap = new Map(employees.map(e => [String(e.id), e]));
+    const ticketsResponse = await fetch(`${API}/helpdeskRequests`);
+    const employeesResponse = await fetch(`${API}/employees`);
+    if (!ticketsResponse.ok || !employeesResponse.ok) throw new Error('Could not load data.');
+    allTickets = await ticketsResponse.json();
+    allEmployees = await employeesResponse.json();
     // Sort newest first
     allTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     render();
     renderStats();
   } catch (err) {
     console.error(err);
-    document.getElementById('ticketsBody').innerHTML =
-      `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--color-secondary)">${escapeHtml(err.message)}</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--color-secondary)">${escapeHtml(err.message)}</td></tr>`;
   }
 }
 
 // ── Filtering ─────────────────────────────────────────────────────────────────
 
 function filteredTickets() {
-  const q = searchInput.value.trim().toLowerCase();
-  const st = filterStatus.value;
-  const ty = filterType.value;
-  return allTickets.filter(t => {
-    const emp = employeeMap.get(String(t.employeeId));
-    const name = (emp?.name || '').toLowerCase();
-    const subject = (t.subject || '').toLowerCase();
-    const matchQ = !q || name.includes(q) || subject.includes(q) || (t.ticket || '').toLowerCase().includes(q);
-    const normalizedStatus = t.status === 'Confirmed' ? 'Approved' : t.status === 'In Review' ? 'Pending' : t.status;
-    const matchSt = !st || normalizedStatus === st;
-    const matchTy = !ty || t.type === ty;
-    return matchQ && matchSt && matchTy;
+  const query = searchInput.value.trim().toLowerCase();
+  const status = filterStatus.value;
+  const type = filterType.value;
+
+  return allTickets.filter(ticket => {
+    const name = employeeName(ticket.employeeId).toLowerCase();
+    const subject = (ticket.subject || '').toLowerCase();
+    const ticketNumber = (ticket.ticket || '').toLowerCase();
+    const matchQuery = !query || name.includes(query) || subject.includes(query) || ticketNumber.includes(query);
+    const matchStatus = !status || displayStatus(ticket.status) === status;
+    const matchType = !type || ticket.type === type;
+    return matchQuery && matchStatus && matchType;
   });
 }
 
@@ -137,6 +168,23 @@ function renderStats() {
 
 // ── Render table ──────────────────────────────────────────────────────────────
 
+function ticketRow(ticket) {
+  const name = escapeHtml(employeeName(ticket.employeeId) || `Employee #${ticket.employeeId}`);
+  let typeBadge = `<span class="status" style="background:var(--color-surface);color:var(--color-secondary);border:1px solid var(--color-border)">Text Ticket</span>`;
+  if (ticket.type === 'meeting') {
+    typeBadge = `<span class="status" style="background:var(--color-primary-light);color:var(--color-primary-dark)">Meeting</span>`;
+  }
+  return `<tr data-id="${ticket.id}">
+        <td><code style="font-size:15px;color:var(--color-secondary)">${escapeHtml(ticket.ticket || ticket.id)}</code></td>
+        <td>${name}</td>
+        <td>${typeBadge}</td>
+        <td>${escapeHtml(ticket.category || '—')}</td>
+        <td>${formatDate(ticket.createdAt)}</td>
+        <td>${getStatusBadge(ticket.status)}</td>
+        <td><div class="actions">${buildActions(ticket)}</div></td>
+      </tr>`;
+}
+
 function render() {
   const result = filteredTickets();
   const pages = Math.max(1, Math.ceil(result.length / pageSize));
@@ -146,41 +194,28 @@ function render() {
   if (visible.length === 0) {
     body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--color-secondary)">No tickets match your search.</td></tr>`;
   } else {
-    body.innerHTML = visible.map(t => {
-      const emp = employeeMap.get(String(t.employeeId));
-      const empName = escapeHtml(emp?.name || `Employee #${t.employeeId}`);
-      const typeBadge = t.type === 'meeting'
-        ? `<span class="status" style="background:var(--color-primary-light);color:var(--color-primary-dark)">Meeting</span>`
-        : `<span class="status" style="background:var(--color-surface);color:var(--color-secondary);border:1px solid var(--color-border)">Text Ticket</span>`;
-      const statusBadge = getStatusBadge(t.status);
-      const actions = buildActions(t);
-      return `<tr data-id="${t.id}">
-        <td><code style="font-size:12px;color:var(--color-secondary)">${escapeHtml(t.ticket || t.id)}</code></td>
-        <td>${empName}</td>
-        <td>${typeBadge}</td>
-        <td>${escapeHtml(t.category || '—')}</td>
-        <td>${formatDate(t.createdAt)}</td>
-        <td>${statusBadge}</td>
-        <td><div class="actions">${actions}</div></td>
-      </tr>`;
-    }).join('');
+    body.innerHTML = visible.map(ticketRow).join('');
   }
 
-  document.getElementById('resultCount').textContent = result.length
-    ? `Showing ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, result.length)} of ${result.length} tickets`
-    : '0 tickets';
+  let countText = '0 tickets';
+  if (result.length) {
+    const first = (page - 1) * pageSize + 1;
+    const last = Math.min(page * pageSize, result.length);
+    countText = `Showing ${first}–${last} of ${result.length} tickets`;
+  }
+  document.getElementById('resultCount').textContent = countText;
   document.getElementById('pageLabel').textContent = `${page} / ${pages}`;
   document.getElementById('prevPage').disabled = page <= 1;
   document.getElementById('nextPage').disabled = page >= pages;
 
-  // Wire action buttons
-  body.querySelectorAll('button[data-action]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const id = parseInt(btn.closest('tr[data-id]').dataset.id, 10);
+  // Wire action buttons. "this" is the button that was clicked.
+  body.querySelectorAll('button[data-action]').forEach(button => {
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      const id = parseInt(this.closest('tr[data-id]').dataset.id, 10);
       const ticket = allTickets.find(t => t.id === id);
       if (!ticket) return;
-      const action = btn.dataset.action;
+      const action = this.dataset.action;
       if (action === 'view') openViewDialog(ticket);
       else if (action === 'approve') openApproveDialog(ticket);
       else if (action === 'reject') openRejectDialog(ticket);
@@ -188,10 +223,10 @@ function render() {
     });
   });
 
-  // Row click → view
+  // Row click → view. "this" is the clicked row.
   body.querySelectorAll('tr[data-id]').forEach(row => {
-    row.addEventListener('click', () => {
-      const id = parseInt(row.dataset.id, 10);
+    row.addEventListener('click', function () {
+      const id = parseInt(this.dataset.id, 10);
       const ticket = allTickets.find(t => t.id === id);
       if (ticket) openViewDialog(ticket);
     });
@@ -205,11 +240,10 @@ function detailRow(label, value) {
 }
 
 function openViewDialog(ticket) {
-  const emp = employeeMap.get(String(ticket.employeeId));
   document.getElementById('viewTitle').textContent = ticket.ticket || `#${ticket.id}`;
 
   let html = '';
-  html += detailRow('Employee', escapeHtml(emp?.name || `Employee #${ticket.employeeId}`));
+  html += detailRow('Employee', escapeHtml(employeeName(ticket.employeeId) || `Employee #${ticket.employeeId}`));
   html += detailRow('Type', ticket.type === 'meeting' ? 'Meeting Request' : 'Text Ticket');
   html += detailRow('Category', escapeHtml(ticket.category || '—'));
   html += detailRow('Subject', escapeHtml(ticket.subject || '—'));
@@ -220,15 +254,21 @@ function openViewDialog(ticket) {
   if (ticket.type === 'meeting') {
     const startTime = ticket.timeFrom || ticket.time;
     const endTime = ticket.timeTo || ticket.time;
+    let timeText = '—';
+    if (startTime) {
+      timeText = formatTime(startTime);
+      if (endTime && endTime !== startTime) timeText += ` – ${formatTime(endTime)}`;
+    }
     html += detailRow('Meeting Date', formatDate(ticket.date));
-    html += detailRow('Time', startTime ? `${formatTime(startTime)}${endTime && endTime !== startTime ? ` – ${formatTime(endTime)}` : ''}` : '—');
+    html += detailRow('Time', timeText);
     html += detailRow('Platform', escapeHtml(HelpdeskMeetings.platformLabel(ticket)));
   }
 
   const meetingLink = HelpdeskMeetings.joinLink(ticket);
   if (meetingLink && ['Approved', 'Confirmed'].includes(ticket.status)) {
     const external = new URL(meetingLink).origin !== location.origin;
-    html += detailRow('Meeting Link', `<a href="${escapeHtml(meetingLink)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>Open meeting ↗</a>`);
+    const newTab = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+    html += detailRow('Meeting Link', `<a href="${escapeHtml(meetingLink)}"${newTab}>Open meeting ↗</a>`);
   }
 
   if (ticket.hrReply) {
@@ -237,7 +277,8 @@ function openViewDialog(ticket) {
 
   if (ticket.rescheduleRequest) {
     const rs = ticket.rescheduleRequest;
-    html += `<div class="detail-row detail-reschedule"><span class="detail-label">${rs.proposedBy === 'HR' ? 'HR Proposed Time' : 'Employee Proposed Time'}</span><span class="detail-value">${formatDate(rs.date)} · ${formatTime(rs.timeFrom)} – ${formatTime(rs.timeTo)}</span></div>`;
+    const label = rs.proposedBy === 'HR' ? 'HR Proposed Time' : 'Employee Proposed Time';
+    html += `<div class="detail-row detail-reschedule"><span class="detail-label">${label}</span><span class="detail-value">${formatDate(rs.date)} · ${formatTime(rs.timeFrom)} – ${formatTime(rs.timeTo)}</span></div>`;
   }
 
   document.getElementById('viewBody').innerHTML = html;
@@ -254,11 +295,13 @@ function openApproveDialog(ticket) {
   const meetingPlatform = HelpdeskMeetings.platformLabel(ticket);
   const isGoogleMeet = ticket.type === 'meeting' && meetingPlatform === 'Google Meet';
 
-  const desc = HelpdeskMeetings.isZoomDemo(ticket)
-    ? 'Approval saves a unique Jitsi demo room. You and the employee can open the same room from the meeting link.'
-    : ticket.type === 'meeting'
-    ? `Approve this meeting request${meetingPlatform ? ` (${meetingPlatform})` : ''}. The employee will be notified.`
-    : 'Approve this support ticket. The employee will be notified.';
+  let desc = 'Approve this support ticket. The employee will be notified.';
+  if (HelpdeskMeetings.isZoomDemo(ticket)) {
+    desc = 'Approval saves a unique Jitsi demo room. You and the employee can open the same room from the meeting link.';
+  } else if (ticket.type === 'meeting') {
+    const platformText = meetingPlatform ? ` (${meetingPlatform})` : '';
+    desc = `Approve this meeting request${platformText}. The employee will be notified.`;
+  }
   document.getElementById('approveDesc').textContent = desc;
 
   const meetingLinkField = document.getElementById('meetingLinkField');
@@ -271,7 +314,8 @@ function openApproveDialog(ticket) {
   approveDialog.showModal();
 }
 
-document.getElementById('confirmApproveBtn').addEventListener('click', async () => {
+// "this" is the Approve button inside the approve dialog.
+document.getElementById('confirmApproveBtn').addEventListener('click', async function () {
   const meetingLinkField = document.getElementById('meetingLinkField');
   const meetingLinkInput = document.getElementById('meetingLinkInput');
   const meetingLinkError = document.getElementById('meetingLinkError');
@@ -287,32 +331,30 @@ document.getElementById('confirmApproveBtn').addEventListener('click', async () 
     meetingLinkError.textContent = '';
   }
 
-  const btn = document.getElementById('confirmApproveBtn');
-  btn.disabled = true;
+  const button = this;
+  button.disabled = true;
   try {
     // Read the current record before approval so a retry reuses its saved room.
-    const currentRes = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`);
-    if (!currentRes.ok) throw new Error('This ticket could not be found. Refresh the page.');
-    const current = await currentRes.json();
+    const currentResponse = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`);
+    if (!currentResponse.ok) throw new Error('This ticket could not be found. Refresh the page.');
+    const current = await currentResponse.json();
     const patch = HelpdeskMeetings.approvalPatch(current, hrReply, meetingLink);
-    const res = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
+
+    const response = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patch)
     });
-    if (!res.ok) throw new Error('Could not approve ticket.');
-    const updated = await res.json();
-    const idx = allTickets.findIndex(t => t.id === actionTicketId);
-    if (idx !== -1) allTickets[idx] = updated;
+    if (!response.ok) throw new Error('Could not approve ticket.');
+    replaceTicket(await response.json());
     approveDialog.close();
     render();
     renderStats();
   } catch (err) {
     console.error(err);
     document.getElementById('approveError').textContent = err.message;
-  } finally {
-    btn.disabled = false;
   }
+  button.disabled = false;
 });
 
 // ── Reject dialog ─────────────────────────────────────────────────────────────
@@ -324,7 +366,8 @@ function openRejectDialog(ticket) {
   rejectDialog.showModal();
 }
 
-document.getElementById('confirmRejectBtn').addEventListener('click', async () => {
+// "this" is the Reject button inside the reject dialog.
+document.getElementById('confirmRejectBtn').addEventListener('click', async function () {
   const reason = document.getElementById('rejectReason').value.trim();
   const rejectError = document.getElementById('rejectError');
 
@@ -334,27 +377,24 @@ document.getElementById('confirmRejectBtn').addEventListener('click', async () =
   }
   rejectError.textContent = '';
 
-  const btn = document.getElementById('confirmRejectBtn');
-  btn.disabled = true;
+  const button = this;
+  button.disabled = true;
   try {
-    const res = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
+    const response = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'Rejected', hrReply: reason })
     });
-    if (!res.ok) throw new Error('Could not reject ticket.');
-    const updated = await res.json();
-    const idx = allTickets.findIndex(t => t.id === actionTicketId);
-    if (idx !== -1) allTickets[idx] = updated;
+    if (!response.ok) throw new Error('Could not reject ticket.');
+    replaceTicket(await response.json());
     rejectDialog.close();
     render();
     renderStats();
   } catch (err) {
     console.error(err);
     rejectError.textContent = err.message;
-  } finally {
-    btn.disabled = false;
   }
+  button.disabled = false;
 });
 
 // ── Reschedule dialog ─────────────────────────────────────────────────────────
@@ -371,7 +411,8 @@ function openRescheduleDialog(ticket) {
   rescheduleDialog.showModal();
 }
 
-document.getElementById('confirmRescheduleBtn').addEventListener('click', async () => {
+// "this" is the Propose Reschedule button inside the reschedule dialog.
+document.getElementById('confirmRescheduleBtn').addEventListener('click', async function () {
   const rsDate = document.getElementById('rsDate').value;
   const rsTimeFrom = document.getElementById('rsTimeFrom').value;
   const rsTimeTo = document.getElementById('rsTimeTo').value;
@@ -398,10 +439,10 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
   }
   if (!valid) return;
 
-  const btn = document.getElementById('confirmRescheduleBtn');
-  btn.disabled = true;
+  const button = this;
+  button.disabled = true;
   try {
-    const res = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
+    const response = await fetch(`${API}/helpdeskRequests/${encodeURIComponent(actionTicketId)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -415,28 +456,35 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
         }
       })
     });
-    if (!res.ok) throw new Error('Could not propose reschedule.');
-    const updated = await res.json();
-    const idx = allTickets.findIndex(t => t.id === actionTicketId);
-    if (idx !== -1) allTickets[idx] = updated;
+    if (!response.ok) throw new Error('Could not propose reschedule.');
+    replaceTicket(await response.json());
     rescheduleDialog.close();
     render();
     renderStats();
   } catch (err) {
     console.error(err);
-    document.getElementById('rsDateError').textContent = err.message;
-  } finally {
-    btn.disabled = false;
+    rsDateError.textContent = err.message;
   }
+  button.disabled = false;
 });
 
 // ── Filters & pagination ──────────────────────────────────────────────────────
 
-searchInput.addEventListener('input', () => { page = 1; render(); });
-filterStatus.addEventListener('change', () => { page = 1; render(); });
-filterType.addEventListener('change', () => { page = 1; render(); });
-document.getElementById('prevPage').addEventListener('click', () => { page--; render(); });
-document.getElementById('nextPage').addEventListener('click', () => { page++; render(); });
+function showFirstPage() {
+  page = 1;
+  render();
+}
+searchInput.addEventListener('input', showFirstPage);
+filterStatus.addEventListener('change', showFirstPage);
+filterType.addEventListener('change', showFirstPage);
+document.getElementById('prevPage').addEventListener('click', () => {
+  page--;
+  render();
+});
+document.getElementById('nextPage').addEventListener('click', () => {
+  page++;
+  render();
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../../shared/hr-sidebar.css"><link rel="stylesheet" href="../../shared/hr-layout.css"><link rel="stylesheet" href="employees.css">
 </head>
 <body class="has-footer">
-  <nav class="navbar" data-navbar="hr"></nav>
+  <div data-navbar-guard="hr" hidden></div>
   <main class="hr-page-shell">
     <aside class="hr-sidebar" data-hr-sidebar data-hr-sidebar-active="employees" aria-label="HR workspace"></aside>
     <div class="hr-page-content directory">
@@ -58,7 +58,7 @@
         <label>Join Date <small>Assigned automatically</small><input name="joiningDate" type="date" required readonly></label>
         <label>Employee ID <small>Assigned automatically</small><input name="employeeId" maxlength="30" readonly></label>
         <label>Office Location<input name="officeLocation" maxlength="100"></label>
-        <label>Monthly Salary<input name="salaryAmount" type="number" min="0" step="0.01" placeholder="Optional"></label>
+        <label>Monthly Salary<input name="salaryAmount" type="number" min="0" max="100000" step="0.01" placeholder="Optional"></label>
         <label>Currency<input name="salaryCurrency" maxlength="8" value="JOD"></label>
         <label>Role<select name="role"><option value="EMP">Employee</option><option value="HR">HR</option></select></label>
         <label>Status<select name="status"><option>Active</option><option>Inactive</option><option>Blocked</option></select></label>

@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../../shared/employee-sidebar.css">
 </head>
 <body class="has-footer">
-  <nav class="navbar" data-navbar="employee"></nav>
+  <div data-navbar-guard="employee" hidden></div>
 
   
    <main class="leave-page">
@@ -52,7 +52,7 @@
             <p>Review your time-off balances, submit leave requests, and track approval status.</p>
           </div>
 
-          <button class="btn-primary" id="btnRequestTimeOff">
+          <button type="button" class="btn-primary" id="btnRequestTimeOff">
             <span class="material-symbols-outlined">add</span>
             Request Time Off
           </button>
@@ -126,9 +126,9 @@
         <!-- Tabs + Search -->
         <div class="tabs-bar">
           <div class="tabs">
-            <button class="tab active" id="tabAll">All Requests (<span id="tabCountAll">0</span>)</button>
-            <button class="tab" id="tabUpcoming">Upcoming &amp; Approved (<span id="tabCountUpcoming">0</span>)</button>
-            <button class="tab" id="tabHistory">Past History (<span id="tabCountHistory">0</span>)</button>
+            <button type="button" class="tab active" id="tabAll">All Requests (<span id="tabCountAll">0</span>)</button>
+            <button type="button" class="tab" id="tabUpcoming">Upcoming &amp; Approved (<span id="tabCountUpcoming">0</span>)</button>
+            <button type="button" class="tab" id="tabHistory">Past History (<span id="tabCountHistory">0</span>)</button>
           </div>
 
           <div class="search-box">
@@ -194,7 +194,7 @@
             <p>Submit your leave request for manager review and approval.</p>
           </div>
         </div>
-        <button class="modal-close" id="btnCloseModal">
+        <button type="button" class="modal-close" id="btnCloseModal">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -340,7 +340,7 @@
   <footer class="site-footer" data-footer></footer>
   <script src="../../shared/footer.js"></script>
   <script src="../../shared/navbar.js?v=2"></script>
-  <script src="Leave&TimeOff.js?v=6"></script>
+  <script src="Leave&TimeOff.js?v=7"></script>
   <script src="../../shared/employee-sidebar.js?v=3"></script>
 </body>
 </html>

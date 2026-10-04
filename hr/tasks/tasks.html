@@ -20,7 +20,7 @@
 
 <body class="has-footer">
 
-  <nav class="navbar" data-navbar="hr"></nav>
+  <div data-navbar-guard="hr" hidden></div>
 
   <main class="hr-page-shell">
 
@@ -114,7 +114,7 @@
 
         <label class="dialog-wide">
           Task title
-          <input name="title" required maxlength="120" placeholder="e.g. Q4 Marketing Report">
+          <input name="title" required maxlength="120" size="40" placeholder="e.g. Q4 Marketing Report">
         </label>
 
         <div class="dialog-field dialog-wide">
@@ -174,73 +174,66 @@
   </dialog>
 
   <!-- View task popup -->
-  <dialog id="viewDialog" class="task-dialog" aria-labelledby="viewDialogTitle">
-    <div class="dialog-heading">
-      <div>
+  <dialog id="viewDialog" class="task-dialog view-dialog" aria-labelledby="viewTitle">
+    <header class="view-header">
+      <div class="view-header-text">
         <p class="eyebrow">TASK DETAILS</p>
-        <h2 id="viewDialogTitle">Task Details</h2>
-        <p>Review the full task information.</p>
+        <h2 id="viewTitle">Task title</h2>
+        <div class="view-badges" id="viewBadges"></div>
       </div>
-
       <button type="button" class="icon-button" id="closeViewDialog" aria-label="Close dialog">
         <span class="material-symbols-outlined" aria-hidden="true">close</span>
       </button>
-    </div>
+    </header>
 
-    <div class="dialog-grid dialog-readonly-grid">
-      <label class="dialog-wide">
-        Title
-        <input id="viewTitle" readonly>
-      </label>
+    <div class="view-body">
+      <dl class="view-facts">
+        <div class="view-fact">
+          <dt><span class="material-symbols-outlined" aria-hidden="true">flag</span>Priority</dt>
+          <dd id="viewPriority"></dd>
+        </div>
+        <div class="view-fact">
+          <dt><span class="material-symbols-outlined" aria-hidden="true">event</span>Due date</dt>
+          <dd id="viewDueDate"></dd>
+        </div>
+        <div class="view-fact">
+          <dt><span class="material-symbols-outlined" aria-hidden="true">pending_actions</span>Status</dt>
+          <dd id="viewStatus"></dd>
+        </div>
+        <div class="view-fact">
+          <dt><span class="material-symbols-outlined" aria-hidden="true">group</span>Assigned to</dt>
+          <dd id="viewAssignment"></dd>
+        </div>
+      </dl>
 
-      <div class="dialog-field dialog-wide">
-        <span class="dialog-label">Employees</span>
+      <section class="view-section" aria-labelledby="viewEmployeesHeading">
+        <h3 id="viewEmployeesHeading">Employees</h3>
         <div class="view-employee-list" id="viewEmployees"></div>
-      </div>
+      </section>
 
-      <label>
-        Priority
-        <input id="viewPriority" readonly>
-      </label>
-
-      <label>
-        Due date
-        <input id="viewDueDate" readonly>
-      </label>
-
-      <label>
-        Status
-        <input id="viewStatus" readonly>
-      </label>
-
-      <label>
-        Assignment
-        <input id="viewAssignment" readonly>
-      </label>
-
-      <label class="dialog-wide">
-        Description
-        <textarea id="viewDescription" readonly rows="4"></textarea>
-      </label>
+      <section class="view-section" aria-labelledby="viewDescriptionHeading">
+        <h3 id="viewDescriptionHeading">Description</h3>
+        <p class="view-description" id="viewDescription"></p>
+      </section>
     </div>
 
-    <div class="dialog-actions dialog-actions-standalone">
+    <footer class="view-footer">
       <button type="button" class="button button-light" id="closeViewDialogFooter">Close</button>
-    </div>
+    </footer>
   </dialog>
 
-  <!-- Delete confirmation popup -->
-  <dialog id="deleteDialog" class="task-dialog confirm-dialog" aria-labelledby="deleteTitle">
-    <div class="confirm-icon">
-      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+  <!-- Block / unblock confirmation popup -->
+  <dialog id="blockDialog" class="task-dialog confirm-dialog" aria-labelledby="blockTitle">
+    <div class="confirm-icon" id="blockIcon">
+      <span class="material-symbols-outlined" aria-hidden="true">block</span>
     </div>
 
-    <h2 id="deleteTitle">Delete task?</h2>
-    <p id="deleteMessage">This will remove the task for all assigned employees.</p>
+    <h2 id="blockTitle">Block task?</h2>
+    <p id="blockMessage">Blocked tasks stay on record but are paused for every assigned employee.</p>
 
     <div class="dialog-actions">
-      <button type="button" class="button button-light" id="cancelDelete">Cancel</button>
-      <button type="button" class="button button-danger" id="confirmDelete">Delete Task</button>
+      <button type="button" class="button button-light" id="cancelBlock">Cancel</button>
+      <button type="button" class="button button-danger" id="confirmBlock">Block Task</button>
     </div>
   </dialog>
 

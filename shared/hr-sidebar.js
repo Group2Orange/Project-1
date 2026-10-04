@@ -44,6 +44,12 @@
             sidebar.querySelector('.hr-sidebar-name').textContent = name;
           }
         } catch { /* Keep the generic label. */ }
+        sidebar.querySelector('#hrSidebarLogout').addEventListener('click', () => {
+          localStorage.removeItem('loggedUser');
+          localStorage.removeItem('currentUserId');
+          localStorage.removeItem('currentUser');
+          window.location.href = '../../common/login/login.html';
+        });
         const toggle = sidebar.querySelector('.hr-sidebar-toggle');
         toggle.addEventListener('click', () => {
           const open = sidebar.classList.toggle('is-open');

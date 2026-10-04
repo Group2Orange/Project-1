@@ -7,7 +7,11 @@ const errorText = document.getElementById('password-error-message');
 const submitButton = form.querySelector('[type="submit"]');
 
 let session = null;
-try { session = JSON.parse(localStorage.getItem('loggedUser') || 'null'); } catch { /* No active session. */ }
+try {
+  session = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+} catch (error) {
+  // No active session.
+}
 
 function showError(message) {
   errorText.textContent = message;
@@ -21,7 +25,7 @@ function workspaceFor(role) {
 }
 
 async function checkFirstLogin() {
-  if (!session?.id) {
+  if (!session || !session.id) {
     location.replace('../login/login.html');
     return;
   }
@@ -30,7 +34,6 @@ async function checkFirstLogin() {
     if (!response.ok) throw new Error('Could not check this account.');
     const employee = await response.json();
     if (employee.status !== 'Active' && employee.status !== 'Inactive') {
-
       localStorage.removeItem('loggedUser');
       localStorage.removeItem('currentUserId');
       location.replace('../login/login.html');
@@ -43,13 +46,14 @@ async function checkFirstLogin() {
 }
 
 document.querySelectorAll('.password-toggle').forEach(button => {
-  button.addEventListener('click', () => {
-    const input = document.getElementById(button.getAttribute('aria-controls'));
+  // "this" is the toggle button that was clicked.
+  button.addEventListener('click', function () {
+    const input = document.getElementById(this.getAttribute('aria-controls'));
     const reveal = input.type === 'password';
     input.type = reveal ? 'text' : 'password';
-    button.setAttribute('aria-pressed', String(reveal));
-    button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-    button.querySelector('span').textContent = reveal ? 'visibility_off' : 'visibility';
+    this.setAttribute('aria-pressed', String(reveal));
+    this.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    this.querySelector('span').textContent = reveal ? 'visibility_off' : 'visibility';
   });
 });
 
@@ -73,11 +77,13 @@ form.addEventListener('submit', async event => {
       body: JSON.stringify({ password: password.value, firstAttend: false })
     });
     if (!response.ok) throw new Error('Could not save your password.');
-    window.RouterReset?.success();
-    await window.RouterReset?.finish();
+    if (window.RouterReset) {
+      window.RouterReset.success();
+      await window.RouterReset.finish();
+    }
     location.replace(workspaceFor(session.role));
   } catch (error) {
-    window.RouterReset?.error();
+    if (window.RouterReset) window.RouterReset.error();
     showError(`${error.message} Make sure the API is running.`);
   } finally {
     submitButton.disabled = false;
