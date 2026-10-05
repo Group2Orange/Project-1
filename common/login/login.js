@@ -1,110 +1,116 @@
-const loginForm = document.querySelector('#login-form');
-const emailInput = document.querySelector('#username');
-const passwordInput = document.querySelector('#password');
-const passwordToggle = document.querySelector('.password-toggle');
-const submitButton = loginForm.querySelector('.login-btn');
-const API = 'http://127.0.0.1:3000';
+// Login: asks the API if the email and the password belong to an employee.
+// The animation is in login-motion.js. This file only calls its three hooks: LoginMotion.start / error / success.
+const API = "http://127.0.0.1:3000";
 
-// Visiting the login page ends the previous local session, including after Logout.
-localStorage.removeItem('loggedUser');
-localStorage.removeItem('currentUserId');
-localStorage.removeItem('currentUser');
+const loginForm = document.getElementById("login-form");
+const emailInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const passwordToggle = document.querySelector(".password-toggle");
+const submitButton = loginForm.querySelector(".login-btn");
 
+// Opening the login page ends the old session (this is what Logout does too).
+localStorage.removeItem("loggedUser");
+
+// ----- Show / hide the password -----
 // "this" is the toggle button that was clicked.
-passwordToggle.addEventListener('click', function () {
-  const showPassword = passwordInput.type === 'password';
-  passwordInput.type = showPassword ? 'text' : 'password';
-  this.setAttribute('aria-pressed', String(showPassword));
-  this.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
-  this.querySelector('span').textContent = showPassword ? 'visibility_off' : 'visibility';
+passwordToggle.addEventListener("click", function () {
+  const showPassword = passwordInput.type === "password";
+  passwordInput.type = showPassword ? "text" : "password";
+  this.setAttribute("aria-pressed", String(showPassword));
+  this.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+  this.querySelector("span").textContent = showPassword ? "visibility_off" : "visibility";
 });
 
+// ----- The red error box (an empty message hides it) -----
 function setLoginError(message) {
-  message = message || '';
-  if (window.LoginMotion) window.LoginMotion.error(message);
-  document.querySelector('#login-error').hidden = !message;
+  message = message || "";
+  if (window.LoginMotion) {
+    window.LoginMotion.error(message);
+  }
+  document.getElementById("login-error").hidden = !message;
   if (message) {
-    document.querySelector('#login-error-message').textContent = message;
-    passwordInput.setAttribute('aria-invalid', 'true');
-    passwordInput.setAttribute('aria-describedby', 'login-error');
+    document.getElementById("login-error-message").textContent = message;
+    passwordInput.setAttribute("aria-invalid", "true");
+    passwordInput.setAttribute("aria-describedby", "login-error");
   } else {
-    passwordInput.removeAttribute('aria-invalid');
-    passwordInput.removeAttribute('aria-describedby');
+    passwordInput.removeAttribute("aria-invalid");
+    passwordInput.removeAttribute("aria-describedby");
   }
 }
 
-// Clear the previous error when the user starts correcting their credentials.
-for (const input of [emailInput, passwordInput]) {
-  input.addEventListener('input', () => setLoginError());
+// The old error disappears when the person starts typing again.
+emailInput.addEventListener("input", function () {
+  setLoginError("");
+});
+passwordInput.addEventListener("input", function () {
+  setLoginError("");
+});
+
+// ----- Check the employee that the API found, then sign in -----
+async function signIn(employee) {
+  if (!employee) {
+    setLoginError("Incorrect email or password.");
+    return;
+  }
+  if (employee.status !== "Active" && employee.status !== "Inactive") {
+    setLoginError("This account is not active. Please contact HR.");
+    return;
+  }
+  if (employee.role !== "HR" && employee.role !== "EMP") {
+    setLoginError("This account has no supported role. Please contact HR.");
+    return;
+  }
+
+  // Keep only the details the other screens need, never the whole employee record.
+  const loggedUser = {
+    id: employee.id,
+    role: employee.role,
+    name: employee.name,
+    email: employee.email,
+    department: employee.department,
+    position: employee.position,
+    employeeId: employee.employeeId,
+    image: employee.image
+  };
+  localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+
+  if (window.LoginMotion) {
+    await window.LoginMotion.success();
+  }
+
+  // A new employee must choose a new password first.
+  if (employee.firstAttend === true) {
+    location.href = "../reset-password/reset-password.html";
+  } else if (employee.role === "HR") {
+    location.href = "../../hr/workspace/workspace.html";
+  } else {
+    location.href = "../../employee/MyWOrkSpace/MyWOrkSpace.html";
+  }
 }
 
-loginForm.addEventListener('submit', async (event) => {
+// ----- The login form -----
+loginForm.onsubmit = async function (event) {
   event.preventDefault();
-  setLoginError();
+  setLoginError("");
   submitButton.disabled = true;
-  if (window.LoginMotion) window.LoginMotion.start();
+  if (window.LoginMotion) {
+    window.LoginMotion.start();
+  }
 
   try {
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
-    // OLD WAY (JSON + localStorage), kept here to compare with the API call below:
-    // const response = await fetch('../../Data/employee.json');
-    // const data = await response.json();
-    // const employee = data.employees.find(person =>
-    //   person.email.toLowerCase() === email && person.password === passwordInput.value
-    // );
-    // This read the bundled file; changes to it were not shared between browsers.
 
-    // NEW WAY: ask json-server for matching employees in api/db.json.
-    const url = `${API}/employees?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Could not check your account.');
-    const matches = await response.json();
-    const employee = matches[0];
-    if (!employee) {
-      setLoginError('Incorrect email or password.');
-      return;
+    // json-server gives back the employees whose email and password are the same as in the URL.
+    const response = await fetch(`${API}/employees?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+    if (!response.ok) {
+      setLoginError("Could not check your account.");
+    } else {
+      const matches = await response.json();
+      await signIn(matches[0]);
     }
-
-    if (employee.status !== 'Active' && employee.status !== 'Inactive') {
-      setLoginError('This account is not active. Please contact HR.');
-      return;
-    }
-
-    if (employee.role !== 'HR' && employee.role !== 'EMP') {
-      setLoginError('This account has no supported role. Please contact HR.');
-      return;
-    }
-
-    // Keep only the identity details other screens need, never the whole employee record.
-    const loggedUser = {
-      id: employee.id,
-      role: employee.role,
-      name: employee.name,
-      email: employee.email,
-      department: employee.department,
-      position: employee.position,
-      employeeId: employee.employeeId,
-      image: employee.image
-    };
-    localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
-    localStorage.removeItem('currentUser');
-    localStorage.setItem('currentUserId', String(employee.id));
-
-    if (window.LoginMotion) await window.LoginMotion.success();
-
-    if (employee.firstAttend === true) {
-      window.location.href = '../reset-password/reset-password.html';
-      return;
-    }
-
-    window.location.href = employee.role === 'HR'
-      ? '../../hr/workspace/workspace.html'
-      : '../../employee/MyWOrkSpace/MyWOrkSpace.html';
   } catch (error) {
-    console.error('Login failed to load employee data:', error);
-    setLoginError(error.message || 'Could not load employee data.');
-  } finally {
-    submitButton.disabled = false;
+    setLoginError(error.message || "Could not load employee data.");
   }
-});
+  submitButton.disabled = false;
+};

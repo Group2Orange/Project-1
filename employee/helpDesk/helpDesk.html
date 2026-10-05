@@ -123,12 +123,12 @@
 
           <!-- 4. Subject -->
           <label for="subject">Subject <span class="required">*</span></label>
-          <input id="subject" type="text" placeholder="Brief description of your request">
+          <input id="subject" type="text" maxlength="100" placeholder="Brief description of your request">
           <span class="field-error" id="subjectError"></span>
 
           <!-- 5. Inquiry Notes / Agenda -->
           <label for="details">Inquiry Notes / Agenda <span class="required">*</span></label>
-          <textarea id="details" placeholder="Describe your request in detail…"></textarea>
+          <textarea id="details" maxlength="1000" placeholder="Describe your request in detail…"></textarea>
           <span class="field-error" id="detailsError"></span>
 
           <!-- 6. Attachments -->

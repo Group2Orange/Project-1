@@ -1,189 +1,231 @@
-/*
-  Puts the shared navbar into a screen. You don't need to edit this file.
+// navbar.js - puts the navbar into the page and protects the page (login + role check).
+//
+// A screen uses it like this:
+//   1. Right after <body>:   <nav class="navbar" data-navbar="hr"></nav>      ("hr" or "employee")
+//   2. At the end of <body>: <script src="../../shared/navbar.js"></script>
+//
+// Some screens only need the protection and no bar:   <div data-navbar-guard="hr" hidden></div>
+//
+// Open the screens with Live Server: the navbar file is loaded with fetch().
 
-  The navbar itself is plain HTML, in:
-    shared/navbar-hr.html         the HR navbar
-    shared/navbar-employee.html   the employee navbar
-  and its look is in shared/shared.css. Edit those files instead.
+function startNavbar() {
+  // ----- Theme: light or dark -----
+  if (localStorage.getItem("teamspaceTheme") === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+  } else {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+  const themeStyles = document.createElement("link");
+  themeStyles.rel = "stylesheet";
+  themeStyles.href = "../../shared/theme.css";
+  document.head.appendChild(themeStyles);
 
-  How a screen uses it (full guide in shared/README.md):
-    1. Right after <body>:  <nav class="navbar" data-navbar="hr"></nav>          ("hr" or "employee")
-    2. At the end of <body>, before the screen's own script:
-         <script src="../../shared/navbar.js"></script>
+  // ----- Who is logged in? (null when nobody is) -----
+  function getLoggedUser() {
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("loggedUser"));
+    } catch (error) {
+      console.warn("Could not read the logged-in user:", error);
+    }
+    if (user === null || !user.id || String(user.name || "").trim() === "") {
+      return null;
+    }
+    if (user.role !== "HR" && user.role !== "EMP") {
+      return null;
+    }
+    return user;
+  }
 
-  Open screens with Live Server. When a screen is opened by double-clicking it,
-  the browser doesn't allow it to load another file, so the navbar stays empty.
-*/
+  // ----- Show the user's name, role and photo (or initials) in the navbar -----
+  function showIdentity(navbar, person) {
+    if (person === null || !person.name) {
+      return;
+    }
 
-{ // These curly braces keep the names below private, so they never clash with names in a screen's own .js file.
+    const words = person.name.trim().split(/\s+/);
+    let initials = words[0][0];
+    if (words.length > 1) {
+      initials = initials + words[words.length - 1][0];
+    }
+    initials = initials.toUpperCase();
 
-  const themeKey = 'teamspaceTheme';
-  const savedTheme = localStorage.getItem(themeKey);
-  document.documentElement.dataset.theme = savedTheme === 'dark' ? 'dark' : 'light';
-  const themeStyles = document.createElement('link');
-  themeStyles.rel = 'stylesheet';
-  themeStyles.href = new URL('theme.css', document.currentScript.src).href;
-  document.head.append(themeStyles);
+    navbar.querySelector(".navbar-user-name").textContent = person.name;
+    navbar.querySelector(".navbar-user-role").textContent = person.role === "HR" ? "HR" : "Employee";
 
-  // A screen shows one of two things:
-  //   <nav class="navbar" data-navbar="...">        the full navbar (renders a bar)
-  //   <div data-navbar-guard="...">                 login/role protection only, no visible bar
-  // Both carry the expected role ("hr" or "employee") so the guard below works either way.
+    const avatar = navbar.querySelector(".navbar-avatar");
+    const picture = String(person.image || "");
+    if (picture.startsWith("data:image/") || picture.startsWith("assets/")) {
+      avatar.textContent = "";
+      const image = document.createElement("img");
+      image.alt = "";
+      image.src = picture.startsWith("assets/") ? "../../" + picture : picture;
+      // "this" is the image that could not be loaded: remove it and show the initials instead.
+      image.onerror = function () {
+        this.remove();
+        avatar.textContent = initials;
+      };
+      avatar.appendChild(image);
+    } else {
+      avatar.textContent = initials;
+    }
+  }
+
+  // The edit-profile screen calls this after the name or photo changes.
+  window.updateNavbarIdentity = function () {
+    const navbar = document.querySelector(".navbar");
+    if (navbar !== null) {
+      showIdentity(navbar, getLoggedUser());
+    }
+  };
+
+  // ----- Find the empty spot in the page -----
   const barPlaceholder = document.querySelector(".navbar[data-navbar]");
   const guardPlaceholder = document.querySelector("[data-navbar-guard]");
   const placeholder = barPlaceholder || guardPlaceholder;
+  if (placeholder === null) {
+    return;
+  }
 
-  if (placeholder) {
-    let user = null;
-    try {
-      user = JSON.parse(localStorage.getItem('loggedUser'));
-    } catch (error) {
-      console.warn('Could not read the logged-in user:', error);
-    }
-    if (!user?.id || !['HR', 'EMP'].includes(user.role) || !String(user.name || '').trim()) user = null;
+  const user = getLoggedUser();
+  const path = location.pathname;
+  const isProtectedPage = path.includes("/hr/") || path.includes("/employee/");
 
-    const path = location.pathname;
-    const protectedPage = path.includes('/hr/') || path.includes('/employee/');
-    const navbarType = barPlaceholder ? barPlaceholder.dataset.navbar : guardPlaceholder.dataset.navbarGuard;
-    const expectedRole = navbarType === 'employee' ? 'EMP' : 'HR';
-    // HR can read the employee policy page from the main navbar. The HR sidebar
-    // still opens the separate policy management page.
-    const hrReadingPolicies = user?.role === 'HR' && path.endsWith('/employee/policies/EMPpolicies.html');
-    if (protectedPage && !user) {
-      location.replace('../../common/login/login.html');
-    } else if (protectedPage && user && user.role !== expectedRole && !hrReadingPolicies) {
-      location.replace(user.role === 'EMP'
-        ? '../../employee/MyWOrkSpace/MyWOrkSpace.html'
-        : user.role === 'HR' ? '../../hr/workspace/workspace.html' : '../../common/login/login.html');
-    } else if (!barPlaceholder) {
-      // Guard-only screen (the dashboards): login/role check passed, there is no bar to render.
+  let navbarType = "";
+  if (barPlaceholder !== null) {
+    navbarType = barPlaceholder.getAttribute("data-navbar");
+  } else {
+    navbarType = guardPlaceholder.getAttribute("data-navbar-guard");
+  }
+  const expectedRole = navbarType === "employee" ? "EMP" : "HR";
+
+  // HR can also read the employee policies page.
+  const hrReadsPolicies = user !== null && user.role === "HR" && path.endsWith("/employee/policies/EMPpolicies.html");
+
+  // ----- Protect the page -----
+  if (isProtectedPage && user === null) {
+    location.replace("../../common/login/login.html");
+    return;
+  }
+  if (isProtectedPage && user.role !== expectedRole && !hrReadsPolicies) {
+    if (user.role === "EMP") {
+      location.replace("../../employee/MyWOrkSpace/MyWOrkSpace.html");
     } else {
-    // Shared public pages use the navbar that matches the signed-in role.
-    const type = hrReadingPolicies ? 'hr'
-      : path.includes('/common/') && user?.role === 'EMP'
-        ? 'employee' : barPlaceholder.dataset.navbar;
-    const file = new URL(`navbar-${type}.html`, document.currentScript.src);
+      location.replace("../../hr/workspace/workspace.html");
+    }
+    return;
+  }
+  if (barPlaceholder === null) {
+    return; // this screen only needs the protection, there is no bar to show
+  }
 
-    fetch(file)
-      .then((response) => {
-        if (!response.ok) throw new Error(`${file} was not found`);
-        return response.text();
-      })
-      .then((html) => {
-        // Swap the empty navbar for the real one
-        placeholder.outerHTML = html;
+  // ----- Which navbar? Shared screens use the navbar of the person who is logged in -----
+  let type = navbarType;
+  if (hrReadsPolicies) {
+    type = "hr";
+  } else if (path.includes("/common/") && user !== null && user.role === "EMP") {
+    type = "employee";
+  }
 
-        const navbar = document.querySelector(".navbar");
-        const loginLink = navbar.querySelector('.navbar-login');
-        const userLink = navbar.querySelector('.navbar-user');
-        const logoutLink = navbar.querySelector('.navbar-logout');
-        loginLink.hidden = Boolean(user);
-        userLink.hidden = !user;
-        logoutLink.hidden = !user;
-        if (!user) {
-          navbar.querySelectorAll('.navbar-links a').forEach(link => {
-            if (link.pathname.includes('/workspace/') || link.pathname.includes('/policies/')) link.hidden = true;
-          });
-        }
-        logoutLink.addEventListener('click', () => {
-          localStorage.removeItem('loggedUser');
-          localStorage.removeItem('currentUserId');
-          localStorage.removeItem('currentUser');
-        });
-        const themeButton = navbar.querySelector('.theme-toggle');
-        function updateThemeButton() {
-          const dark = document.documentElement.dataset.theme === 'dark';
-          themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
-          themeButton.querySelector('span').textContent = dark ? 'light_mode' : 'dark_mode';
-        }
-        if (themeButton) {
-          updateThemeButton();
-          themeButton.addEventListener('click', () => {
-            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-            document.documentElement.dataset.theme = next;
-            localStorage.setItem(themeKey, next);
-            updateThemeButton();
-          });
-        }
-        function showIdentity(person) {
-          if (!person?.name) return;
-          const parts = person.name.trim().split(/\s+/);
-          navbar.querySelector('.navbar-user-name').textContent = person.name;
-          navbar.querySelector('.navbar-user-role').textContent = person.role === 'HR' ? 'HR' : 'Employee';
-          const avatar = navbar.querySelector('.navbar-avatar');
-          const initialsText = `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
-          const source = String(person.image || '');
-          if (source.startsWith('data:image/') || source.startsWith('assets/')) {
-            avatar.textContent = ''; // Clear initials temporarily while the image loads
-            const image = document.createElement('img');
-            image.alt = '';
-            image.src = source.startsWith('assets/') ? `../../${source}` : source;
-            image.addEventListener('error', () => {
-                image.remove();
-                avatar.textContent = initialsText; // Restore initials if the image is broken
-            });
-            avatar.append(image);
-          } else {
-            avatar.textContent = initialsText; // No image, show initials
-          }
-        }
-        showIdentity(user);
-        window.addEventListener('teamspace:profile-changed', () => {
-          try { showIdentity(JSON.parse(localStorage.getItem('loggedUser'))); }
-          catch { /* Keep the current label. */ }
-        });
+  // ----- Fill the navbar and make its buttons work -----
+  function setUpNavbar() {
+    const navbar = document.querySelector(".navbar");
+    const loginLink = navbar.querySelector(".navbar-login");
+    const userLink = navbar.querySelector(".navbar-user");
+    const logoutLink = navbar.querySelector(".navbar-logout");
 
-        const toggle = navbar.querySelector(".navbar-toggle");
-        const compactLayout = window.matchMedia("(max-width: 1100px)");
+    // Nobody logged in: show Login. Someone logged in: show the user and Logout.
+    loginLink.hidden = user !== null;
+    userLink.hidden = user === null;
+    logoutLink.hidden = user === null;
 
-        function setMenuOpen(open) {
-          navbar.classList.toggle("is-open", open);
-          toggle.setAttribute("aria-expanded", String(open));
-          toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-          toggle.querySelector("span").textContent = open ? "close" : "menu";
+    // Without a login, hide the links that need one.
+    if (user === null) {
+      navbar.querySelectorAll(".navbar-links a").forEach(function (link) {
+        if (link.pathname.includes("/workspace/") || link.pathname.includes("/policies/")) {
+          link.hidden = true;
         }
-
-        toggle.addEventListener("click", () => {
-          setMenuOpen(toggle.getAttribute("aria-expanded") !== "true");
-        });
-        navbar.addEventListener("keydown", (event) => {
-          if (event.key === "Escape" && navbar.classList.contains("is-open")) {
-            setMenuOpen(false);
-            toggle.focus();
-          }
-        });
-        navbar.addEventListener("click", (event) => {
-          if (compactLayout.matches && event.target.closest("a")) setMenuOpen(false);
-        });
-        document.addEventListener("click", (event) => {
-          if (!navbar.contains(event.target)) setMenuOpen(false);
-        });
-        compactLayout.addEventListener("change", () => {
-          const focusWillHide = compactLayout.matches
-            ? navbar.querySelector(".navbar-links").contains(document.activeElement) ||
-              navbar.querySelector(".navbar-right").contains(document.activeElement)
-            : document.activeElement === toggle;
-          setMenuOpen(false);
-          if (focusWillHide) {
-            (compactLayout.matches ? toggle : navbar.querySelector(".navbar-brand")).focus();
-          }
-        });
-
-        // Underline the link of the screen you are on
-        for (const link of document.querySelectorAll(".navbar-links a")) {
-          if (link.pathname === location.pathname) {
-            link.classList.add("active");
-            link.setAttribute("aria-current", "page");
-          }
-        }
-      })
-      .catch((error) => {
-        console.error(
-          'navbar.js: could not load the navbar. Check that data-navbar is "hr" or "employee", ' +
-          "and open the screen with Live Server (not by double-clicking it).",
-          error
-        );
       });
     }
+
+    // Logout forgets the user. The link itself opens the login screen.
+    logoutLink.addEventListener("click", function () {
+      localStorage.removeItem("loggedUser");
+    });
+
+    // Dark / light button (it only works when the button is in the navbar HTML).
+    const themeButton = navbar.querySelector(".theme-toggle");
+    function showThemeButton() {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      themeButton.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+      themeButton.querySelector("span").textContent = isDark ? "light_mode" : "dark_mode";
+    }
+    if (themeButton !== null) {
+      showThemeButton();
+      themeButton.addEventListener("click", function () {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        const nextTheme = isDark ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", nextTheme);
+        localStorage.setItem("teamspaceTheme", nextTheme);
+        showThemeButton();
+      });
+    }
+
+    showIdentity(navbar, user);
+
+    // The menu button (small screens) opens and closes the links.
+    const toggle = navbar.querySelector(".navbar-toggle");
+    function setMenuOpen(isOpen) {
+      navbar.className = isOpen ? "navbar is-open" : "navbar";
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+      toggle.querySelector("span").textContent = isOpen ? "close" : "menu";
+    }
+    toggle.addEventListener("click", function () {
+      setMenuOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+    navbar.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && navbar.className === "navbar is-open") {
+        setMenuOpen(false);
+        toggle.focus();
+      }
+    });
+    navbar.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        setMenuOpen(false);
+      });
+    });
+    document.addEventListener("click", function (event) {
+      if (!navbar.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    });
+
+    // Underline the link of the screen you are on.
+    navbar.querySelectorAll(".navbar-links a").forEach(function (link) {
+      if (link.pathname === location.pathname) {
+        link.className = "active";
+        link.setAttribute("aria-current", "page");
+      }
+    });
   }
+
+  // ----- Load the navbar file and put it in place of the empty <nav> -----
+  async function loadNavbar() {
+    try {
+      const response = await fetch("../../shared/navbar-" + type + ".html");
+      if (!response.ok) {
+        console.error('navbar.js: could not load the navbar. Check that data-navbar is "hr" or "employee".');
+        return;
+      }
+      placeholder.outerHTML = await response.text();
+      setUpNavbar();
+    } catch (error) {
+      console.error("navbar.js: could not load the navbar. Open the screen with Live Server.", error);
+    }
+  }
+
+  loadNavbar();
 }
+
+startNavbar();

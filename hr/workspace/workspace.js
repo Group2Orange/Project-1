@@ -1,45 +1,51 @@
-const API = 'http://127.0.0.1:3000';
-const now = new Date();
+// HR workspace: a greeting, today's date and a summary of the employees.
+const API = "http://127.0.0.1:3000";
 
-// Read the signed-in user. If the saved data is broken, use the default greeting.
-let user = {};
+// ----- Greeting and date -----
+let user = null;
 try {
-  user = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+  user = JSON.parse(localStorage.getItem("loggedUser"));
 } catch (error) {
-  user = {};
+  user = null;
 }
 
-let firstName = 'there';
-if (user && user.name) {
-  firstName = user.name.trim().split(/\s+/)[0] || 'there';
+let firstName = "there";
+if (user !== null && user.name) {
+  firstName = user.name.trim().split(/\s+/)[0] || "there";
 }
 
-let greeting = 'Good evening';
-if (now.getHours() < 12) greeting = 'Good morning';
-else if (now.getHours() < 18) greeting = 'Good afternoon';
+const now = new Date();
+let greeting = "Good evening";
+if (now.getHours() < 12) {
+  greeting = "Good morning";
+} else if (now.getHours() < 18) {
+  greeting = "Good afternoon";
+}
 
-document.getElementById('hrGreeting').textContent = `${greeting}, ${firstName} 👋`;
-const today = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-document.getElementById('hrWorkspaceDate').textContent = `Your HR workspace for ${today}.`;
+document.getElementById("hrGreeting").textContent = `${greeting}, ${firstName} 👋`;
+const today = now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+document.getElementById("hrWorkspaceDate").textContent = `Your HR workspace for ${today}.`;
 
+// ----- Summary of the employees (the data comes from the API) -----
 async function loadTeamSummary() {
-  const message = document.getElementById('hrWorkspaceMessage');
+  const message = document.getElementById("hrWorkspaceMessage");
   try {
     const response = await fetch(`${API}/employees`);
-    if (!response.ok) throw new Error('Could not load team summary.');
+    if (!response.ok) {
+      message.textContent = "Could not load team summary. Start the API with npm run api.";
+      return;
+    }
     const employees = await response.json();
-    // reduce() walks the list once and adds each employee to the right counters.
-    const totals = employees.reduce(function (counts, item) {
-      if (item.status === 'Active') counts.active++;
-      if (item.status === 'Blocked') counts.blocked++;
-      if (item.firstAttend === true) counts.firstAttend++;
-      return counts;
-    }, { active: 0, blocked: 0, firstAttend: 0 });
 
-    document.getElementById('hrTotalEmployees').textContent = employees.length;
-    document.getElementById('hrActiveEmployees').textContent = totals.active;
-    document.getElementById('hrFirstAttend').textContent = totals.firstAttend;
-    document.getElementById('hrBlockedEmployees').textContent = totals.blocked;
+    // filter() keeps the employees that match, and .length counts them.
+    const active = employees.filter(person => person.status === "Active").length;
+    const blocked = employees.filter(person => person.status === "Blocked").length;
+    const firstAttend = employees.filter(person => person.firstAttend === true).length;
+
+    document.getElementById("hrTotalEmployees").textContent = employees.length;
+    document.getElementById("hrActiveEmployees").textContent = active;
+    document.getElementById("hrFirstAttend").textContent = firstAttend;
+    document.getElementById("hrBlockedEmployees").textContent = blocked;
   } catch (error) {
     message.textContent = `${error.message} Start the API with npm run api.`;
   }

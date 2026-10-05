@@ -46,9 +46,9 @@
   <dialog id="policyDialog" class="policy-dialog" aria-labelledby="policyDialogTitle">
     <form id="policyForm">
       <div class="policy-dialog-heading"><div><p class="eyebrow">HR GUIDANCE</p><h2 id="policyDialogTitle">Add New Policy</h2><p id="policyDialogHint">Create a policy that employees can read.</p></div><button id="closePolicyDialog" type="button" class="policy-close" aria-label="Close">×</button></div>
-      <label for="policyTitle">Policy title</label><input id="policyTitle" name="title" maxlength="120" required>
+      <label for="policyTitle">Policy title</label><input id="policyTitle" name="title" maxlength="120" size="30" placeholder="e.g. Remote work policy" required>
       <label for="policyCategory">Category</label><input id="policyCategory" name="category" maxlength="60" size="30" placeholder="e.g. Security" required>
-      <label for="policyDescription">Description</label><textarea id="policyDescription" name="description" rows="6" maxlength="3000" required></textarea>
+      <label for="policyDescription">Description</label><textarea id="policyDescription" name="description" rows="6" maxlength="3000" placeholder="Write what employees need to know" required></textarea>
       <p id="policyFormError" class="policy-form-error" role="alert" hidden></p>
       <div class="policy-dialog-actions"><button id="cancelPolicyDialog" type="button">Cancel</button><button id="createPolicy" type="submit">Add Policy</button></div>
     </form>

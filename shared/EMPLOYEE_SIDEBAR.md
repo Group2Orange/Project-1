@@ -22,4 +22,4 @@ Load the script near the end of the body:
 
 Use `workspace`, `details`, `tasks`, `leave`, `policies`, `feedback`, or `helpdesk` for `data-sidebar-active`. The sidebar links are defined in one place, `employee-sidebar.html`.
 
-The sidebar reads the signed-in employee's tasks from `GET /tasks?employeeId=...` on the local API. Pages that change tasks in the current tab can dispatch `window.dispatchEvent(new Event('teamspace:tasks-changed'))` to refresh its count and progress.
+The sidebar reads the signed-in employee's tasks from `GET /tasks?employeeId=...` on the local API. A page that changes tasks calls `updateSidebarTasks()` (a plain function defined in `employee-sidebar.js`) to refresh the count and the progress bar.

@@ -30,7 +30,7 @@
       <div class="directory-filters">
         <div class="search-field">
           <span class="material-symbols-outlined">search</span>
-          <input type="search" id="searchInput" placeholder="Search by subject or employee…" autocomplete="off">
+          <input type="search" id="searchInput" maxlength="100" placeholder="Search by subject or employee…" autocomplete="off">
         </div>
         <select id="filterStatus">
           <option value="">All Statuses</option>
@@ -100,12 +100,12 @@
         <p id="approveDesc"></p>
         <div id="meetingLinkField" hidden>
           <label for="meetingLinkInput">Google Meet Link (required)</label>
-          <input type="url" id="meetingLinkInput" placeholder="https://meet.google.com/...">
+          <input type="url" id="meetingLinkInput" maxlength="200" placeholder="https://meet.google.com/...">
           <span class="field-error" id="meetingLinkError"></span>
         </div>
         <div id="hrReplyField">
           <label for="hrReplyInput">Reply Message (optional)</label>
-          <textarea id="hrReplyInput" rows="3" placeholder="Write a reply to the employee..."></textarea>
+          <textarea id="hrReplyInput" rows="3" maxlength="500" placeholder="Write a reply to the employee..."></textarea>
         </div>
         <span class="field-error" id="approveError" role="alert"></span>
       </div>
@@ -125,7 +125,7 @@
       </header>
       <div class="dialog-body">
         <label for="rejectReason">Reason for Rejection (required)</label>
-        <textarea id="rejectReason" rows="4" placeholder="Explain the reason for rejection..."></textarea>
+        <textarea id="rejectReason" rows="4" maxlength="500" placeholder="Explain the reason for rejection..."></textarea>
         <span class="field-error" id="rejectError"></span>
       </div>
       <footer class="dialog-foot">

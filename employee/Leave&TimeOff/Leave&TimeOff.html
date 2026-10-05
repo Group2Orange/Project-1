@@ -133,7 +133,7 @@
 
           <div class="search-box">
             <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" placeholder="Search by leave type...">
+            <input type="text" id="searchInput" maxlength="100" placeholder="Search by leave type...">
           </div>
         </div>
 
@@ -306,7 +306,7 @@
             <label for="reason">Reason / Notes</label>
             <span class="optional-tag">Optional</span>
           </div>
-          <textarea id="reason" class="form-textarea" rows="4"
+          <textarea id="reason" class="form-textarea" rows="4" maxlength="300"
             placeholder="Provide context for your request..."></textarea>
           <span class="field-error-msg" id="reasonError" style="display: none;"></span>
         </div>

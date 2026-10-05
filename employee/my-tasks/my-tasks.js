@@ -1,156 +1,206 @@
+// My Tasks: a board with four columns (the data comes from the API).
+// The employee drags a task to another column, sends it for review and can attach a PDF.
 const API = "http://127.0.0.1:3000";
-const MAX_PDF_SIZE = 1024 * 1024;
+const MAX_PDF_SIZE = 1024 * 1024; // 1 MB
 
 let tasks = [];
-// Last saved JSON text of every task, keyed by task id, e.g. { "1": "<task as JSON text>" }
-let persistedTasks = {};
-let taskSaveQueue = Promise.resolve();
-let selectedTaskId = null;
-let draggedTaskId = null;
+let savedTasks = {}; // how every task looked at the last save, as JSON text. The key is the task id.
+let saveQueue = Promise.resolve(); // the saves wait for each other here
+let selectedTaskId = null; // the task that is open in the popup
+let draggedTaskId = null; // the task that is being dragged
 let activeCategory = "all";
 let blockCardClick = false;
 
 const taskSearch = document.getElementById("taskSearch");
 const priorityFilter = document.getElementById("priorityFilter");
-const categoryTabs = document.getElementById("categoryTabs");
 const filterPanel = document.getElementById("filterPanel");
 const taskDialog = document.getElementById("taskDialog");
 const sendTaskBtn = document.getElementById("sendTaskBtn");
 const pdfInput = document.getElementById("pdfInput");
 
-function clone(data) {
-  return JSON.parse(JSON.stringify(data));
+// ── Small helpers ────────────────────────────────────────────────────────────
+
+// Shows an error message above the board.
+function showApiMessage(text) {
+  document.getElementById("taskApiMessage").textContent = text;
 }
 
-async function initializeTasks() {
-  const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-  if (!user || !user.id || user.role !== 'EMP') return;
-  try {
-    const response = await fetch(`${API}/tasks?employeeId=${encodeURIComponent(user.id)}`);
-    if (!response.ok) throw new Error('Could not load tasks. Start the API with npm run api.');
-    tasks = await response.json();
-    persistedTasks = {};
-    tasks.forEach(task => {
-      persistedTasks[String(task.id)] = JSON.stringify(task);
-    });
-  } catch (error) {
-    console.error(error);
-    document.getElementById('taskApiMessage').textContent = error.message;
-    return;
+// Stops text from being read as HTML, so what people type cannot break the page.
+function escapeHtml(value) {
+  if (value === undefined) {
+    value = "";
   }
-  renderTasks();
-  const requestedTaskId = new URLSearchParams(window.location.search).get('task');
-  if (requestedTaskId) openTask(requestedTaskId);
-  window.dispatchEvent(new Event('teamspace:tasks-changed'));
-}
-
-// Send only the tasks that changed since the last save.
-// Saves run one after another (each waits for the previous promise).
-function saveTasks() {
-  const changed = tasks
-    .filter(task => persistedTasks[String(task.id)] !== JSON.stringify(task))
-    .map(clone);
-  taskSaveQueue = taskSaveQueue.then(async () => {
-    for (const task of changed) {
-      const response = await fetch(`${API}/tasks/${encodeURIComponent(task.id)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(task)
-      });
-      if (!response.ok) throw new Error('Could not save task changes.');
-      persistedTasks[String(task.id)] = JSON.stringify(task);
-    }
-    window.dispatchEvent(new Event('teamspace:tasks-changed'));
-  }).catch(error => {
-    console.error(error);
-    document.getElementById('taskApiMessage').textContent = error.message;
-  });
-  return taskSaveQueue;
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function getTask(id) {
   return tasks.find(task => task.id === id);
 }
 
-function escapeHtml(value) {
-  if (value === undefined) value = "";
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
 function formatDate(date) {
-  if (!date) return "No date";
-
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  }).format(new Date(`${date}T00:00:00`));
+  if (!date) {
+    return "No date";
+  }
+  return new Date(`${date}T00:00:00`).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function formatFileSize(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${Math.round(bytes / 1024)} KB`;
+  }
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function getStatusLabel(status) {
-  const labels = {
-    todo: "To Do",
-    progress: "In Progress",
-    review: "Under Review",
-    completed: "Completed"
-  };
-
+  const labels = { todo: "To Do", progress: "In Progress", review: "Under Review", completed: "Completed" };
   return labels[status] || status;
 }
 
 function getCategoryLabel(category) {
-  const labels = {
-    sprint: "Sprint & Daily Work",
-    onboarding: "Onboarding & Compliance",
-    review: "Review & Sign-offs"
-  };
-
+  const labels = { sprint: "Sprint & Daily Work", onboarding: "Onboarding & Compliance", review: "Review & Sign-offs" };
   return labels[category] || category;
 }
 
+// A task is overdue when its due date is before today and it is not completed.
 function isOverdue(task) {
-  if (!task.dueDate || task.status === "completed") return false;
-
+  if (!task.dueDate || task.status === "completed") {
+    return false;
+  }
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  const dueDate = new Date(`${task.dueDate}T00:00:00`);
-
-  return dueDate < today;
+  return new Date(`${task.dueDate}T00:00:00`) < today;
 }
 
+// The color of the priority label on a card.
 function getPriorityClass(task) {
-  if (task.status === "completed") return "completed";
-  if (task.status === "review") return "review";
+  if (task.status === "completed") {
+    return "completed";
+  }
+  if (task.status === "review") {
+    return "review";
+  }
   return task.priority.toLowerCase();
 }
 
-function createTaskCard(task) {
+// ── Load and save the tasks ──────────────────────────────────────────────────
+
+async function loadTasks() {
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("loggedUser"));
+  } catch (error) {
+    user = null;
+  }
+  if (user === null || !user.id || user.role !== "EMP") {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API}/tasks?employeeId=${user.id}`);
+    if (!response.ok) {
+      showApiMessage("Could not load tasks. Start the API with npm run api.");
+      return;
+    }
+    tasks = await response.json();
+  } catch (error) {
+    showApiMessage(error.message);
+    return;
+  }
+
+  // Remember how every task looks now, so we can see later which ones changed.
+  savedTasks = {};
+  tasks.forEach(function (task) {
+    savedTasks[String(task.id)] = JSON.stringify(task);
+  });
+
+  showTasks();
+  // my-tasks.html?task=TASK-001 opens that task.
+  const requestedTaskId = location.search.split("=")[1];
+  if (requestedTaskId) {
+    openTask(requestedTaskId);
+  }
+  updateSidebarTasks();
+}
+
+// Sends only the tasks that changed since the last save.
+// A Promise is a "later result". The saves wait for each other, one after another.
+function saveTasks() {
+  // A copy of the changed tasks, made with JSON, so later changes do not mix with this save.
+  const changed = tasks
+    .filter(task => savedTasks[String(task.id)] !== JSON.stringify(task))
+    .map(task => JSON.parse(JSON.stringify(task)));
+
+  saveQueue = saveQueue.then(function () {
+    return sendTasks(changed);
+  });
+}
+
+// PUT replaces a whole task in the API.
+async function sendTasks(changed) {
+  try {
+    for (const task of changed) {
+      const response = await fetch(`${API}/tasks/${task.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task)
+      });
+      if (!response.ok) {
+        showApiMessage("Could not save task changes.");
+        return;
+      }
+      savedTasks[String(task.id)] = JSON.stringify(task);
+    }
+    updateSidebarTasks();
+  } catch (error) {
+    showApiMessage(error.message);
+  }
+}
+
+// ── The board ────────────────────────────────────────────────────────────────
+
+// Does the task match the search, the category and the priority the person chose?
+function matchesFilters(task) {
+  const search = taskSearch.value.trim().toLowerCase();
+  const priority = priorityFilter.value;
+
+  const text = [task.title, task.description, task.team].join(" ").toLowerCase();
+  const matchesSearch = !search || text.includes(search);
+  const matchesCategory = activeCategory === "all" || task.category === activeCategory;
+
+  let matchesPriority = true;
+  if (priority === "overdue") {
+    matchesPriority = isOverdue(task);
+  } else if (priority !== "all") {
+    matchesPriority = task.priority === priority;
+  }
+  return matchesSearch && matchesCategory && matchesPriority;
+}
+
+// Builds the card (an <article>) of one task.
+function makeTaskCard(task) {
+  const overdue = isOverdue(task) ? `<div class="overdue-badge">⚠ Overdue</div>` : "";
+  const attachment = task.attachment ? `<div class="pdf-badge">📎 PDF Attached</div>` : "";
+
+  // A card that does not match the filters is hidden.
+  let baseClass = "task-card";
+  if (task.status === "completed") {
+    baseClass += " completed";
+  }
+  if (!matchesFilters(task)) {
+    baseClass += " hidden";
+  }
+
   const card = document.createElement("article");
-
-  card.className = `task-card ${task.status === "completed" ? "completed" : ""}`;
-  card.dataset.id = task.id;
+  card.className = baseClass;
   card.draggable = true;
-
-  const overdue = isOverdue(task)
-    ? `<div class="overdue-badge">⚠ Overdue</div>`
-    : "";
-
-  const attachment = task.attachment
-    ? `<div class="pdf-badge">📎 PDF Attached</div>`
-    : "";
-
   card.innerHTML = `
     <div class="task-top">
       <span class="priority ${getPriorityClass(task)}">
@@ -178,190 +228,131 @@ function createTaskCard(task) {
     </div>
   `;
 
-  card.addEventListener("click", () => {
-    if (!blockCardClick) openTask(task.id);
-  });
+  // Clicking the card opens the details (but not right after a drag).
+  card.onclick = function () {
+    if (!blockCardClick) {
+      openTask(task.id);
+    }
+  };
 
-  card.addEventListener("dragstart", event => {
+  // "this" is the card that is dragged.
+  card.ondragstart = function (event) {
     blockCardClick = true;
     draggedTaskId = task.id;
-
-    card.classList.add("dragging");
-
+    this.className = baseClass + " dragging";
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", task.id);
-  });
+  };
 
-  card.addEventListener("dragend", () => {
-    card.classList.remove("dragging");
+  card.ondragend = function () {
+    this.className = baseClass;
     draggedTaskId = null;
-
-    document.querySelectorAll(".drop-zone").forEach(zone => {
-      zone.classList.remove("drag-over");
+    document.querySelectorAll(".drop-zone").forEach(function (zone) {
+      zone.className = "drop-zone";
     });
-
-    setTimeout(() => {
+    setTimeout(function () {
       blockCardClick = false;
     }, 100);
-  });
+  };
 
   return card;
 }
 
-function renderTasks() {
-  document.querySelectorAll(".drop-zone").forEach(zone => {
+// Puts every task in the column of its status, and shows the numbers.
+function showTasks() {
+  document.querySelectorAll(".drop-zone").forEach(function (zone) {
     zone.innerHTML = "";
   });
 
+  // sort() puts the tasks in their saved order.
   tasks
     .slice()
     .sort((a, b) => (a.order || 0) - (b.order || 0))
-    .forEach(task => {
-      const zone = document.querySelector(
-        `.drop-zone[data-status="${task.status}"]`
-      );
-
-      if (zone) zone.appendChild(createTaskCard(task));
+    .forEach(function (task) {
+      const zone = document.querySelector(`.drop-zone[data-status="${task.status}"]`);
+      if (zone) {
+        zone.appendChild(makeTaskCard(task));
+      }
     });
 
-  updateStats();
-  applyFilters();
+  showStats();
 }
 
-document.querySelectorAll(".drop-zone").forEach(zone => {
-  zone.addEventListener("dragover", event => {
-    event.preventDefault();
-    zone.classList.add("drag-over");
+// The numbers: tasks in every column, active, completed and due soon.
+function showStats() {
+  ["todo", "progress", "review", "completed"].forEach(function (status) {
+    const count = tasks.filter(task => task.status === status).length;
+    document.querySelector(`[data-count="${status}"]`).textContent = count;
   });
 
-  zone.addEventListener("dragleave", () => {
-    zone.classList.remove("drag-over");
+  const active = tasks.filter(task => task.status !== "completed");
+  const completed = tasks.filter(task => task.status === "completed");
+  document.getElementById("totalActiveCount").textContent = active.length;
+  document.getElementById("completedCount").textContent = completed.length;
+
+  // Due soon: not completed, and due today or in the next 48 hours.
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const limit = new Date(today.getTime() + 48 * 60 * 60 * 1000);
+  const dueSoon = active.filter(function (task) {
+    if (!task.dueDate) {
+      return false;
+    }
+    const dueDate = new Date(`${task.dueDate}T00:00:00`);
+    return dueDate >= today && dueDate <= limit;
+  });
+  document.getElementById("dueSoonCount").textContent = dueSoon.length;
+}
+
+// ── Drag a task to another column ────────────────────────────────────────────
+
+document.querySelectorAll(".drop-zone").forEach(function (zone) {
+  // "this" is the column. preventDefault() allows a task to be dropped here.
+  zone.addEventListener("dragover", function (event) {
+    event.preventDefault();
+    this.className = "drop-zone drag-over";
   });
 
-  zone.addEventListener("drop", event => {
+  zone.addEventListener("dragleave", function () {
+    this.className = "drop-zone";
+  });
+
+  zone.addEventListener("drop", function (event) {
     event.preventDefault();
+    this.className = "drop-zone";
 
-    zone.classList.remove("drag-over");
-
-    const id =
-      event.dataTransfer.getData("text/plain") ||
-      draggedTaskId;
-
+    const id = event.dataTransfer.getData("text/plain") || draggedTaskId;
     const task = getTask(id);
+    if (!task) {
+      return;
+    }
 
-    if (!task) return;
-
-    task.status = zone.dataset.status;
-
+    // The task gets the status of the column, and goes to the end of it.
+    task.status = this.getAttribute("data-status");
     if (task.status === "completed") {
       task.completedAt = new Date().toISOString();
     } else {
       delete task.completedAt;
     }
-
-    task.order =
-      tasks.filter(item => item.status === task.status).length;
+    task.order = tasks.filter(item => item.status === task.status).length;
 
     saveTasks();
-    renderTasks();
+    showTasks();
   });
 });
 
-function updateStats() {
-  ["todo", "progress", "review", "completed"].forEach(status => {
-    const count = tasks.filter(task => task.status === status).length;
+// ── The task popup ───────────────────────────────────────────────────────────
 
-    const element = document.querySelector(
-      `[data-count="${status}"]`
-    );
-
-    if (element) element.textContent = count;
-  });
-
-  const active = tasks.filter(task => task.status !== "completed");
-  const completed = tasks.filter(task => task.status === "completed");
-
-  document.getElementById("totalActiveCount").textContent = active.length;
-  document.getElementById("completedCount").textContent = completed.length;
-  const sidebarTaskCount = document.getElementById("sidebarTaskCount");
-  if (sidebarTaskCount) sidebarTaskCount.textContent = active.length;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const limit = new Date(
-    today.getTime() + 48 * 60 * 60 * 1000
-  );
-
-  const dueSoon = active.filter(task => {
-    if (!task.dueDate) return false;
-
-    const dueDate = new Date(`${task.dueDate}T00:00:00`);
-
-    return dueDate >= today && dueDate <= limit;
-  });
-
-  document.getElementById("dueSoonCount").textContent = dueSoon.length;
-
-  const progress = tasks.length
-    ? Math.round((completed.length / tasks.length) * 100)
-    : 0;
-
-  const progressText = document.getElementById("weeklyProgressText");
-  if (progressText) progressText.textContent = `${progress}%`;
-
-  const progressBar = document.getElementById("weeklyProgressBar");
-  if (progressBar) progressBar.style.width = `${progress}%`;
-  const progressMeter = document.querySelector('.employee-sidebar [role="progressbar"]');
-  if (progressMeter) progressMeter.setAttribute('aria-valuenow', String(progress));
-}
-
-function applyFilters() {
-  const search = taskSearch.value.trim().toLowerCase();
-  const priority = priorityFilter.value;
-
-  document.querySelectorAll(".task-card").forEach(card => {
-    const task = getTask(card.dataset.id);
-
-    if (!task) return;
-
-    const text = [
-      task.title,
-      task.description,
-      task.team
-    ].join(" ").toLowerCase();
-
-    const matchesSearch =
-      !search ||
-      text.includes(search);
-
-    const matchesCategory =
-      activeCategory === "all" ||
-      task.category === activeCategory;
-
-    const matchesPriority =
-      priority === "all"
-        ? true
-        : priority === "overdue"
-          ? isOverdue(task)
-          : task.priority === priority;
-
-    card.classList.toggle(
-      "hidden",
-      !(matchesSearch && matchesCategory && matchesPriority)
-    );
-  });
-}
-
+// Puts a text in an element, or a dash when there is no text.
 function setText(id, value) {
   document.getElementById(id).textContent = value || "-";
 }
 
 function openTask(id) {
   const task = getTask(id);
-
-  if (!task) return;
-
+  if (!task) {
+    return;
+  }
   selectedTaskId = id;
 
   setText("taskTitle", task.title);
@@ -372,56 +363,39 @@ function openTask(id) {
   setText("taskDueDate", formatDate(task.dueDate));
   setText("taskStatus", getStatusLabel(task.status));
   setText("taskPriority", task.priority);
-
-  document
-    .getElementById("taskPriority")
-    .classList.toggle("high", task.priority === "High");
-
+  document.getElementById("taskPriority").className = task.priority === "High" ? "priority-badge high" : "priority-badge";
   document.getElementById("dialogMessage").textContent = "";
 
   updateSendButton(task);
-  renderAttachment(task);
-
+  showAttachment(task);
   taskDialog.showModal();
 }
 
+// The Send button: "Send Task", or "Task Sent" / "Completed" (then it is disabled).
 function updateSendButton(task) {
-  const disabled =
-    task.status === "review" ||
-    task.status === "completed";
-
-  sendTaskBtn.disabled = disabled;
+  sendTaskBtn.disabled = task.status === "review" || task.status === "completed";
 
   if (task.status === "review") {
     sendTaskBtn.innerHTML = `
       <span class="material-symbols-outlined">check</span>
       Task Sent
     `;
-    return;
-  }
-
-  if (task.status === "completed") {
+  } else if (task.status === "completed") {
     sendTaskBtn.innerHTML = `
       <span class="material-symbols-outlined">check_circle</span>
       Completed
     `;
-    return;
+  } else {
+    sendTaskBtn.innerHTML = `
+      <span class="material-symbols-outlined">send</span>
+      Send Task
+    `;
   }
-
-  sendTaskBtn.innerHTML = `
-    <span class="material-symbols-outlined">send</span>
-    Send Task
-  `;
 }
 
-sendTaskBtn.addEventListener("click", () => {
+sendTaskBtn.onclick = function () {
   const task = getTask(selectedTaskId);
-
-  if (
-    !task ||
-    task.status === "review" ||
-    task.status === "completed"
-  ) {
+  if (!task || task.status === "review" || task.status === "completed") {
     return;
   }
 
@@ -430,74 +404,14 @@ sendTaskBtn.addEventListener("click", () => {
   task.order = tasks.filter(item => item.status === "review").length;
 
   saveTasks();
-  renderTasks();
-
+  showTasks();
   setText("taskStatus", "Under Review");
-
-  document.getElementById("dialogMessage").textContent =
-    "Task sent successfully.";
-
+  document.getElementById("dialogMessage").textContent = "Task sent successfully.";
   updateSendButton(task);
-});
+};
 
-document.getElementById("attachPdfBtn").addEventListener("click", () => {
-  pdfInput.click();
-});
-
-pdfInput.addEventListener("change", () => {
-  const file = pdfInput.files[0];
-
-  if (!file || !selectedTaskId) return;
-
-  const message = document.getElementById("dialogMessage");
-
-  if (
-    file.type !== "application/pdf" &&
-    !file.name.toLowerCase().endsWith(".pdf")
-  ) {
-    message.textContent = "Please select a PDF file.";
-    pdfInput.value = "";
-    return;
-  }
-
-  if (file.size > MAX_PDF_SIZE) {
-    message.textContent = "PDF must be 1 MB or smaller.";
-    pdfInput.value = "";
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    const task = getTask(selectedTaskId);
-
-    if (!task) return;
-
-    task.attachment = {
-      name: file.name,
-      size: file.size,
-      data: reader.result
-    };
-
-    try {
-      saveTasks();
-
-      renderAttachment(task);
-      renderTasks();
-
-      message.textContent = "PDF attached successfully.";
-    } catch (error) {
-      delete task.attachment;
-      message.textContent = "Unable to save the PDF.";
-    }
-
-    pdfInput.value = "";
-  };
-
-  reader.readAsDataURL(file);
-});
-
-function renderAttachment(task) {
+// Shows the attached PDF in the popup (or "No PDF attached.").
+function showAttachment(task) {
   const empty = document.getElementById("noAttachment");
   const fileBox = document.getElementById("attachmentFile");
   const openLink = document.getElementById("openAttachment");
@@ -511,83 +425,104 @@ function renderAttachment(task) {
 
   empty.hidden = true;
   fileBox.hidden = false;
-
   setText("attachmentName", task.attachment.name);
   setText("attachmentSize", formatFileSize(task.attachment.size));
-
   openLink.href = task.attachment.data;
 }
 
-document.getElementById("removeAttachmentBtn").addEventListener(
-  "click",
-  () => {
+document.getElementById("attachPdfBtn").onclick = function () {
+  pdfInput.click();
+};
+
+// "this" is the file input that changed.
+pdfInput.addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file || !selectedTaskId) {
+    return;
+  }
+  const message = document.getElementById("dialogMessage");
+
+  if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+    message.textContent = "Please select a PDF file.";
+    this.value = "";
+    return;
+  }
+  if (file.size > MAX_PDF_SIZE) {
+    message.textContent = "PDF must be 1 MB or smaller.";
+    this.value = "";
+    return;
+  }
+
+  // FileReader turns the PDF into text, so it can be saved in the API.
+  const reader = new FileReader();
+  reader.onload = function () {
     const task = getTask(selectedTaskId);
-
-    if (!task || !task.attachment) return;
-
-    delete task.attachment;
+    if (!task) {
+      return;
+    }
+    task.attachment = { name: file.name, size: file.size, data: reader.result };
 
     saveTasks();
-    renderAttachment(task);
-    renderTasks();
+    showAttachment(task);
+    showTasks();
+    message.textContent = "PDF attached successfully.";
+    pdfInput.value = "";
+  };
+  reader.readAsDataURL(file);
+});
 
-    document.getElementById("dialogMessage").textContent =
-      "Attachment removed.";
+document.getElementById("removeAttachmentBtn").onclick = function () {
+  const task = getTask(selectedTaskId);
+  if (!task || !task.attachment) {
+    return;
   }
-);
+  delete task.attachment;
 
-document.getElementById("closeDialogBtn").addEventListener(
-  "click",
-  () => taskDialog.close()
-);
+  saveTasks();
+  showAttachment(task);
+  showTasks();
+  document.getElementById("dialogMessage").textContent = "Attachment removed.";
+};
 
-taskDialog.addEventListener("click", event => {
+document.getElementById("closeDialogBtn").onclick = function () {
+  taskDialog.close();
+};
+
+// A click on the dark area around the popup closes it.
+taskDialog.addEventListener("click", function (event) {
   if (event.target === taskDialog) {
     taskDialog.close();
   }
 });
 
-taskSearch.addEventListener("input", applyFilters);
+// ── Search and filters ───────────────────────────────────────────────────────
 
-priorityFilter.addEventListener("change", applyFilters);
+taskSearch.addEventListener("input", showTasks);
+priorityFilter.addEventListener("change", showTasks);
 
-document.getElementById("toggleFiltersBtn").addEventListener(
-  "click",
-  () => {
-    filterPanel.hidden = !filterPanel.hidden;
-  }
-);
+document.getElementById("toggleFiltersBtn").onclick = function () {
+  filterPanel.hidden = !filterPanel.hidden;
+};
 
-document.getElementById("clearFiltersBtn").addEventListener(
-  "click",
-  () => {
-    taskSearch.value = "";
-    priorityFilter.value = "all";
-    activeCategory = "all";
-
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.classList.toggle(
-        "active",
-        tab.dataset.category === "all"
-      );
+// The tabs: the clicked tab gets the class "active".
+document.querySelectorAll(".tab").forEach(function (tab) {
+  tab.onclick = function () {
+    activeCategory = this.getAttribute("data-category");
+    document.querySelectorAll(".tab").forEach(function (other) {
+      other.className = other === tab ? "tab active" : "tab";
     });
-
-    applyFilters();
-  }
-);
-
-categoryTabs.addEventListener("click", event => {
-  const tab = event.target.closest(".tab");
-
-  if (!tab) return;
-
-  activeCategory = tab.dataset.category;
-
-  document.querySelectorAll(".tab").forEach(item => {
-    item.classList.toggle("active", item === tab);
-  });
-
-  applyFilters();
+    showTasks();
+  };
 });
 
-initializeTasks();
+document.getElementById("clearFiltersBtn").onclick = function () {
+  taskSearch.value = "";
+  priorityFilter.value = "all";
+  activeCategory = "all";
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.className = tab.getAttribute("data-category") === "all" ? "tab active" : "tab";
+  });
+  showTasks();
+};
+
+loadTasks();

@@ -1,99 +1,133 @@
-{
-  const placeholder = document.querySelector('[data-employee-sidebar]');
+// employee-sidebar.js - puts the employee sidebar into the page.
+//
+// A screen has an empty sidebar:
+//   <aside class="employee-sidebar" data-employee-sidebar data-sidebar-active="tasks"></aside>
+// "data-sidebar-active" says which link of the sidebar is the current screen.
+// Open the screens with Live Server: the sidebar file is loaded with fetch().
 
-  if (placeholder) {
-    const activePage = placeholder.dataset.sidebarActive;
-    const file = new URL('employee-sidebar.html', document.currentScript.src);
+// Updates the task count and the progress bar in the sidebar.
+// The My Tasks screen calls this function every time a task changes.
+async function updateSidebarTasks() {
+  const sidebar = document.querySelector(".employee-sidebar");
+  if (sidebar === null) {
+    return;
+  }
+  // The sidebar file may not be loaded yet. It calls this function again when it is loaded.
+  if (sidebar.querySelector("#sidebarTaskCount") === null) {
+    return;
+  }
 
-    fetch(file)
-      .then(response => {
-        if (!response.ok) throw new Error(`Sidebar request failed: ${response.status}`);
-        return response.text();
-      })
-      .then(html => {
-        placeholder.outerHTML = html;
+  let tasks = [];
+  try {
+    const user = JSON.parse(localStorage.getItem("loggedUser"));
+    if (user !== null && user.id) {
+      const response = await fetch("http://127.0.0.1:3000/tasks?employeeId=" + encodeURIComponent(user.id));
+      if (response.ok) {
+        tasks = await response.json();
+      } else {
+        console.warn("Could not load task progress.");
+      }
+    }
+  } catch (error) {
+    console.warn(error);
+  }
 
-        const sidebar = document.querySelector('.employee-sidebar');
-        try {
-          const user = JSON.parse(localStorage.getItem('loggedUser'));
-          if (user?.name) {
-            const parts = user.name.trim().split(/\s+/);
-            const initials = `${parts[0][0]}${parts.length > 1 ? parts[parts.length - 1][0] : ''}`.toUpperCase();
-            sidebar.querySelector('.employee-sidebar-person strong').textContent = user.name;
-            sidebar.querySelector('.employee-sidebar-person small').textContent = user.department || user.position || 'Employee';
-            const avatar = sidebar.querySelector('.employee-sidebar-avatar');
-            avatar.textContent = initials;
+  const completedCount = tasks.filter(function (task) {
+    return task.status === "completed";
+  }).length;
+  const activeCount = tasks.length - completedCount;
+  let progress = 0;
+  if (tasks.length > 0) {
+    progress = Math.round(completedCount / tasks.length * 100);
+  }
 
-            const imageSource = String(user.image || '');
-            if (imageSource.startsWith('data:image/') || imageSource.startsWith('assets/')) {
-              const image = document.createElement('img');
-              image.alt = '';
-              image.addEventListener('error', () => {
-                image.remove();
-                avatar.textContent = initials;
-              });
-              avatar.textContent = '';
-              image.src = imageSource.startsWith('assets/')
-                ? new URL(`../../${imageSource}`, document.baseURI).href
-                : imageSource;
-              avatar.append(image);
-            }
-          }
-        } catch (error) {
-          console.warn('Could not read the logged-in user for the sidebar:', error);
-        }
+  sidebar.querySelector("#sidebarTaskCount").textContent = activeCount;
+  sidebar.querySelector("#weeklyProgressText").textContent = progress + "%";
+  sidebar.querySelector("#weeklyProgressBar").style.width = progress + "%";
+  sidebar.querySelector('[role="progressbar"]').setAttribute("aria-valuenow", String(progress));
+}
 
-        const activeLink = sidebar.querySelector(`[data-sidebar-link="${activePage}"]`);
-        if (activeLink) {
-          activeLink.classList.add('is-active');
-          activeLink.setAttribute('aria-current', 'page');
-        }
+async function loadEmployeeSidebar() {
+  const placeholder = document.querySelector("[data-employee-sidebar]");
+  if (placeholder === null) {
+    return;
+  }
+  const activePage = placeholder.getAttribute("data-sidebar-active");
 
-        sidebar.querySelector('#employeeSidebarLogout').addEventListener('click', () => {
-          localStorage.removeItem('loggedUser');
-          localStorage.removeItem('currentUserId');
-          localStorage.removeItem('currentUser');
-          window.location.href = '../../common/login/login.html';
-        });
+  try {
+    const response = await fetch("../../shared/employee-sidebar.html");
+    if (!response.ok) {
+      console.error("Sidebar request failed: " + response.status);
+      placeholder.textContent = "Workspace navigation is unavailable.";
+      return;
+    }
+    placeholder.outerHTML = await response.text();
+    const sidebar = document.querySelector(".employee-sidebar");
 
-        const toggle = sidebar.querySelector('.employee-sidebar-toggle');
-        toggle.addEventListener('click', () => {
-          const open = sidebar.classList.toggle('is-open');
-          toggle.setAttribute('aria-expanded', String(open));
-          toggle.setAttribute('aria-label', open ? 'Hide workspace pages' : 'Show workspace pages');
-          toggle.querySelector('span').textContent = open ? 'close' : 'menu';
-        });
+    // Show the name, department and photo (or initials) of the logged-in user.
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("loggedUser"));
+    } catch (error) {
+      console.warn("Could not read the logged-in user for the sidebar:", error);
+    }
+    if (user !== null && user.name) {
+      const words = user.name.trim().split(/\s+/);
+      let initials = words[0][0];
+      if (words.length > 1) {
+        initials = initials + words[words.length - 1][0];
+      }
+      initials = initials.toUpperCase();
 
-        async function updateTaskSummary() {
-          let tasks = [];
-          try {
-            const user = JSON.parse(localStorage.getItem('loggedUser') || 'null');
-            if (user?.id) {
-              const response = await fetch(`http://127.0.0.1:3000/tasks?employeeId=${encodeURIComponent(user.id)}`);
-              if (!response.ok) throw new Error('Could not load task progress.');
-              tasks = await response.json();
-            }
-          } catch (error) {
-            console.warn(error);
-          }
+      sidebar.querySelector(".employee-sidebar-person strong").textContent = user.name;
+      sidebar.querySelector(".employee-sidebar-person small").textContent = user.department || user.position || "Employee";
 
-          const activeCount = tasks.filter(task => task.status !== 'completed').length;
-          const completedCount = tasks.filter(task => task.status === 'completed').length;
-          const progress = tasks.length ? Math.round(completedCount / tasks.length * 100) : 0;
+      const avatar = sidebar.querySelector(".employee-sidebar-avatar");
+      avatar.textContent = initials;
+      const picture = String(user.image || "");
+      if (picture.startsWith("data:image/") || picture.startsWith("assets/")) {
+        const image = document.createElement("img");
+        image.alt = "";
+        // "this" is the image that could not be loaded: remove it and show the initials instead.
+        image.onerror = function () {
+          this.remove();
+          avatar.textContent = initials;
+        };
+        avatar.textContent = "";
+        image.src = picture.startsWith("assets/") ? "../../" + picture : picture;
+        avatar.appendChild(image);
+      }
+    }
 
-          sidebar.querySelector('#sidebarTaskCount').textContent = activeCount;
-          sidebar.querySelector('#weeklyProgressText').textContent = `${progress}%`;
-          sidebar.querySelector('#weeklyProgressBar').style.width = `${progress}%`;
-          sidebar.querySelector('[role="progressbar"]').setAttribute('aria-valuenow', String(progress));
-        }
+    // Mark the link of the current screen.
+    const activeLink = sidebar.querySelector('[data-sidebar-link="' + activePage + '"]');
+    if (activeLink !== null) {
+      activeLink.className = "is-active";
+      activeLink.setAttribute("aria-current", "page");
+    }
 
-        updateTaskSummary();
-        window.addEventListener('teamspace:tasks-changed', updateTaskSummary);
-        window.addEventListener('pageshow', updateTaskSummary);
-      })
-      .catch(error => {
-        console.error('Could not load the employee sidebar. Open this page through Live Server.', error);
-        placeholder.textContent = 'Workspace navigation is unavailable.';
-      });
+    // Logout forgets the user and opens the login screen.
+    sidebar.querySelector("#employeeSidebarLogout").addEventListener("click", function () {
+      localStorage.removeItem("loggedUser");
+      window.location.href = "../../common/login/login.html";
+    });
+
+    // The menu button (small screens) opens and closes the links.
+    const toggle = sidebar.querySelector(".employee-sidebar-toggle");
+    toggle.addEventListener("click", function () {
+      const isOpen = toggle.getAttribute("aria-expanded") !== "true";
+      sidebar.className = isOpen ? "employee-sidebar is-open" : "employee-sidebar";
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-label", isOpen ? "Hide workspace pages" : "Show workspace pages");
+      toggle.querySelector("span").textContent = isOpen ? "close" : "menu";
+    });
+
+    updateSidebarTasks();
+    window.addEventListener("pageshow", updateSidebarTasks);
+  } catch (error) {
+    console.error("Could not load the employee sidebar. Open this page with Live Server.", error);
+    placeholder.textContent = "Workspace navigation is unavailable.";
   }
 }
+
+loadEmployeeSidebar();

@@ -96,7 +96,7 @@ A page's `.html` builds the interface, its `.css` styles it, and its `.js` fetch
 | `api/db.seed.json` | Starting sample for all collections | ✅ Yes | Deliberate project edits/commits |
 | `api/db.json` | The current local working database | ❌ No | API requests; reset replaces it |
 | `api/db.backup-*.json` | Local backup made before a reset | ❌ No | `npm run reset` |
-| Browser `localStorage` | `loggedUser` identity, `currentUserId`, and `teamspaceTheme` | No | Login, profile edit, logout, theme toggle |
+| Browser `localStorage` | `loggedUser` identity and `teamspaceTheme` | No | Login, profile edit, logout, theme toggle |
 
 The browser does **not** store the full employees list. Login keeps the signed-in person's small identity so the navbar and pages know whom to load. The pages then request current records from the API. Editing `api/db.seed.json` does not change a running `api/db.json` until you intentionally reset. Editing `api/db.json` by hand while the API is running can also be overwritten by the server's in-memory data; use an API request or stop the API first.
 
@@ -186,7 +186,7 @@ flowchart LR
 
 1. [My Workspace](employee/MyWOrkSpace/MyWOrkSpace.html) greets the signed-in employee. It fetches that person's tasks and helpdesk meetings, shows priority links, and builds the agenda from real approved/scheduled meeting records. Clicking a task opens `my-tasks.html?task=<id>` so the task dialog opens directly. **Request Time Off** links to `Leave&TimeOff.html#request-time-off`, which opens the request form.
 2. [My Tasks](employee/my-tasks/my-tasks.html) loads only `GET /tasks?employeeId=<loggedUser.id>`. The board groups tasks by `todo`, `progress`, `review`, and `completed`. Search, category, and priority controls filter the visible board.
-3. Opening a task shows its details. The employee can change its board status, attach a PDF of up to 1 MB, and send it for review. Task changes are saved with `PUT /tasks/:id` (the full task object), and the page fires `teamspace:tasks-changed` so the sidebar recomputes count/progress.
+3. Opening a task shows its details. The employee can change its board status, attach a PDF of up to 1 MB, and send it for review. Task changes are saved with `PUT /tasks/:id` (the full task object), and the page calls `updateSidebarTasks()` (from `employee-sidebar.js`) so the sidebar recomputes count/progress.
 4. HR manages the same `tasks` collection in [HR Tasks](hr/tasks/tasks.html). The employee board and HR board see each other's API changes after they reload/re-fetch.
 
 **Status path:** `todo → progress → review → completed` is the normal reading order. The UI can also move cards as allowed by its controls; a sent task gets `review`, and HR can review/manage it. The sidebar percentage counts only `completed` tasks.

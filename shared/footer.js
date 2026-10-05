@@ -1,29 +1,41 @@
-// Serve pages through Live Server, just like the shared navbar.
-{
-  const placeholder = document.querySelector('[data-footer]');
-  if (placeholder) {
-    const file = new URL('footer.html', document.currentScript.src);
-    fetch(file)
-      .then(response => {
-        if (!response.ok) throw new Error(`Footer request failed: ${response.status}`);
-        return response.text();
-      })
-      .then(html => {
-        placeholder.outerHTML = html;
+// footer.js - puts the shared footer into the page.
+//
+// A page has an empty footer:   <footer class="site-footer" data-footer></footer>
+// and loads this file at the end of the page.
+// Open the pages with Live Server: the footer file is loaded with fetch().
 
-        // Policies are different for each user type. footer.html points to the HR policies,
-        // so on employee screens we send the footer's policy links to the employee policies instead.
-        let role = null;
-        try { role = JSON.parse(localStorage.getItem('loggedUser'))?.role; } catch { /* No session. */ }
-        if (role === 'EMP') {
-          for (const link of document.querySelectorAll('.site-footer a[href$="hr/policies/policies.html"]')) {
-            link.setAttribute('href', '../../employee/policies/EMPpolicies.html');
-          }
-        }
-      })
-      .catch(error => {
-        console.error('Could not load the shared footer. Open this page through Live Server.', error);
-        placeholder.textContent = 'Connectra';
+async function loadFooter() {
+  const placeholder = document.querySelector("[data-footer]");
+  if (placeholder === null) {
+    return;
+  }
+
+  try {
+    const response = await fetch("../../shared/footer.html");
+    if (!response.ok) {
+      console.error("Footer request failed:", response.status);
+      placeholder.textContent = "Connectra";
+      return;
+    }
+    placeholder.outerHTML = await response.text();
+
+    // Employees have their own policies page, so their footer links go there.
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("loggedUser"));
+    } catch (error) {
+      user = null;
+    }
+    if (user !== null && user.role === "EMP") {
+      const policyLinks = document.querySelectorAll('.site-footer a[href$="hr/policies/policies.html"]');
+      policyLinks.forEach(function (link) {
+        link.setAttribute("href", "../../employee/policies/EMPpolicies.html");
       });
+    }
+  } catch (error) {
+    console.error("Could not load the shared footer. Open this page with Live Server.", error);
+    placeholder.textContent = "Connectra";
   }
 }
+
+loadFooter();

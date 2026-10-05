@@ -1,93 +1,119 @@
-const API = 'http://127.0.0.1:3000';
-const form = document.getElementById('reset-password-form');
-const password = document.getElementById('new-password');
-const confirmation = document.getElementById('confirm-password');
-const errorBox = document.getElementById('password-error');
-const errorText = document.getElementById('password-error-message');
+// Reset password: a new employee chooses a new password on the first login.
+// The animation is in reset-animation.js. This file only calls its hooks: RouterReset.success / finish / error.
+const API = "http://127.0.0.1:3000";
+
+const form = document.getElementById("reset-password-form");
+const password = document.getElementById("new-password");
+const confirmation = document.getElementById("confirm-password");
+const errorBox = document.getElementById("password-error");
+const errorText = document.getElementById("password-error-message");
 const submitButton = form.querySelector('[type="submit"]');
 
+// Who is logged in?
 let session = null;
 try {
-  session = JSON.parse(localStorage.getItem('loggedUser') || 'null');
+  session = JSON.parse(localStorage.getItem("loggedUser"));
 } catch (error) {
-  // No active session.
+  session = null;
 }
 
+// Shows the red error box (an empty message hides it).
 function showError(message) {
   errorText.textContent = message;
   errorBox.hidden = !message;
 }
 
+// Where does each role start?
 function workspaceFor(role) {
-  return role === 'HR'
-    ? '../../hr/workspace/workspace.html'
-    : '../../employee/MyWOrkSpace/MyWOrkSpace.html';
+  if (role === "HR") {
+    return "../../hr/workspace/workspace.html";
+  }
+  return "../../employee/MyWOrkSpace/MyWOrkSpace.html";
 }
 
+// Only a person on the first login can use this page.
 async function checkFirstLogin() {
-  if (!session || !session.id) {
-    location.replace('../login/login.html');
+  if (session === null || !session.id) {
+    location.replace("../login/login.html");
     return;
   }
+
   try {
-    const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`);
-    if (!response.ok) throw new Error('Could not check this account.');
-    const employee = await response.json();
-    if (employee.status !== 'Active' && employee.status !== 'Inactive') {
-      localStorage.removeItem('loggedUser');
-      localStorage.removeItem('currentUserId');
-      location.replace('../login/login.html');
+    const response = await fetch(`${API}/employees/${session.id}`);
+    if (!response.ok) {
+      showError("Could not check this account. Make sure the API is running.");
       return;
     }
-    if (employee.firstAttend !== true) location.replace(workspaceFor(employee.role));
+    const employee = await response.json();
+    if (employee.status !== "Active" && employee.status !== "Inactive") {
+      localStorage.removeItem("loggedUser");
+      location.replace("../login/login.html");
+    } else if (employee.firstAttend !== true) {
+      // This person already chose a password.
+      location.replace(workspaceFor(employee.role));
+    }
   } catch (error) {
     showError(`${error.message} Make sure the API is running.`);
   }
 }
 
-document.querySelectorAll('.password-toggle').forEach(button => {
+// ----- Show / hide the password (there is one button for each password box) -----
+document.querySelectorAll(".password-toggle").forEach(function (button) {
   // "this" is the toggle button that was clicked.
-  button.addEventListener('click', function () {
-    const input = document.getElementById(this.getAttribute('aria-controls'));
-    const reveal = input.type === 'password';
-    input.type = reveal ? 'text' : 'password';
-    this.setAttribute('aria-pressed', String(reveal));
-    this.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-    this.querySelector('span').textContent = reveal ? 'visibility_off' : 'visibility';
+  button.addEventListener("click", function () {
+    const input = document.getElementById(this.getAttribute("aria-controls"));
+    const reveal = input.type === "password";
+    input.type = reveal ? "text" : "password";
+    this.setAttribute("aria-pressed", String(reveal));
+    this.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
+    this.querySelector("span").textContent = reveal ? "visibility_off" : "visibility";
   });
 });
 
-form.addEventListener('submit', async event => {
+// ----- Save the new password -----
+form.onsubmit = async function (event) {
   event.preventDefault();
-  showError('');
-  if (password.value.length < 8 || !/[a-z]/i.test(password.value) || !/\d/.test(password.value)) {
-    showError('Use at least 8 characters with letters and numbers.');
+  showError("");
+
+  const newPassword = password.value;
+  if (newPassword.length < 8 || !/[a-z]/i.test(newPassword) || !/\d/.test(newPassword)) {
+    showError("Use at least 8 characters with letters and numbers.");
     return;
   }
-  if (password.value !== confirmation.value) {
-    showError('The passwords do not match.');
+  if (newPassword !== confirmation.value) {
+    showError("The passwords do not match.");
     return;
   }
 
   submitButton.disabled = true;
+  let problem = "";
   try {
-    const response = await fetch(`${API}/employees/${encodeURIComponent(session.id)}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: password.value, firstAttend: false })
+    // PATCH changes only the fields we send. firstAttend false means: the password was chosen.
+    const response = await fetch(`${API}/employees/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: newPassword, firstAttend: false })
     });
-    if (!response.ok) throw new Error('Could not save your password.');
-    if (window.RouterReset) {
-      window.RouterReset.success();
-      await window.RouterReset.finish();
+    if (response.ok) {
+      if (window.RouterReset) {
+        window.RouterReset.success();
+        await window.RouterReset.finish();
+      }
+      location.replace(workspaceFor(session.role));
+    } else {
+      problem = "Could not save your password.";
     }
-    location.replace(workspaceFor(session.role));
   } catch (error) {
-    if (window.RouterReset) window.RouterReset.error();
-    showError(`${error.message} Make sure the API is running.`);
-  } finally {
-    submitButton.disabled = false;
+    problem = error.message;
   }
-});
+
+  if (problem) {
+    if (window.RouterReset) {
+      window.RouterReset.error();
+    }
+    showError(`${problem} Make sure the API is running.`);
+  }
+  submitButton.disabled = false;
+};
 
 checkFirstLogin();
