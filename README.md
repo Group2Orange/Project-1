@@ -2,7 +2,7 @@
 
 A local, educational HR web app built with **HTML, CSS, browser JavaScript, and `json-server`**. Employees can manage their work and requests; HR can manage employees, tasks, policies, feedback, leave, and helpdesk tickets. The app uses one JSON-backed API for its active data.
 
-Figma Link: https://www.figma.com/design/3zWfidyuAT7SUeZR03IaJ2/Orange_Design_Task?node-id=161-5&p=f&t=eYTXNI4vZMDLEzln-0
+Figma Link: https://www.figma.com/design/3zWfidyuAT7SUeZR03IaJ2/Orange_Design_Task?node-id=64-36&t=dMtOE5IXhZKPGrVE-1
 
 Trello Link: https://trello.com/invite/b/6abc18a6e1214e8657b68f60/ATTIae9606e3158abd68c8048355bc2404b82C5533FC/hr-management-system-project-🧩
 
